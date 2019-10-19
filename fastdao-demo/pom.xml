@@ -9,7 +9,7 @@
 <!--        <relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;-->
     </parent>
     <artifactId>fastdao-demo</artifactId>
-    <groupId>com.skycloud</groupId>
+    <groupId>io.github.skycloud</groupId>
     <version>0.0.1-SNAPSHOT</version>
     <description>Demo project for Spring Boot</description>
 
@@ -52,8 +52,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.skycloud</groupId>
-            <artifactId>fastdao-springjdbc-plus</artifactId>
+            <groupId>io.github.skycloud</groupId>
+            <artifactId>jdbc-template-plus</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>

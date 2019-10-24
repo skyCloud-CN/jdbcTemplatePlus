@@ -9,6 +9,7 @@ package io.github.skycloud.fastdao.demo;
 import com.google.common.collect.Lists;
 import io.github.skycloud.fastdao.core.ast.Condition;
 import io.github.skycloud.fastdao.core.ast.Request;
+import io.github.skycloud.fastdao.core.ast.enums.OrderEnum;
 import io.github.skycloud.fastdao.core.ast.request.CountRequest.DefaultCountRequest;
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest;
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest.DefaultQueryRequest;
@@ -17,6 +18,7 @@ import io.github.skycloud.fastdao.core.reflection.MetaClass;
 import io.github.skycloud.fastdao.core.reflection.MetaField;
 import io.github.skycloud.fastdao.demo.dao.AutoIncDAO;
 import io.github.skycloud.fastdao.demo.model.AutoIncModel;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.Assert;
@@ -430,4 +432,6 @@ public class AutoIncTest {
                 .endCondition();
         System.out.println(dao.select(request));
     }
+
+
 }

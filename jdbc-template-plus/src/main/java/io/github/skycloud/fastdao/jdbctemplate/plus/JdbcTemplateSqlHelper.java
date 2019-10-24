@@ -13,13 +13,12 @@ import io.github.skycloud.fastdao.core.ast.Request;
 import io.github.skycloud.fastdao.core.ast.SqlAst;
 import io.github.skycloud.fastdao.core.ast.ValueParser;
 import io.github.skycloud.fastdao.core.ast.request.CountRequest;
-import io.github.skycloud.fastdao.core.ast.request.QueryRequest.DefaultQueryRequest;
 import io.github.skycloud.fastdao.core.ast.request.DeleteRequest;
 import io.github.skycloud.fastdao.core.ast.request.InsertRequest;
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest;
+import io.github.skycloud.fastdao.core.ast.request.QueryRequest.DefaultQueryRequest;
 import io.github.skycloud.fastdao.core.ast.request.UpdateRequest;
 import io.github.skycloud.fastdao.core.mapping.RowMapping;
-import javafx.util.Pair;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -42,14 +41,13 @@ public class JdbcTemplateSqlHelper {
                 db.update(visitor.getSql(), source))).orElse(0);
     }
 
-    public static Pair<Integer, Number> insert(NamedParameterJdbcOperations db, InsertRequest request, Class clazz) {
+    public static Number[] insert(NamedParameterJdbcOperations db, InsertRequest request, Class clazz) {
         request=(InsertRequest)((SqlAst)request).copy();
         return Optional.ofNullable(sendRequest(db, request, clazz, (visitor, source) -> {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             int count = db.update(visitor.getSql(), source, keyHolder);
-            Pair<Integer, Number> pair = new Pair<>(count, keyHolder.getKey());
-            return pair;
-        })).orElse(new Pair<>(0, null));
+            return new Number[]{count,keyHolder.getKey()};
+        })).orElse(new Number[]{0,null});
     }
 
     public static <T> List<T> select(NamedParameterJdbcOperations db, QueryRequest request, Class<T> clazz) {

@@ -179,10 +179,10 @@ public class AutoIncPluginTest {
         model.setText(null);
         model.setName(null);
         dao.insertSelective(model);
-        assertEqual(model, dao.selectByPrimaryKey(7L), "name","created","updated");
-        Assert.assertEquals("", dao.selectByPrimaryKey(7L).getName());
-        Assert.assertNotNull(dao.selectByPrimaryKey(7L).getCreated());
-        Assert.assertNotNull(dao.selectByPrimaryKey(7L).getUpdated());
+        assertEqual(model, dao.selectByPrimaryKey(model.getId()), "name","created","updated");
+        Assert.assertEquals("", dao.selectByPrimaryKey(model.getId()).getName());
+        Assert.assertNotNull(dao.selectByPrimaryKey(model.getId()).getCreated());
+        Assert.assertNotNull(dao.selectByPrimaryKey(model.getId()).getUpdated());
     }
 
     @Test
@@ -264,7 +264,7 @@ public class AutoIncPluginTest {
                         .orIgnoreIllegal(Condition.and()));
         request.setCondition(condition);
         List<AutoIncPluginTestModel> models = dao.select(request);
-        Assert.assertEquals(6, models.size());
+        Assert.assertEquals(3, models.size());
     }
 
     //************ count(QueryRequest request) test **************
@@ -364,7 +364,7 @@ public class AutoIncPluginTest {
         request.setCondition(Condition.and().andIgnoreIllegal(ID.equal(Lists.newArrayList())).allowEmpty());
         request.addUpdateField(NAME, "updated");
         int update = dao.update(request);
-        Assert.assertEquals(6, update);
+        Assert.assertEquals(3, update);
         Assert.assertTrue(dao.select(new DefaultQueryRequest()).stream()
                 .map(AutoIncPluginTestModel::getName).allMatch(x -> x.equals("updated")));
     }
@@ -383,7 +383,7 @@ public class AutoIncPluginTest {
         request.setCondition(condition);
         request.addUpdateField(NAME, "updated");
         int count = dao.update(request);
-        Assert.assertEquals(6, count);
+        Assert.assertEquals(3, count);
         Assert.assertTrue(dao.select(new DefaultQueryRequest()).stream()
                 .map(AutoIncPluginTestModel::getName).allMatch(x -> x.equals("updated")));
     }

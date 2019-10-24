@@ -29,12 +29,12 @@
     <scm>
         <url>https://github.com/skyCloud-CN/jdbcTemplatePlus</url>
         <connection>scm:https://github.com/skyCloud-CN/jdbcTemplatePlus.git</connection>
-        <developerConnection>scm:https://github.com/skyCloud-CN/jdbcTemplatePlus.git</developerConnection>
+        <developerConnection>scm:https://github.com/skyCloud-CN/jdbcTemplatePlus.git
+        </developerConnection>
     </scm>
     <modules>
         <module>fastdao-core</module>
         <module>jdbc-template-plus</module>
         <module>fastdao-demo</module>
     </modules>
-
 </project>

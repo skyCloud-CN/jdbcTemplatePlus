@@ -16,7 +16,7 @@ public class FastDAOException extends RuntimeException {
     }
 
     public FastDAOException(String msg, Object... param) {
-        super(MessageFormatter.arrayFormat(msg, param).getMessage());
+        super(MessageFormatter.arrayFormat(msg, param));
     }
 
 }

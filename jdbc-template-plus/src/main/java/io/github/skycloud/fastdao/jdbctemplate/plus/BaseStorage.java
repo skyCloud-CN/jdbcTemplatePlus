@@ -13,7 +13,6 @@ import io.github.skycloud.fastdao.core.ast.request.DeleteRequest;
 import io.github.skycloud.fastdao.core.ast.request.DeleteRequest.DefaultDeleteRequest;
 import io.github.skycloud.fastdao.core.ast.request.InsertRequest.DefaultInsertRequest;
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest;
-
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest.DefaultQueryRequest;
 import io.github.skycloud.fastdao.core.ast.request.UpdateRequest;
 import io.github.skycloud.fastdao.core.ast.request.UpdateRequest.DefaultUpdateRequest;
@@ -21,7 +20,6 @@ import io.github.skycloud.fastdao.core.mapping.ColumnMapping;
 import io.github.skycloud.fastdao.core.mapping.RowMapping;
 import io.github.skycloud.fastdao.core.reflection.MetaClass;
 import io.github.skycloud.fastdao.core.reflection.MetaField;
-import javafx.util.Pair;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 
@@ -60,11 +58,7 @@ public abstract class BaseStorage<DATA, PRIM_KEY> implements Storage<DATA, PRIM_
 
     @Override
     public List<DATA> selectByPrimaryKeys(Collection<PRIM_KEY> keys) {
-        DefaultQueryRequest request = new DefaultQueryRequest();
-        RowMapping rowMapping = RowMapping.of(dataClass);
-        request.setCondition(new DefaultEqualCondition(rowMapping.getPrimaryKeyColumn().getColumnName(), keys));
-        List<DATA> result = JdbcTemplateSqlHelper.select(getJdbcTemplate(), request, dataClass);
-        return result;
+        return selectByPrimaryKeys((PRIM_KEY[])keys.toArray());
     }
 
     @Override
@@ -99,11 +93,11 @@ public abstract class BaseStorage<DATA, PRIM_KEY> implements Storage<DATA, PRIM_
             request.addInsertField(columnMapping.getColumnName(), value);
 
         }
-        Pair<Integer, Number> result = JdbcTemplateSqlHelper.insert(getJdbcTemplate(), request, dataClass);
-        if (result.getValue() != null) {
-            metaClass.invokeSetter(t, rowMapping.getPrimaryKeyColumn().getFieldName(), result.getValue());
+        Number[] result = JdbcTemplateSqlHelper.insert(getJdbcTemplate(), request, dataClass);
+        if (result[1] != null) {
+            metaClass.invokeSetter(t, rowMapping.getPrimaryKeyColumn().getFieldName(), result[1]);
         }
-        return result.getKey();
+        return (int)result[0];
     }
 
     @Override

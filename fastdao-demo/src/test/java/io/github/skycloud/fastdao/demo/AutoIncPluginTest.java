@@ -8,7 +8,9 @@ package io.github.skycloud.fastdao.demo;
 
 import com.google.common.collect.Lists;
 import io.github.skycloud.fastdao.core.ast.Condition;
+import io.github.skycloud.fastdao.core.ast.Request;
 import io.github.skycloud.fastdao.core.ast.request.CountRequest.DefaultCountRequest;
+import io.github.skycloud.fastdao.core.ast.request.QueryRequest;
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest.DefaultQueryRequest;
 import io.github.skycloud.fastdao.core.ast.request.UpdateRequest.DefaultUpdateRequest;
 import io.github.skycloud.fastdao.core.reflection.MetaClass;
@@ -51,7 +53,7 @@ public class AutoIncPluginTest {
 
     @Test
     public void test_select_by_primary_key() {
-        AutoIncPluginTestModel model = dao.selectByPrimaryKey(1L);
+        AutoIncPluginTestModel model = dao.selectByPrimaryKey(5L);
         log.info(model.toString());
     }
 
@@ -77,6 +79,13 @@ public class AutoIncPluginTest {
         int count = dao.updateByPrimaryKey(model);
         Assert.assertEquals(1, count);
         AutoIncPluginTestModel fromDB = dao.selectByPrimaryKey(6L);
+        Assert.assertTrue(fromDB==null);
+        fromDB=dao.select(Request.queryRequest()
+                .beginAndCondition()
+                .and(ID.equal(6L))
+                .and(DELETED.equal(true))
+                .endCondition())
+                .stream().findFirst().orElse(null);
         assertEqual(model, fromDB, "exclude");
         Assert.assertNotEquals(model.getExclude(), fromDB.getExclude());
     }
@@ -196,7 +205,7 @@ public class AutoIncPluginTest {
         Assert.assertEquals(3, count);
         request.setCondition(null);
         count = dao.count(request);
-        Assert.assertEquals(6, count);
+        Assert.assertEquals(3, count);
     }
 
     //************ select(QueryRequest request) test **************
@@ -238,9 +247,9 @@ public class AutoIncPluginTest {
     @Test
     public void test_select_ignore_illegal_condition() {
         DefaultQueryRequest request = new DefaultQueryRequest();
-        request.setCondition(Condition.and().andIgnoreIllegal(ID.equal(Lists.newArrayList())));
+        request.setCondition(Condition.and().andIgnoreIllegal(ID.equal(Lists.newArrayList())).allowEmpty());
         List<AutoIncPluginTestModel> models = dao.select(request);
-        Assert.assertEquals(6, models.size());
+        Assert.assertEquals(3, models.size());
     }
 
     @Test
@@ -266,10 +275,10 @@ public class AutoIncPluginTest {
         DefaultCountRequest request = new DefaultCountRequest();
         request.setCondition(ID.equal(Lists.newArrayList(1, 2, 3)));
         int count = dao.count(request);
-        Assert.assertEquals(3, count);
+        Assert.assertEquals(0, count);
         request.setCondition(ID.equal(1, 2, 3));
         int count2 = dao.count(request);
-        Assert.assertEquals(3, count2);
+        Assert.assertEquals(0, count2);
     }
 
     @Test
@@ -298,7 +307,7 @@ public class AutoIncPluginTest {
         DefaultCountRequest request = new DefaultCountRequest();
         request.setCondition(Condition.and().andIgnoreIllegal(ID.equal(Lists.newArrayList())));
         int count = dao.count(request);
-        Assert.assertEquals(6, count);
+        Assert.assertEquals(0, count);
     }
 
 
@@ -309,13 +318,13 @@ public class AutoIncPluginTest {
     public void test_update_equal_multi() {
         DefaultUpdateRequest request = new DefaultUpdateRequest();
         request.addUpdateField(NAME, "updated");
-        request.setCondition(ID.equal(Lists.newArrayList(1, 2, 3)));
+        request.setCondition(ID.equal(Lists.newArrayList(4, 5, 6)));
         int update = dao.update(request);
-        Assert.assertTrue(dao.selectByPrimaryKeys(1L, 2L, 3L).stream()
+        Assert.assertTrue(dao.selectByPrimaryKeys(4L, 5L, 6L).stream()
                 .map(AutoIncPluginTestModel::getName)
                 .allMatch(x -> x.equals("updated")));
         Assert.assertEquals(3, update);
-        request.setCondition(ID.equal(1, 2, 3));
+        request.setCondition(ID.equal(4, 5, 6));
         int update2 = dao.update(request);
         Assert.assertEquals(3, update2);
         Assert.assertEquals(1,request.getUpdateFields().size());
@@ -352,7 +361,7 @@ public class AutoIncPluginTest {
     @Transactional
     public void test_update_ignore_illegal_condition() {
         DefaultUpdateRequest request = new DefaultUpdateRequest();
-        request.setCondition(Condition.and().andIgnoreIllegal(ID.equal(Lists.newArrayList())));
+        request.setCondition(Condition.and().andIgnoreIllegal(ID.equal(Lists.newArrayList())).allowEmpty());
         request.addUpdateField(NAME, "updated");
         int update = dao.update(request);
         Assert.assertEquals(6, update);

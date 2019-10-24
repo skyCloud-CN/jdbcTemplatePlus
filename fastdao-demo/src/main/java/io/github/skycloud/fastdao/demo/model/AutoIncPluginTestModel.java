@@ -13,6 +13,7 @@ import io.github.skycloud.fastdao.core.plugins.autofill.AutoFillOperation;
 import io.github.skycloud.fastdao.core.plugins.autofill.AutoFillValueEnum;
 import io.github.skycloud.fastdao.core.plugins.columnmap.ColumnMap;
 import io.github.skycloud.fastdao.core.plugins.exclude.Exclude;
+import io.github.skycloud.fastdao.core.plugins.logicdelete.LogicDelete;
 import lombok.Data;
 import lombok.ToString;
 
@@ -44,9 +45,8 @@ public class AutoIncPluginTestModel {
     private Long updated;
     @AutoFill(fillValue = AutoFillValueEnum.NOW,onOperation= AutoFillOperation.INSERT)
     private Date created;
-
+    @LogicDelete
     private Boolean deleted;
-
     @Exclude
     private Integer exclude;
 }

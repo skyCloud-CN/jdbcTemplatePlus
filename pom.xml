@@ -6,13 +6,12 @@
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
-        <version>7</version>
+        <version>9</version>
     </parent>
-    <groupId>io.github.skycloud</groupId>
+    <groupId>io.github.skycloud-cn</groupId>
     <artifactId>fastdao-parent</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
-
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -27,7 +26,11 @@
             <email>yuntianwk@163.com</email>
         </developer>
     </developers>
-
+    <scm>
+        <url>https://github.com/skyCloud-CN/jdbcTemplatePlus</url>
+        <connection>scm:https://github.com/skyCloud-CN/jdbcTemplatePlus.git</connection>
+        <developerConnection>scm:https://github.com/skyCloud-CN/jdbcTemplatePlus.git</developerConnection>
+    </scm>
     <modules>
         <module>fastdao-core</module>
         <module>jdbc-template-plus</module>

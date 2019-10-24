@@ -31,7 +31,7 @@ public interface OrCondition<T extends OrCondition> extends Condition {
     /**
      * @author yuntian
      */
-    @Getter
+
     class DefaultOrCondition<T extends OrCondition> implements OrCondition<T>, SqlAst {
 
         private List<Condition> subConditions = Lists.newArrayList();
@@ -91,5 +91,8 @@ public interface OrCondition<T extends OrCondition> extends Condition {
             return orCondition;
         }
 
+        public List<Condition> getSubConditions() {
+            return subConditions;
+        }
     }
 }

@@ -8,6 +8,7 @@ package io.github.skycloud.fastdao.core.plugins.autofill;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import io.github.skycloud.fastdao.core.ast.request.InsertRequest;
 import io.github.skycloud.fastdao.core.ast.request.InsertRequest.DefaultInsertRequest;
 import io.github.skycloud.fastdao.core.mapping.ColumnMapping;
 import io.github.skycloud.fastdao.core.mapping.RowMapping;
@@ -24,68 +25,28 @@ import java.util.stream.Collectors;
 /**
  * @author yuntian
  */
-public class AutoFillInsertRequestHandler implements PluggableHandler<DefaultInsertRequest> {
+public class AutoFillInsertRequestHandler extends AutoFillRequestHandler<InsertRequest> {
 
-    private Map<Class, Map<String, AutoFillHandler>> autoFillHandlerMap = new SingletonCache<>(Maps.newConcurrentMap(),this::fillAutoFillHandlerMap);
+
+
+    public AutoFillInsertRequestHandler() {
+        super(AutoFillOperation.INSERT);
+    }
 
     @Override
-    public DefaultInsertRequest handle(DefaultInsertRequest pluggable, Class clazz) {
+    public InsertRequest handle(InsertRequest pluggable, Class clazz) {
+        DefaultInsertRequest request=(DefaultInsertRequest)pluggable;
         Map<String, AutoFillHandler> fieldAutoFillHandlerMap = autoFillHandlerMap.get(clazz);
-        Set<String> prepareUpdate = pluggable.getInsertFields().entrySet().stream()
+        Set<String> prepareUpdate = request.getInsertFields().entrySet().stream()
                 .filter(entry -> entry.getValue() != null).map(Entry::getKey)
                 .collect(Collectors.toSet());
         Set<String> needUpdateFields = Sets.newHashSet(fieldAutoFillHandlerMap.keySet());
         needUpdateFields.removeAll(prepareUpdate);
         for (String needUpdateField : needUpdateFields) {
             AutoFillHandler handler = fieldAutoFillHandlerMap.get(needUpdateField);
-            pluggable.addInsertField(needUpdateField, handler.handle(pluggable));
+            request.addInsertField(needUpdateField, handler.handle(request));
         }
-        return pluggable;
+        return request;
     }
-
-    private Map<String, AutoFillHandler> fillAutoFillHandlerMap(Class clazz) {
-        MetaClass metaClass = MetaClass.of(clazz);
-        RowMapping rowMapping = RowMapping.of(clazz);
-        Map<String, AutoFillHandler> fieldAutoFillHandlerMap = Maps.newHashMap();
-        for (MetaField metaField : metaClass.metaFields()) {
-            AutoFill autoFill = metaField.getAnnotation(AutoFill.class);
-            if (autoFill == null) {
-                continue;
-            }
-            ColumnMapping columnMapping = rowMapping.getColumnMappingByFieldName(metaField.getFieldName());
-            if (columnMapping == null) {
-                continue;
-            }
-            AutoFillHandler handler=createHandler(autoFill);
-            if(handler!=null) {
-                fieldAutoFillHandlerMap.put(columnMapping.getColumnName(), handler);
-            }
-        }
-        return fieldAutoFillHandlerMap;
-    }
-
-    private AutoFillHandler createHandler(AutoFill autoFill) {
-        boolean match = false;
-        for (AutoFillOperation operation : autoFill.onOperation()) {
-            if (operation == AutoFillOperation.INSERT) {
-                match = true;
-            }
-        }
-        if (!match) {
-            return null;
-        }
-        if (autoFill.fillValue() == AutoFillValueEnum.NOW) {
-            return new NowDateAutoFillHandler();
-        }
-        if (autoFill.handler() != AutoFillHandler.class) {
-            try {
-                return autoFill.handler().newInstance();
-            } catch (Exception e) {
-                throw new RuntimeException("create autoFill handler fail");
-            }
-        }
-        throw new RuntimeException("autoFill annotation exception");
-    }
-
 
 }

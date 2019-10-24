@@ -14,6 +14,8 @@ import com.google.common.reflect.TypeToken;
 import io.github.skycloud.fastdao.core.plugins.autofill.AutoFillPlugin;
 import io.github.skycloud.fastdao.core.plugins.columnmap.ColumnMapAnnotationPlugin;
 import io.github.skycloud.fastdao.core.plugins.exclude.ExcludeAnnotationPlugin;
+import io.github.skycloud.fastdao.core.plugins.logicdelete.LogicDeleteHandler;
+import io.github.skycloud.fastdao.core.plugins.logicdelete.LogicDeletePlugin;
 import io.github.skycloud.fastdao.core.plugins.shard.ShardPlugin;
 import io.github.skycloud.fastdao.core.util.SingletonCache;
 import org.apache.commons.collections4.CollectionUtils;
@@ -48,6 +50,7 @@ public class PluginManager {
         register(new ExcludeAnnotationPlugin());
         register(new ShardPlugin());
         register(new AutoFillPlugin());
+        register(new LogicDeletePlugin());
     }
 
     public static void register(Plugin plugin) {

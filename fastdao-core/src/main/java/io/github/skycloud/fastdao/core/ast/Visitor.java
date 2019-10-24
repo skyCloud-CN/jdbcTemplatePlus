@@ -37,16 +37,16 @@ public interface Visitor extends Pluggable {
 
     void visit(SortLimitClause sortLimitClause);
 
-    void visit(DefaultAndCondition andCondition);
+    void visit(DefaultAndCondition condition);
 
-    void visit(DefaultOrCondition orCondition);
+    void visit(DefaultOrCondition condition);
 
-    void visit(DefaultEqualCondition equalCondition);
+    void visit(DefaultEqualCondition condition);
 
-    void visit(DefaultRangeCondition rangeCondition);
+    void visit(DefaultRangeCondition condition);
 
-    void visit(DefaultLikeCondition likeCondition);
+    void visit(DefaultLikeCondition condition);
 
-    void visit(DefaultIsNullCondition isNullCondition);
+    void visit(DefaultIsNullCondition condition);
 
 }

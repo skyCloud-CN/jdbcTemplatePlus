@@ -423,10 +423,9 @@ public class AutoIncTest {
     }
     @Test
     public void testGet(){
-        List<String> names=null;
-        QueryRequest request = Request.queryRequest()
+        QueryRequest request=Request.queryRequest()
                 .beginAndCondition()
-                .andIgnoreIllegal(NAME.equal(names))
+                .and(Condition.and().allowEmpty())
                 .allowEmpty()
                 .endCondition();
         System.out.println(dao.select(request));

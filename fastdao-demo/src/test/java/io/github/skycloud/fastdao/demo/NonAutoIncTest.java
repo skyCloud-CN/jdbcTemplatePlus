@@ -232,7 +232,7 @@ public class NonAutoIncTest {
     @Test
     public void test_select_ignore_illegal_condition() {
         DefaultQueryRequest request = new DefaultQueryRequest();
-        request.setCondition(Condition.and().andIgnoreIllegal(ID.equal(Lists.newArrayList())));
+        request.setCondition(Condition.and().andIgnoreIllegal(ID.equal(Lists.newArrayList())).allowEmpty());
         List<NonAutoIncModel> models = dao.select(request);
         Assert.assertEquals(6, models.size());
     }
@@ -292,7 +292,7 @@ public class NonAutoIncTest {
         DefaultCountRequest request = new DefaultCountRequest();
         request.setCondition(Condition.and().andIgnoreIllegal(ID.equal(Lists.newArrayList())));
         int count = dao.count(request);
-        Assert.assertEquals(6, count);
+        Assert.assertEquals(0, count);
     }
 
 
@@ -345,7 +345,7 @@ public class NonAutoIncTest {
     @Transactional
     public void test_update_ignore_illegal_condition() {
         DefaultUpdateRequest request = new DefaultUpdateRequest();
-        request.setCondition(Condition.and().andIgnoreIllegal(ID.equal(Lists.newArrayList())));
+        request.setCondition(Condition.and().andIgnoreIllegal(ID.equal(Lists.newArrayList())).allowEmpty());
         request.addUpdateField(NAME, "updated");
         int update = dao.update(request);
         Assert.assertEquals(6, update);

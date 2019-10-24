@@ -41,6 +41,8 @@ public interface ConditionalRequest<T extends ConditionalRequest<T>> extends Req
 
     T setCondition(Condition condition);
 
+    Condition getCondition();
+
     interface BindAndCondition<P extends ConditionalRequest<P>> extends AndCondition<BindAndCondition<P>> {
 
         @Override

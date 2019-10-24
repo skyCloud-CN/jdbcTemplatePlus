@@ -26,14 +26,6 @@ public class MessageFormatter {
     public MessageFormatter() {
     }
 
-    public static final FormattingTuple format(String messagePattern, Object arg) {
-        return arrayFormat(messagePattern, new Object[]{arg});
-    }
-
-    public static final FormattingTuple format(String messagePattern, Object arg1, Object arg2) {
-        return arrayFormat(messagePattern, new Object[]{arg1, arg2});
-    }
-
     static final Throwable getThrowableCandidate(Object[] argArray) {
         if (argArray != null && argArray.length != 0) {
             Object lastEntry = argArray[argArray.length - 1];

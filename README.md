@@ -18,7 +18,7 @@ This toolkit can simplify you DAO development and get rid of SQL, most important
 
 ```xml
 <dependency>
-  <groupId>io.github.skycloud</groupId>
+  <groupId>io.github.skycloud-cn</groupId>
   <artifactId>jdbc-template-plus</artifactId>
   <version>1.0.0</version>
 </dependency>
@@ -116,3 +116,7 @@ userDao.select(request);
 # License
 
 JdbcTemplatePlus is under the Apache 2.0 license. See the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0) file for details.
+
+```
+mvn clean deploy -P sonatype-oss-release -Darguments
+```

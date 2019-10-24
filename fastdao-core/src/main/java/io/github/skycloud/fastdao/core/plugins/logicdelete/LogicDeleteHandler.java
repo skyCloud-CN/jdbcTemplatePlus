@@ -1,7 +1,10 @@
 package io.github.skycloud.fastdao.core.plugins.logicdelete;
 
 import com.google.common.collect.Maps;
+import io.github.skycloud.fastdao.core.ast.Condition;
+import io.github.skycloud.fastdao.core.ast.ConditionalRequest;
 import io.github.skycloud.fastdao.core.ast.Request;
+import io.github.skycloud.fastdao.core.ast.SqlAst;
 import io.github.skycloud.fastdao.core.exceptions.FastDAOException;
 import io.github.skycloud.fastdao.core.mapping.RowMapping;
 import io.github.skycloud.fastdao.core.plugins.PluggableHandler;
@@ -14,12 +17,25 @@ import java.lang.annotation.Annotation;
 public class LogicDeleteHandler implements PluggableHandler<Request> {
     private SingletonCache<Class, LogicDeleteConfig> logicDeleteCache = new SingletonCache<>(Maps.newConcurrentMap(), this::getLogicDeleteConfig);
 
+    /**
+     * DeleteRequest : do not need Handle
+     * UpdateRequest : if logicDelete field is not in condition, add condition of logicDelete
+     * InsertRequest : if logicDelete field is not in insert field or logicDelete field=null, set logicDelete field to defaultUnDeleteValue;
+     * QueryRequest : if logicDelete field is not in condition, add condition of logicDelete
+     * CountRequest : if logicDelete field is not in condition, add condition of logicDelete
+     * @param pluggable
+     * @param clazz
+     * @return
+     */
     @Override
     public Request handle(Request pluggable, Class clazz) {
         LogicDeleteConfig config= logicDeleteCache.get(clazz);
-        if(config.exist){
-
+        if(!config.exist){
+            return pluggable;
         }
+        LogicDeleteVisitor logicDeleteVisitor=new LogicDeleteVisitor(config.columnName,config.defaultUnDeleteValue);
+        ((SqlAst)pluggable).accept(logicDeleteVisitor);
+        return pluggable;
     }
 
     private LogicDeleteConfig getLogicDeleteConfig(Class clazz) {

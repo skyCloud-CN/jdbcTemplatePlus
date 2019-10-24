@@ -124,6 +124,7 @@ public interface QueryRequest extends Sortable<QueryRequest>, ConditionalRequest
             return this;
         }
 
+        @Override
         public Condition getCondition() {
             return condition;
         }

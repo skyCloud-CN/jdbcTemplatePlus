@@ -12,7 +12,6 @@ import io.github.skycloud.fastdao.core.ast.SqlAst;
 import io.github.skycloud.fastdao.core.ast.Visitor;
 import io.github.skycloud.fastdao.core.table.Column;
 
-
 import java.util.Map;
 
 /**
@@ -20,7 +19,8 @@ import java.util.Map;
  */
 public interface InsertRequest extends Request {
 
-    DefaultInsertRequest addInsertField(Column field, Object value);
+    InsertRequest addInsertField(Column field, Object value);
+
 
     /**
      * @author yuntian
@@ -37,9 +37,11 @@ public interface InsertRequest extends Request {
         }
 
         public DefaultInsertRequest addInsertField(String field, Object value) {
-            insertFields.put(field,value);
+            insertFields.put(field, value);
             return this;
         }
+
+
         public Map<String, Object> getInsertFields() {
             return insertFields;
         }

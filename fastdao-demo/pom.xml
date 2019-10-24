@@ -9,7 +9,7 @@
 <!--        <relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;-->
     </parent>
     <artifactId>fastdao-demo</artifactId>
-    <groupId>io.github.skycloud</groupId>
+    <groupId>io.github.skycloud-cn</groupId>
     <version>0.0.1-SNAPSHOT</version>
     <description>Demo project for Spring Boot</description>
 
@@ -36,11 +36,6 @@
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>mysql</groupId>-->
-<!--            <artifactId>mysql-connector-java</artifactId>-->
-<!--            <scope>runtime</scope>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
@@ -52,7 +47,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.github.skycloud</groupId>
+            <groupId>io.github.skycloud-cn</groupId>
             <artifactId>jdbc-template-plus</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
@@ -69,6 +64,13 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
             </plugin>
         </plugins>
     </build>

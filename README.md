@@ -3,6 +3,8 @@
 [![codebeat badge](https://codebeat.co/badges/b060749d-601c-4035-8f7e-ed17a3f39c39)](https://codebeat.co/projects/github-com-skycloud-cn-jdbctemplateplus-master)
 [![Build Status](https://travis-ci.org/skyCloud-CN/jdbcTemplatePlus.svg?branch=master)](https://travis-ci.org/skyCloud-CN/jdbcTemplatePlus)
 
+[中文版文档](./README-CN.md)
+
 Spring based Persistence Framewok for Java Web developers, By using this, you Can
 
 - **Never write Sql**
@@ -16,7 +18,7 @@ Spring based Persistence Framewok for Java Web developers, By using this, you Ca
 
 
 - [Background](#background)
-- [GettingStart](#GettingStart)
+- [GettingStart](#gettingstart)
 - [Usage](#usage)
 - [License](#license)
 
@@ -36,6 +38,10 @@ JdbcTemplate do lots of  low level job for you, so you can only  write  SQL, but
 SpringDataJPA is my favourate framework. But it is too heavy and generated SQL is a little cumbersome(For a developer at Internet company, 99% of SQL is single table query ).  Dynamic sql is supported but readability is not so good
 
 So this is why I wrote this framework
+
+
+
+**This project is just getting start, please commit Issue and STAR to support, thank you**
 
 
 

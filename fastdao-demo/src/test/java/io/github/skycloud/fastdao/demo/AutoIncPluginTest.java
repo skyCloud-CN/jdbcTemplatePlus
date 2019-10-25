@@ -399,19 +399,6 @@ public class AutoIncPluginTest {
         return model;
     }
 
-    public void selectUser(List<Long> ids, String name, Date dateBegin, Date dateEnd) {
-        QueryRequest request = Request.queryRequest()
-                .beginAndCondition()
-                .andIgnoreIllegal(ID.equal(ids))
-                .andIgnoreIllegal(NAME.like(name).matchLeft().matchRight())
-                .andIgnoreIllegal(CREATED.gt(dateBegin).lt(dateEnd))
-                .and(DELETED.equal(false))
-                .endCondition()
-                .addSort(ID, OrderEnum.ASC)
-                .limit(20)
-                .offset(0);
-        dao.select(request);
-    }
 
     private <T> void assertEqual(T model, T model2, String... exclude) {
         MetaClass metaClass = MetaClass.of(model.getClass());
@@ -425,16 +412,3 @@ public class AutoIncPluginTest {
     }
 
 }
-    public void selectUser(List<Long> ids, String name, Date dateBegin, Date dateEnd) {
-        QueryRequest request = Request.queryRequest()
-                .beginAndCondition()
-                .andIgnoreIllegal(ID.equal(ids))
-                .andIgnoreIllegal(NAME.like(name).matchLeft().matchRight())
-                .andIgnoreIllegal(CREATED.gt(dateBegin).lt(dateEnd))
-                .and(DELETED.equal(false))
-                .endCondition()
-                .addSort(ID, OrderEnum.ASC)
-                .limit(20)
-                .offset(0);
-        dao.select(request);
-    }

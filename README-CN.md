@@ -19,12 +19,12 @@
 - [背景](#背景)
 - [快速开始](#快速开始)
 - [使用指南](#使用指南)
-- [License](#license)
+- [版权](#版权)
 
 
 
 
-## Background
+## 背景
 
 如果你是一个JavaWeb开发者, 那么你一定也会觉得Dao层的开发是个**非常非常无聊**的工作, 千篇一律的CRUD会浪费大量的时间.
 
@@ -41,6 +41,12 @@ JdbcTemplatePlus就是为了解决以上问题, 专为简化开发而生
 
 
 **当然, 目前框架才刚完成开发不久, 希望大家多多提 Issue, 当然更希望各位客官能给个STAR啦**
+
+**当然, 目前框架才刚完成开发不久, 希望大家多多提 Issue, 当然更希望各位客官能给个STAR啦**
+
+**当然, 目前框架才刚完成开发不久, 希望大家多多提 Issue, 当然更希望各位客官能给个STAR啦**
+
+嗯,重要的话要说三遍!!!
 
 
 
@@ -247,6 +253,13 @@ private Boolean deleted;
 
 在执行SQL之前, 执行 `ShardUtil.setShardSuffixOnce(suffixHere)` 语句,则会在下一条SQL中的表名中加入`suffixHere`的后缀哦
 
-## License
+#### 其他
+
+如果有什么额外功能觉得比较好或者比较常用, 可以通过issue提给我~我会考虑添加的
+
+
+**都看到这里了,在git clone之前,记得给个STAR哦,亲~**
+
+## 版权
 
 JdbcTemplatePlus is under the Apache 2.0 license. See the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0) file for details.

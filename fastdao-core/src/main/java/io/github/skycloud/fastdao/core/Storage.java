@@ -10,6 +10,7 @@ import io.github.skycloud.fastdao.core.ast.request.CountRequest;
 import io.github.skycloud.fastdao.core.ast.request.DeleteRequest;
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest;
 import io.github.skycloud.fastdao.core.ast.request.UpdateRequest;
+import io.github.skycloud.fastdao.core.util.Page;
 
 import java.util.Collection;
 import java.util.List;
@@ -20,90 +21,73 @@ import java.util.List;
 public interface Storage<DATA, PRIM_KEY> {
 
     /**
-     * select by primary key
-     *
-     * @param key
-     * @return if data not exist , return null;
-     */
-    DATA selectByPrimaryKey(PRIM_KEY key);
-
-    /**
-     * select by primary keys
-     *
-     * @param keys
-     * @return if data not exist, return emptyList
-     */
-    List<DATA> selectByPrimaryKeys(Collection<PRIM_KEY> keys);
-
-    /**
-     * select by primary keys
-     *
-     * @param keys
-     * @return if data not exist, return emptyList
-     */
-    List<DATA> selectByPrimaryKeys(PRIM_KEY... keys);
-
-    /**
-     * insert data to database, all fields will be updated, field = null will be updated as NULL
-     *
-     * @param t
-     * @return
+     * insert DATA to db, all field will be set include null
+     * if you want to update only when none of field is null you can use this method
      */
     int insert(DATA t);
 
     /**
-     * insert data to database, only fields non null in DATA will be updated
-     * @param t
-     * @return
+     * insert DATA to db, only non-null field will be insert
+     * if you want null field to be default value in db ,you can use this method
      */
     int insertSelective(DATA t);
 
     /**
-     * update data to database, all fields will be updated, field = null will be updated as NULL
-     * @param t
-     * @return
-     */
-    int updateByPrimaryKey(DATA t);
-    /**
-     * update data to database, only fields not null will be updated
-     * @param t
-     * @return
-     */
-    int updateByPrimaryKeySelective(DATA t);
-
-    /**
-     * delete data from database by primary key
-     * @param t
-     * @return
-     */
-    int deleteByPrimaryKey(PRIM_KEY t);
-
-    /**
-     * Dynamic query support Method
-     * @param queryRequest
-     * @return
-     */
-    List<DATA> select(QueryRequest queryRequest);
-
-    /**
-     * Dynamic count support Method
-     * @param countRequest
-     * @return
-     */
-    int count(CountRequest countRequest);
-
-    /**
-     * Dynamic update support Method
-     * @param updateRequest
-     * @return
+     * update by UpdateRequest
+     * if you want to update only a few field, or want to update by condition, you can use this method
      */
     int update(UpdateRequest updateRequest);
 
     /**
-     * Dynamic delete support Method
-     * @param deleteRequest
-     * @return
+     * update DATA by primaryKey, all field will be set include null
+     * make sure primaryKey in DATA is set
+     */
+    int updateByPrimaryKey(DATA t);
+
+    /**
+     * update DATA by primaryKey, only non-null field will be updated
+     */
+    int updateByPrimaryKeySelective(DATA t);
+
+    /**
+     * delete by condition
      */
     int delete(DeleteRequest deleteRequest);
+
+    /**
+     * delete by primaryKey
+     */
+    int deleteByPrimaryKey(PRIM_KEY t);
+
+    /**
+     * count by condition
+     */
+    int count(CountRequest countRequest);
+
+    /**
+     * select by primaryKey
+     */
+    DATA selectByPrimaryKey(PRIM_KEY key);
+
+    /**
+     * select by QueryRequest
+     */
+    List<DATA> select(QueryRequest queryRequest);
+
+    /**
+     * multiple selection
+     */
+    List<DATA> selectByPrimaryKeys(Collection<PRIM_KEY> keys);
+
+    /**
+     * multiple selection
+     */
+    List<DATA> selectByPrimaryKeys(PRIM_KEY... keys);
+
+    /**
+     * select by a page, and count result will set to page
+     */
+    List<DATA> selectPage(QueryRequest request, Page page);
+
 
 }

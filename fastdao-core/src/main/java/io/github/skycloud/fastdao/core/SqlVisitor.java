@@ -28,15 +28,6 @@ public abstract class SqlVisitor implements Visitor {
         this.valueParser = valueParser;
     }
 
-    public ValueParser getValueParser() {
-        return valueParser;
-    }
-
-    public SqlVisitor setValueParser(ValueParser valueParser) {
-        this.valueParser = valueParser;
-        return this;
-    }
-
     public String getTableName() {
         return tableName;
     }

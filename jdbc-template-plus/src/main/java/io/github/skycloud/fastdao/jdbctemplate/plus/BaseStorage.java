@@ -9,6 +9,7 @@ package io.github.skycloud.fastdao.jdbctemplate.plus;
 import io.github.skycloud.fastdao.core.Storage;
 import io.github.skycloud.fastdao.core.ast.conditions.EqualCondition.DefaultEqualCondition;
 import io.github.skycloud.fastdao.core.ast.request.CountRequest;
+import io.github.skycloud.fastdao.core.ast.request.CountRequest.DefaultCountRequest;
 import io.github.skycloud.fastdao.core.ast.request.DeleteRequest;
 import io.github.skycloud.fastdao.core.ast.request.DeleteRequest.DefaultDeleteRequest;
 import io.github.skycloud.fastdao.core.ast.request.InsertRequest.DefaultInsertRequest;
@@ -20,6 +21,7 @@ import io.github.skycloud.fastdao.core.mapping.ColumnMapping;
 import io.github.skycloud.fastdao.core.mapping.RowMapping;
 import io.github.skycloud.fastdao.core.reflection.MetaClass;
 import io.github.skycloud.fastdao.core.reflection.MetaField;
+import io.github.skycloud.fastdao.core.util.Page;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 
@@ -58,7 +60,7 @@ public abstract class BaseStorage<DATA, PRIM_KEY> implements Storage<DATA, PRIM_
 
     @Override
     public List<DATA> selectByPrimaryKeys(Collection<PRIM_KEY> keys) {
-        return selectByPrimaryKeys((PRIM_KEY[])keys.toArray());
+        return selectByPrimaryKeys((PRIM_KEY[]) keys.toArray());
     }
 
     @Override
@@ -68,6 +70,16 @@ public abstract class BaseStorage<DATA, PRIM_KEY> implements Storage<DATA, PRIM_
         request.setCondition(new DefaultEqualCondition(rowMapping.getPrimaryKeyColumn().getColumnName(), keys));
         List<DATA> result = JdbcTemplateSqlHelper.select(getJdbcTemplate(), request, dataClass);
         return result;
+    }
+
+    @Override
+    public List<DATA> selectPage(QueryRequest request, Page page) {
+        DefaultQueryRequest queryRequest = (DefaultQueryRequest) request;
+        DefaultCountRequest countRequest = new DefaultCountRequest();
+        countRequest.setCondition(queryRequest.getCondition());
+        int count = JdbcTemplateSqlHelper.count(getJdbcTemplate(), countRequest, dataClass);
+        page.setTotal(count);
+        return JdbcTemplateSqlHelper.select(getJdbcTemplate(), queryRequest, dataClass);
     }
 
     @Override
@@ -97,7 +109,7 @@ public abstract class BaseStorage<DATA, PRIM_KEY> implements Storage<DATA, PRIM_
         if (result[1] != null) {
             metaClass.invokeSetter(t, rowMapping.getPrimaryKeyColumn().getFieldName(), result[1]);
         }
-        return (int)result[0];
+        return (int) result[0];
     }
 
     @Override

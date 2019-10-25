@@ -193,8 +193,8 @@ here is a example for a query demand. I want to find User data created within a 
 ```java
 QueryRequest request=Request.queryRequest()
                 .beginAndCondition()
-                .andIgnoreIllegal(NAME.like(name).matchLeft().matchRight())
-                .andIgnoreIllegal(CREATED.gt(dateBegin).lt(dateEnd))
+                .andOptional(NAME.like(name).matchLeft().matchRight())
+                .andOptional(CREATED.gt(dateBegin).lt(dateEnd))
                 .and(DELETED.equal(false))
                 .endCondition()
                 .addSort(ID, OrderEnum.ASC)

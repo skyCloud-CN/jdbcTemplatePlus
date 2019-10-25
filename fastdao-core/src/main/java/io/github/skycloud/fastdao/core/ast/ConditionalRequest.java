@@ -49,7 +49,7 @@ public interface ConditionalRequest<T extends ConditionalRequest<T>> extends Req
         BindAndCondition<P> and(Condition condition);
 
         @Override
-        BindAndCondition<P> andIgnoreIllegal(Condition condition);
+        BindAndCondition<P> andOptional(Condition condition);
 
         @Override
         BindAndCondition<P> allowEmpty();
@@ -69,7 +69,7 @@ public interface ConditionalRequest<T extends ConditionalRequest<T>> extends Req
         BindOrCondition<P> or(Condition condition);
 
         @Override
-        BindOrCondition<P> orIgnoreIllegal(Condition condition);
+        BindOrCondition<P> orOptional(Condition condition);
 
         @Override
         BindOrCondition<P> allowEmpty();

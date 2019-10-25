@@ -24,7 +24,7 @@ public interface OrCondition<T extends OrCondition> extends Condition {
 
     T or(Condition condition);
 
-    T orIgnoreIllegal(Condition condition);
+    T orOptional(Condition condition);
 
     T allowEmpty();
 
@@ -45,7 +45,7 @@ public interface OrCondition<T extends OrCondition> extends Condition {
         }
 
         @Override
-        public T orIgnoreIllegal(Condition condition) {
+        public T orOptional(Condition condition) {
             if (condition.isLegal()) {
                 subConditions.add(condition);
             }

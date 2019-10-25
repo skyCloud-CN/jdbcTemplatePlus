@@ -207,9 +207,9 @@ public class User {
 public void selectUser(List<Long> ids, String name, Date dateBegin, Date dateEnd) {
         QueryRequest request = Request.queryRequest()
                 .beginAndCondition()
-                .andIgnoreIllegal(ID.equal(ids))
-                .andIgnoreIllegal(NAME.like(name).matchLeft().matchRight())
-                .andIgnoreIllegal(CREATED.gt(dateBegin).lt(dateEnd))
+                .andOptional(ID.equal(ids))
+                .andOptional(NAME.like(name).matchLeft().matchRight())
+                .andOptional(CREATED.gt(dateBegin).lt(dateEnd))
                 .and(DELETED.equal(false))
                 .endCondition()
                 .addSort(ID, OrderEnum.ASC)

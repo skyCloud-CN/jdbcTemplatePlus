@@ -36,7 +36,7 @@ public interface AndCondition<T extends AndCondition> extends Condition {
      * @param condition
      * @return
      */
-    T andIgnoreIllegal(Condition condition);
+    T andOptional(Condition condition);
 
     T allowEmpty();
 
@@ -57,7 +57,7 @@ public interface AndCondition<T extends AndCondition> extends Condition {
         }
 
         @Override
-        public T andIgnoreIllegal(Condition condition) {
+        public T andOptional(Condition condition) {
             if (condition.isLegal()) {
                 subConditions.add(condition);
             }

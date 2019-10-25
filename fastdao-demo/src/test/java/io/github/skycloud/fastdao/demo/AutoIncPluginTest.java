@@ -9,9 +9,7 @@ package io.github.skycloud.fastdao.demo;
 import com.google.common.collect.Lists;
 import io.github.skycloud.fastdao.core.ast.Condition;
 import io.github.skycloud.fastdao.core.ast.Request;
-import io.github.skycloud.fastdao.core.ast.enums.OrderEnum;
 import io.github.skycloud.fastdao.core.ast.request.CountRequest.DefaultCountRequest;
-import io.github.skycloud.fastdao.core.ast.request.QueryRequest;
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest.DefaultQueryRequest;
 import io.github.skycloud.fastdao.core.ast.request.UpdateRequest.DefaultUpdateRequest;
 import io.github.skycloud.fastdao.core.reflection.MetaClass;
@@ -248,7 +246,7 @@ public class AutoIncPluginTest {
     @Test
     public void test_select_ignore_illegal_condition() {
         DefaultQueryRequest request = new DefaultQueryRequest();
-        request.setCondition(Condition.and().andIgnoreIllegal(ID.equal(Lists.newArrayList())).allowEmpty());
+        request.setCondition(Condition.and().andOptional(ID.equal(Lists.newArrayList())).allowEmpty());
         List<AutoIncPluginTestModel> models = dao.select(request);
         Assert.assertEquals(3, models.size());
     }
@@ -257,12 +255,12 @@ public class AutoIncPluginTest {
     public void test_select_complex_condition() {
         DefaultQueryRequest request = new DefaultQueryRequest();
         Condition condition = Condition.and()
-                .andIgnoreIllegal(ID.equal(Lists.newArrayList()))
-                .andIgnoreIllegal(Condition.or())
-                .andIgnoreIllegal(Condition.and().and(ID.equal(1, 2, 3, 4, 5, 6)))
-                .andIgnoreIllegal(Condition.or()
+                .andOptional(ID.equal(Lists.newArrayList()))
+                .andOptional(Condition.or())
+                .andOptional(Condition.and().and(ID.equal(1, 2, 3, 4, 5, 6)))
+                .andOptional(Condition.or()
                         .or(ID.gt(0))
-                        .orIgnoreIllegal(Condition.and()));
+                        .orOptional(Condition.and()));
         request.setCondition(condition);
         List<AutoIncPluginTestModel> models = dao.select(request);
         Assert.assertEquals(3, models.size());
@@ -306,7 +304,7 @@ public class AutoIncPluginTest {
     @Test
     public void test_count_ignore_illegal_condition() {
         DefaultCountRequest request = new DefaultCountRequest();
-        request.setCondition(Condition.and().andIgnoreIllegal(ID.equal(Lists.newArrayList())));
+        request.setCondition(Condition.and().andOptional(ID.equal(Lists.newArrayList())));
         int count = dao.count(request);
         Assert.assertEquals(0, count);
     }
@@ -362,7 +360,7 @@ public class AutoIncPluginTest {
     @Transactional
     public void test_update_ignore_illegal_condition() {
         DefaultUpdateRequest request = new DefaultUpdateRequest();
-        request.setCondition(Condition.and().andIgnoreIllegal(ID.equal(Lists.newArrayList())).allowEmpty());
+        request.setCondition(Condition.and().andOptional(ID.equal(Lists.newArrayList())).allowEmpty());
         request.addUpdateField(NAME, "updated");
         int update = dao.update(request);
         Assert.assertEquals(3, update);
@@ -375,12 +373,12 @@ public class AutoIncPluginTest {
     public void test_update_complex_condition() {
         DefaultUpdateRequest request = new DefaultUpdateRequest();
         Condition condition = Condition.and()
-                .andIgnoreIllegal(ID.equal(Lists.newArrayList()))
-                .andIgnoreIllegal(Condition.or())
-                .andIgnoreIllegal(Condition.and().and(ID.equal(1, 2, 3, 4, 5, 6)))
-                .andIgnoreIllegal(Condition.or()
+                .andOptional(ID.equal(Lists.newArrayList()))
+                .andOptional(Condition.or())
+                .andOptional(Condition.and().and(ID.equal(1, 2, 3, 4, 5, 6)))
+                .andOptional(Condition.or()
                         .or(ID.gt(0))
-                        .orIgnoreIllegal(Condition.and()));
+                        .orOptional(Condition.and()));
         request.setCondition(condition);
         request.addUpdateField(NAME, "updated");
         int count = dao.update(request);

@@ -232,7 +232,7 @@ public class NonAutoIncTest {
     @Test
     public void test_select_ignore_illegal_condition() {
         DefaultQueryRequest request = new DefaultQueryRequest();
-        request.setCondition(Condition.and().andIgnoreIllegal(ID.equal(Lists.newArrayList())).allowEmpty());
+        request.setCondition(Condition.and().andOptional(ID.equal(Lists.newArrayList())).allowEmpty());
         List<NonAutoIncModel> models = dao.select(request);
         Assert.assertEquals(6, models.size());
     }
@@ -241,12 +241,12 @@ public class NonAutoIncTest {
     public void test_select_complex_condition() {
         DefaultQueryRequest request = new DefaultQueryRequest();
         Condition condition = Condition.and()
-                .andIgnoreIllegal(ID.equal(Lists.newArrayList()))
-                .andIgnoreIllegal(Condition.or())
-                .andIgnoreIllegal(Condition.and().and(ID.equal(1, 2, 3, 4, 5, 6)))
-                .andIgnoreIllegal(Condition.or()
+                .andOptional(ID.equal(Lists.newArrayList()))
+                .andOptional(Condition.or())
+                .andOptional(Condition.and().and(ID.equal(1, 2, 3, 4, 5, 6)))
+                .andOptional(Condition.or()
                         .or(ID.gt(0))
-                        .orIgnoreIllegal(Condition.and()));
+                        .orOptional(Condition.and()));
         request.setCondition(condition);
         List<NonAutoIncModel> models = dao.select(request);
         Assert.assertEquals(6, models.size());
@@ -290,7 +290,7 @@ public class NonAutoIncTest {
     @Test
     public void test_count_ignore_illegal_condition() {
         DefaultCountRequest request = new DefaultCountRequest();
-        request.setCondition(Condition.and().andIgnoreIllegal(ID.equal(Lists.newArrayList())));
+        request.setCondition(Condition.and().andOptional(ID.equal(Lists.newArrayList())));
         int count = dao.count(request);
         Assert.assertEquals(0, count);
     }
@@ -345,7 +345,7 @@ public class NonAutoIncTest {
     @Transactional
     public void test_update_ignore_illegal_condition() {
         DefaultUpdateRequest request = new DefaultUpdateRequest();
-        request.setCondition(Condition.and().andIgnoreIllegal(ID.equal(Lists.newArrayList())).allowEmpty());
+        request.setCondition(Condition.and().andOptional(ID.equal(Lists.newArrayList())).allowEmpty());
         request.addUpdateField(NAME, "updated");
         int update = dao.update(request);
         Assert.assertEquals(6, update);
@@ -358,12 +358,12 @@ public class NonAutoIncTest {
     public void test_update_complex_condition() {
         DefaultUpdateRequest request = new DefaultUpdateRequest();
         Condition condition = Condition.and()
-                .andIgnoreIllegal(ID.equal(Lists.newArrayList()))
-                .andIgnoreIllegal(Condition.or())
-                .andIgnoreIllegal(Condition.and().and(ID.equal(1, 2, 3, 4, 5, 6)))
-                .andIgnoreIllegal(Condition.or()
+                .andOptional(ID.equal(Lists.newArrayList()))
+                .andOptional(Condition.or())
+                .andOptional(Condition.and().and(ID.equal(1, 2, 3, 4, 5, 6)))
+                .andOptional(Condition.or()
                         .or(ID.gt(0))
-                        .orIgnoreIllegal(Condition.and()));
+                        .orOptional(Condition.and()));
         request.setCondition(condition);
         request.addUpdateField(NAME, "updated");
         int count = dao.update(request);

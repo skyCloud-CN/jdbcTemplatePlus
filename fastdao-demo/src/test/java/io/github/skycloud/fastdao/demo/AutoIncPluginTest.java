@@ -9,6 +9,7 @@ package io.github.skycloud.fastdao.demo;
 import com.google.common.collect.Lists;
 import io.github.skycloud.fastdao.core.ast.Condition;
 import io.github.skycloud.fastdao.core.ast.Request;
+import io.github.skycloud.fastdao.core.ast.enums.OrderEnum;
 import io.github.skycloud.fastdao.core.ast.request.CountRequest.DefaultCountRequest;
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest;
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest.DefaultQueryRequest;
@@ -79,8 +80,8 @@ public class AutoIncPluginTest {
         int count = dao.updateByPrimaryKey(model);
         Assert.assertEquals(1, count);
         AutoIncPluginTestModel fromDB = dao.selectByPrimaryKey(6L);
-        Assert.assertTrue(fromDB==null);
-        fromDB=dao.select(Request.queryRequest()
+        Assert.assertTrue(fromDB == null);
+        fromDB = dao.select(Request.queryRequest()
                 .beginAndCondition()
                 .and(ID.equal(6L))
                 .and(DELETED.equal(true))
@@ -109,7 +110,7 @@ public class AutoIncPluginTest {
         int count = dao.updateByPrimaryKeySelective(model);
         Assert.assertEquals(1, count);
         AutoIncPluginTestModel fromDB = dao.selectByPrimaryKey(5L);
-        assertEqual(model, dao.selectByPrimaryKey(5L), "text","updated","created");
+        assertEqual(model, dao.selectByPrimaryKey(5L), "text", "updated", "created");
         Assert.assertEquals("text 5", fromDB.getText());
         Assert.assertNotNull(fromDB.getUpdated());
         Assert.assertNotNull(fromDB.getCreated());
@@ -139,7 +140,7 @@ public class AutoIncPluginTest {
         AutoIncPluginTestModel model = getDefaultModel();
         dao.insert(model);
         AutoIncPluginTestModel fromDb = dao.selectByPrimaryKey(model.getId());
-        assertEqual(model, fromDb,"created","updated");
+        assertEqual(model, fromDb, "created", "updated");
         Assert.assertNotNull(fromDb.getCreated());
         Assert.assertNotNull(fromDb.getUpdated());
     }
@@ -167,7 +168,7 @@ public class AutoIncPluginTest {
         AutoIncPluginTestModel model = getDefaultModel();
         model.setName("insert_selective");
         dao.insertSelective(model);
-        assertEqual(model, dao.selectByPrimaryKey(model.getId()),"created","updated");
+        assertEqual(model, dao.selectByPrimaryKey(model.getId()), "created", "updated");
         Assert.assertNotNull(dao.selectByPrimaryKey(model.getId()).getCreated());
         Assert.assertNotNull(dao.selectByPrimaryKey(model.getId()).getUpdated());
     }
@@ -179,7 +180,7 @@ public class AutoIncPluginTest {
         model.setText(null);
         model.setName(null);
         dao.insertSelective(model);
-        assertEqual(model, dao.selectByPrimaryKey(model.getId()), "name","created","updated");
+        assertEqual(model, dao.selectByPrimaryKey(model.getId()), "name", "created", "updated");
         Assert.assertEquals("", dao.selectByPrimaryKey(model.getId()).getName());
         Assert.assertNotNull(dao.selectByPrimaryKey(model.getId()).getCreated());
         Assert.assertNotNull(dao.selectByPrimaryKey(model.getId()).getUpdated());
@@ -327,7 +328,7 @@ public class AutoIncPluginTest {
         request.setCondition(ID.equal(4, 5, 6));
         int update2 = dao.update(request);
         Assert.assertEquals(3, update2);
-        Assert.assertEquals(1,request.getUpdateFields().size());
+        Assert.assertEquals(1, request.getUpdateFields().size());
     }
 
     @Test
@@ -398,15 +399,42 @@ public class AutoIncPluginTest {
         return model;
     }
 
+    public void selectUser(List<Long> ids, String name, Date dateBegin, Date dateEnd) {
+        QueryRequest request = Request.queryRequest()
+                .beginAndCondition()
+                .andIgnoreIllegal(ID.equal(ids))
+                .andIgnoreIllegal(NAME.like(name).matchLeft().matchRight())
+                .andIgnoreIllegal(CREATED.gt(dateBegin).lt(dateEnd))
+                .and(DELETED.equal(false))
+                .endCondition()
+                .addSort(ID, OrderEnum.ASC)
+                .limit(20)
+                .offset(0);
+        dao.select(request);
+    }
 
     private <T> void assertEqual(T model, T model2, String... exclude) {
         MetaClass metaClass = MetaClass.of(model.getClass());
         for (MetaField field : metaClass.metaFields()) {
             if (Arrays.asList(exclude).contains(field.getFieldName())) {
                 continue;
+
             }
             Assert.assertEquals(field.invokeGetter(model), field.invokeGetter(model2));
         }
     }
 
 }
+    public void selectUser(List<Long> ids, String name, Date dateBegin, Date dateEnd) {
+        QueryRequest request = Request.queryRequest()
+                .beginAndCondition()
+                .andIgnoreIllegal(ID.equal(ids))
+                .andIgnoreIllegal(NAME.like(name).matchLeft().matchRight())
+                .andIgnoreIllegal(CREATED.gt(dateBegin).lt(dateEnd))
+                .and(DELETED.equal(false))
+                .endCondition()
+                .addSort(ID, OrderEnum.ASC)
+                .limit(20)
+                .offset(0);
+        dao.select(request);
+    }

@@ -7,20 +7,20 @@
 package io.github.skycloud.fastdao.core.ast;
 
 import io.github.skycloud.fastdao.core.SqlVisitor;
-import io.github.skycloud.fastdao.core.ast.conditions.AndCondition.DefaultAndCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.EqualCondition.DefaultEqualCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.IsNullCondition.DefaultIsNullCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.LikeCondition.DefaultLikeCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.OrCondition.DefaultOrCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.RangeCondition.DefaultRangeCondition;
+import io.github.skycloud.fastdao.core.ast.conditions.AndCondition.AndConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.EqualCondition.EqualConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.IsNullCondition.IsNullConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.LikeCondition.LikeConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.OrCondition.OrConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.RangeCondition.RangeConditionAst;
 import io.github.skycloud.fastdao.core.ast.constants.SQLConstant;
 import io.github.skycloud.fastdao.core.ast.model.Sort;
 import io.github.skycloud.fastdao.core.ast.model.SortLimitClause;
-import io.github.skycloud.fastdao.core.ast.request.CountRequest.DefaultCountRequest;
-import io.github.skycloud.fastdao.core.ast.request.DeleteRequest.DefaultDeleteRequest;
-import io.github.skycloud.fastdao.core.ast.request.InsertRequest.DefaultInsertRequest;
-import io.github.skycloud.fastdao.core.ast.request.QueryRequest.DefaultQueryRequest;
-import io.github.skycloud.fastdao.core.ast.request.UpdateRequest.DefaultUpdateRequest;
+import io.github.skycloud.fastdao.core.ast.request.CountRequest.CountRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.DeleteRequest.DeleteRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.InsertRequest.InsertRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.QueryRequest.QueryRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.UpdateRequest.UpdateRequestAst;
 import io.github.skycloud.fastdao.core.exceptions.IllegalConditionException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -41,7 +41,7 @@ public class MysqlVisitor extends SqlVisitor {
     }
 
     @Override
-    public void visit(DefaultQueryRequest request) {
+    public void visit(QueryRequestAst request) {
         sb.append(SQLConstant.SELECT);
         if (request.isDistinct()) {
             sb.append(SQLConstant.DISTINCT);
@@ -58,7 +58,7 @@ public class MysqlVisitor extends SqlVisitor {
     }
 
     @Override
-    public void visit(DefaultCountRequest request) {
+    public void visit(CountRequestAst request) {
         sb.append(SQLConstant.SELECT);
         sb.append(SQLConstant.COUNT);
         sb.append(SQLConstant.LB);
@@ -130,7 +130,7 @@ public class MysqlVisitor extends SqlVisitor {
 
 
     @Override
-    public void visit(DefaultUpdateRequest request) {
+    public void visit(UpdateRequestAst request) {
         sb.append(SQLConstant.UPDATE);
         visitField(tableName);
         visitFieldSetClause(request.getUpdateFields());
@@ -139,7 +139,7 @@ public class MysqlVisitor extends SqlVisitor {
     }
 
     @Override
-    public void visit(DefaultDeleteRequest request) {
+    public void visit(DeleteRequestAst request) {
         sb.append(SQLConstant.DELETE);
         sb.append(SQLConstant.FROM);
         visitField(tableName);
@@ -148,7 +148,7 @@ public class MysqlVisitor extends SqlVisitor {
     }
 
     @Override
-    public void visit(DefaultInsertRequest request) {
+    public void visit(InsertRequestAst request) {
         sb.append(SQLConstant.INSERT_INTO);
         visitField(tableName);
         sb.append(SQLConstant.SET);
@@ -161,14 +161,14 @@ public class MysqlVisitor extends SqlVisitor {
 
 
     @Override
-    public void visit(DefaultAndCondition condition) {
+    public void visit(AndConditionAst condition) {
         List<Condition> subConditions = condition.getSubConditions();
         visitConditions(subConditions, cond -> ((SqlAst) cond).accept(this), SQLConstant.AND);
     }
 
 
     @Override
-    public void visit(DefaultOrCondition condition) {
+    public void visit(OrConditionAst condition) {
         sb.append(SQLConstant.LB);
         visitConditions(condition.getSubConditions(), cond -> ((SqlAst) cond).accept(this), SQLConstant.OR);
         sb.append(SQLConstant.RB);
@@ -176,7 +176,7 @@ public class MysqlVisitor extends SqlVisitor {
 
 
     @Override
-    public void visit(DefaultEqualCondition condition) {
+    public void visit(EqualConditionAst condition) {
         visitField(condition.getField());
         if (condition.getValue() instanceof Collection && ((Collection) condition.getValue()).size() > 1) {
             sb.append(SQLConstant.IN);
@@ -191,7 +191,7 @@ public class MysqlVisitor extends SqlVisitor {
 
 
     @Override
-    public void visit(DefaultRangeCondition condition) {
+    public void visit(RangeConditionAst condition) {
         if (condition.getGt() != null) {
             visitField(condition.getField());
             sb.append(condition.isEgt() ? SQLConstant.GTE : SQLConstant.GT);
@@ -209,7 +209,7 @@ public class MysqlVisitor extends SqlVisitor {
 
 
     @Override
-    public void visit(DefaultLikeCondition condition) {
+    public void visit(LikeConditionAst condition) {
         visitField(condition.getField());
         sb.append(SQLConstant.LIKE);
         String value =
@@ -218,7 +218,7 @@ public class MysqlVisitor extends SqlVisitor {
     }
 
     @Override
-    public void visit(DefaultIsNullCondition condition) {
+    public void visit(IsNullConditionAst condition) {
         visitField(condition.getField());
         sb.append(SQLConstant.IS_NULL);
     }

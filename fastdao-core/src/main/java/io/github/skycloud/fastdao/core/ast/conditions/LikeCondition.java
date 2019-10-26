@@ -27,7 +27,7 @@ public interface LikeCondition extends Condition {
      * @author yuntian
      */
     @Getter
-    class DefaultLikeCondition implements LikeCondition, SqlAst {
+    class LikeConditionAst implements LikeCondition, SqlAst {
 
         private String field;
 
@@ -37,7 +37,7 @@ public interface LikeCondition extends Condition {
 
         private boolean matchRight = false;
 
-        public DefaultLikeCondition(String field, Object value) {
+        public LikeConditionAst(String field, Object value) {
             this.field = field;
             this.value = value;
         }
@@ -53,13 +53,13 @@ public interface LikeCondition extends Condition {
         }
 
         @Override
-        public DefaultLikeCondition matchLeft() {
+        public LikeConditionAst matchLeft() {
             matchLeft = true;
             return this;
         }
 
         @Override
-        public DefaultLikeCondition matchRight() {
+        public LikeConditionAst matchRight() {
             matchRight = true;
             return this;
         }
@@ -71,7 +71,7 @@ public interface LikeCondition extends Condition {
 
         @Override
         public SqlAst copy() {
-            DefaultLikeCondition condition=new DefaultLikeCondition(field, value);
+            LikeConditionAst condition=new LikeConditionAst(field, value);
             condition.matchLeft=this.matchLeft;
             condition.matchRight=this.matchRight;
             return condition;

@@ -5,18 +5,18 @@ package io.github.skycloud.fastdao.core.ast; /**
  * FENBI.COM PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
 
-import io.github.skycloud.fastdao.core.ast.conditions.AndCondition.DefaultAndCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.EqualCondition.DefaultEqualCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.LikeCondition.DefaultLikeCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.OrCondition.DefaultOrCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.RangeCondition.DefaultRangeCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.IsNullCondition.DefaultIsNullCondition;
+import io.github.skycloud.fastdao.core.ast.conditions.AndCondition.AndConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.EqualCondition.EqualConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.LikeCondition.LikeConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.OrCondition.OrConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.RangeCondition.RangeConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.IsNullCondition.IsNullConditionAst;
 import io.github.skycloud.fastdao.core.ast.model.SortLimitClause;
-import io.github.skycloud.fastdao.core.ast.request.CountRequest.DefaultCountRequest;
-import io.github.skycloud.fastdao.core.ast.request.DeleteRequest.DefaultDeleteRequest;
-import io.github.skycloud.fastdao.core.ast.request.QueryRequest.DefaultQueryRequest;
-import io.github.skycloud.fastdao.core.ast.request.UpdateRequest.DefaultUpdateRequest;
-import io.github.skycloud.fastdao.core.ast.request.InsertRequest.DefaultInsertRequest;
+import io.github.skycloud.fastdao.core.ast.request.CountRequest.CountRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.DeleteRequest.DeleteRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.QueryRequest.QueryRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.UpdateRequest.UpdateRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.InsertRequest.InsertRequestAst;
 import io.github.skycloud.fastdao.core.plugins.Pluggable;
 
 
@@ -25,28 +25,28 @@ import io.github.skycloud.fastdao.core.plugins.Pluggable;
  */
 public interface Visitor extends Pluggable {
 
-    void visit(DefaultQueryRequest request);
+    void visit(QueryRequestAst request);
 
-    void visit(DefaultUpdateRequest request);
+    void visit(UpdateRequestAst request);
 
-    void visit(DefaultDeleteRequest request);
+    void visit(DeleteRequestAst request);
 
-    void visit(DefaultInsertRequest request);
+    void visit(InsertRequestAst request);
 
-    void visit(DefaultCountRequest request);
+    void visit(CountRequestAst request);
 
     void visit(SortLimitClause sortLimitClause);
 
-    void visit(DefaultAndCondition condition);
+    void visit(AndConditionAst condition);
 
-    void visit(DefaultOrCondition condition);
+    void visit(OrConditionAst condition);
 
-    void visit(DefaultEqualCondition condition);
+    void visit(EqualConditionAst condition);
 
-    void visit(DefaultRangeCondition condition);
+    void visit(RangeConditionAst condition);
 
-    void visit(DefaultLikeCondition condition);
+    void visit(LikeConditionAst condition);
 
-    void visit(DefaultIsNullCondition condition);
+    void visit(IsNullConditionAst condition);
 
 }

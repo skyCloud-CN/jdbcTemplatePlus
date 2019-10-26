@@ -7,13 +7,13 @@
 package io.github.skycloud.fastdao.core.table;
 
 import io.github.skycloud.fastdao.core.ast.conditions.EqualCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.EqualCondition.DefaultEqualCondition;
+import io.github.skycloud.fastdao.core.ast.conditions.EqualCondition.EqualConditionAst;
 import io.github.skycloud.fastdao.core.ast.conditions.IsNullCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.IsNullCondition.DefaultIsNullCondition;
+import io.github.skycloud.fastdao.core.ast.conditions.IsNullCondition.IsNullConditionAst;
 import io.github.skycloud.fastdao.core.ast.conditions.LikeCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.LikeCondition.DefaultLikeCondition;
+import io.github.skycloud.fastdao.core.ast.conditions.LikeCondition.LikeConditionAst;
 import io.github.skycloud.fastdao.core.ast.conditions.RangeCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.RangeCondition.DefaultRangeCondition;
+import io.github.skycloud.fastdao.core.ast.conditions.RangeCondition.RangeConditionAst;
 import lombok.Getter;
 
 import java.util.Collection;
@@ -31,35 +31,35 @@ public class Column {
     private String name;
 
     public EqualCondition equal(Object... value) {
-        return new DefaultEqualCondition(this.name, value);
+        return new EqualConditionAst(this.name, value);
     }
 
     public EqualCondition equal(Collection value) {
-        return new DefaultEqualCondition(this.name, value);
+        return new EqualConditionAst(this.name, value);
     }
 
     public RangeCondition gt(Object value) {
-        return new DefaultRangeCondition(name).gt(value);
+        return new RangeConditionAst(name).gt(value);
     }
 
     public RangeCondition lt(Object value) {
-        return new DefaultRangeCondition(name).lt(value);
+        return new RangeConditionAst(name).lt(value);
     }
 
     public RangeCondition gte(Object value) {
-        return new DefaultRangeCondition(name).gte(value);
+        return new RangeConditionAst(name).gte(value);
     }
 
     public RangeCondition lte(Object value) {
-        return new DefaultRangeCondition(name).lte(value);
+        return new RangeConditionAst(name).lte(value);
     }
 
     public LikeCondition like(Object value) {
-        return new DefaultLikeCondition(name, value);
+        return new LikeConditionAst(name, value);
     }
 
     public IsNullCondition isNull() {
-        return new DefaultIsNullCondition(name);
+        return new IsNullConditionAst(name);
     }
 
     @Override

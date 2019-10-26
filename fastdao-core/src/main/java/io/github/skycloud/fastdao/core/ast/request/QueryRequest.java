@@ -46,7 +46,7 @@ public interface QueryRequest extends Sortable<QueryRequest>, ConditionalRequest
      * @author yuntian
      */
     @Getter
-    class DefaultQueryRequest implements QueryRequest, SqlAst, Sortable<QueryRequest> {
+    class QueryRequestAst implements QueryRequest, SqlAst, Sortable<QueryRequest> {
 
         private Condition condition;
 
@@ -86,7 +86,7 @@ public interface QueryRequest extends Sortable<QueryRequest>, ConditionalRequest
 
         @Override
         public SqlAst copy() {
-            DefaultQueryRequest request = new DefaultQueryRequest();
+            QueryRequestAst request = new QueryRequestAst();
             request.selectFields = Lists.newArrayList(selectFields);
             if (condition != null) {
                 request.condition = (Condition) ((SqlAst) condition).copy();
@@ -101,7 +101,7 @@ public interface QueryRequest extends Sortable<QueryRequest>, ConditionalRequest
         }
 
         @Override
-        public DefaultQueryRequest distinct() {
+        public QueryRequestAst distinct() {
             distinct = true;
             return this;
         }
@@ -121,6 +121,12 @@ public interface QueryRequest extends Sortable<QueryRequest>, ConditionalRequest
         @Override
         public QueryRequest addSort(Column column, OrderEnum order) {
             sortLimitClause.addSort(column.getName(), order);
+            return this;
+        }
+
+        @Override
+        public QueryRequest addSort(String field, OrderEnum order) {
+            sortLimitClause.addSort(field,order);
             return this;
         }
 

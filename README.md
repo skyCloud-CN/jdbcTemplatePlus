@@ -10,6 +10,7 @@ Spring based Persistence Framewok for Java Web developers, By using this, you Ca
 - **Never write Sql**
 - **Develop Dao in 1 minute**
 - **Write Dynamic Sql just like Stream Api**
+- **ReflectASM inside, 3 times faster then mybatis**
 - **Sharding,  LogicDelete and Other Functions only By One Annotation**
 
 

@@ -7,21 +7,15 @@
 package io.github.skycloud.fastdao.core.plugins.autofill;
 
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import io.github.skycloud.fastdao.core.ast.Request;
-import io.github.skycloud.fastdao.core.ast.request.InsertRequest.DefaultInsertRequest;
 import io.github.skycloud.fastdao.core.mapping.ColumnMapping;
 import io.github.skycloud.fastdao.core.mapping.RowMapping;
-import io.github.skycloud.fastdao.core.plugins.Pluggable;
 import io.github.skycloud.fastdao.core.plugins.PluggableHandler;
 import io.github.skycloud.fastdao.core.reflection.MetaClass;
 import io.github.skycloud.fastdao.core.reflection.MetaField;
 import io.github.skycloud.fastdao.core.util.SingletonCache;
 
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author yuntian

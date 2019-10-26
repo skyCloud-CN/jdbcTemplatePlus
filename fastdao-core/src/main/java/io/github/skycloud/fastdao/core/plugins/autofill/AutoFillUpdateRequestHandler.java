@@ -6,16 +6,9 @@
  */
 package io.github.skycloud.fastdao.core.plugins.autofill;
 
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import io.github.skycloud.fastdao.core.ast.request.UpdateRequest;
-import io.github.skycloud.fastdao.core.ast.request.UpdateRequest.DefaultUpdateRequest;
-import io.github.skycloud.fastdao.core.mapping.ColumnMapping;
-import io.github.skycloud.fastdao.core.mapping.RowMapping;
-import io.github.skycloud.fastdao.core.plugins.PluggableHandler;
-import io.github.skycloud.fastdao.core.reflection.MetaClass;
-import io.github.skycloud.fastdao.core.reflection.MetaField;
-import io.github.skycloud.fastdao.core.util.SingletonCache;
+import io.github.skycloud.fastdao.core.ast.request.UpdateRequest.UpdateRequestAst;
 
 import java.util.Map;
 import java.util.Set;
@@ -30,8 +23,8 @@ public class AutoFillUpdateRequestHandler extends AutoFillRequestHandler<UpdateR
     }
 
     @Override
-    public DefaultUpdateRequest handle(UpdateRequest pluggable, Class clazz) {
-        DefaultUpdateRequest request=(DefaultUpdateRequest)pluggable;
+    public UpdateRequestAst handle(UpdateRequest pluggable, Class clazz) {
+        UpdateRequestAst request=(UpdateRequestAst)pluggable;
         Map<String, AutoFillHandler> fieldAutoFillHandlerMap = autoFillHandlerMap.get(clazz);
         Set<String> prepareUpdate = request.getUpdateFields().keySet();
         Set<String> needUpdateFields = Sets.newHashSet(fieldAutoFillHandlerMap.keySet());

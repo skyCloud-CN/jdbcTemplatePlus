@@ -27,27 +27,33 @@ public interface DeleteRequest extends Sortable<DeleteRequest>, ConditionalReque
      * @author yuntian
      */
     @Getter
-    class DefaultDeleteRequest implements DeleteRequest, SqlAst {
+    class DeleteRequestAst implements DeleteRequest, SqlAst {
 
         private Condition condition;
 
         private SortLimitClause sortLimitClause = new SortLimitClause();
 
         @Override
-        public DefaultDeleteRequest limit(int limit) {
+        public DeleteRequestAst limit(int limit) {
             sortLimitClause.setLimit(limit);
             return this;
         }
 
         @Override
-        public DefaultDeleteRequest offset(int offset) {
+        public DeleteRequestAst offset(int offset) {
             sortLimitClause.setOffset(offset);
             return this;
         }
 
         @Override
-        public DefaultDeleteRequest addSort(Column column, OrderEnum order) {
+        public DeleteRequestAst addSort(Column column, OrderEnum order) {
             sortLimitClause.addSort(column.getName(), order);
+            return this;
+        }
+
+        @Override
+        public DeleteRequest addSort(String field, OrderEnum order) {
+            sortLimitClause.addSort(field,order);
             return this;
         }
 
@@ -58,14 +64,14 @@ public interface DeleteRequest extends Sortable<DeleteRequest>, ConditionalReque
 
         @Override
         public SqlAst copy() {
-            DefaultDeleteRequest request = new DefaultDeleteRequest();
+            DeleteRequestAst request = new DeleteRequestAst();
             request.condition = (Condition) ((SqlAst) condition).copy();
             request.sortLimitClause = (SortLimitClause) sortLimitClause.copy();
             return request;
         }
 
         @Override
-        public DefaultDeleteRequest setCondition(Condition condition) {
+        public DeleteRequestAst setCondition(Condition condition) {
             this.condition = condition;
             return this;
         }

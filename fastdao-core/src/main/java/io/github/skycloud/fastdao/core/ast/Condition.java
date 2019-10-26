@@ -7,9 +7,19 @@
 package io.github.skycloud.fastdao.core.ast;
 
 import io.github.skycloud.fastdao.core.ast.conditions.AndCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.AndCondition.DefaultAndCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.OrCondition.DefaultOrCondition;
+import io.github.skycloud.fastdao.core.ast.conditions.AndCondition.AndConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.EqualCondition;
+import io.github.skycloud.fastdao.core.ast.conditions.EqualCondition.EqualConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.IsNullCondition;
+import io.github.skycloud.fastdao.core.ast.conditions.IsNullCondition.IsNullConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.LikeCondition;
+import io.github.skycloud.fastdao.core.ast.conditions.LikeCondition.LikeConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.OrCondition.OrConditionAst;
 import io.github.skycloud.fastdao.core.ast.conditions.OrCondition;
+import io.github.skycloud.fastdao.core.ast.conditions.RangeCondition;
+import io.github.skycloud.fastdao.core.ast.conditions.RangeCondition.RangeConditionAst;
+
+import java.util.Collection;
 
 /**
  * @author yuntian
@@ -21,12 +31,31 @@ public interface Condition{
     boolean isEmpty();
 
     static AndCondition and() {
-        return new DefaultAndCondition();
+        return new AndConditionAst();
     }
 
     static OrCondition or() {
-        return new DefaultOrCondition();
+        return new OrConditionAst();
     }
 
+    static EqualCondition equal(String column,Object... value) {
+        return new EqualConditionAst(column, value);
+    }
+
+    static EqualCondition equal(String column,Collection value) {
+        return new EqualConditionAst(column, value);
+    }
+
+    static RangeCondition range(String column) {
+        return new RangeConditionAst(column);
+    }
+
+    static LikeCondition like(String column,Object value) {
+        return new LikeConditionAst(column, value);
+    }
+
+    static IsNullCondition isNull(String column) {
+        return new IsNullConditionAst(column);
+    }
 
 }

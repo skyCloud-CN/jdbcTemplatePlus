@@ -21,4 +21,5 @@ public interface Sortable<T extends Sortable<T>> {
 
     T addSort(Column column, OrderEnum order);
 
+    T addSort(String field, OrderEnum order);
 }

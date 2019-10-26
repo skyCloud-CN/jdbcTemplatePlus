@@ -22,13 +22,13 @@ import java.util.Collection;
 public interface EqualCondition extends Condition {
 
     @Getter
-    class DefaultEqualCondition implements EqualCondition, SqlAst {
+    class EqualConditionAst implements EqualCondition, SqlAst {
 
         private String field;
 
         private Object value;
 
-        public DefaultEqualCondition(String field, Object... value) {
+        public EqualConditionAst(String field, Object... value) {
             this.field = field;
             if (value.length == 1) {
                 this.value = value[0];
@@ -37,7 +37,7 @@ public interface EqualCondition extends Condition {
             }
         }
 
-        public DefaultEqualCondition(String field, Collection value) {
+        public EqualConditionAst(String field, Collection value) {
             this.field = field;
             this.value = value;
         }
@@ -66,7 +66,7 @@ public interface EqualCondition extends Condition {
 
         @Override
         public SqlAst copy() {
-            return new DefaultEqualCondition(field, value);
+            return new EqualConditionAst(field, value);
         }
 
 

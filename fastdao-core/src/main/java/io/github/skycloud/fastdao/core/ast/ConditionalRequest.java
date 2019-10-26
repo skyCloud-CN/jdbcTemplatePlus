@@ -8,9 +8,9 @@ package io.github.skycloud.fastdao.core.ast;
 
 
 import io.github.skycloud.fastdao.core.ast.conditions.AndCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.AndCondition.DefaultAndCondition;
+import io.github.skycloud.fastdao.core.ast.conditions.AndCondition.AndConditionAst;
 import io.github.skycloud.fastdao.core.ast.conditions.OrCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.OrCondition.DefaultOrCondition;
+import io.github.skycloud.fastdao.core.ast.conditions.OrCondition.OrConditionAst;
 
 /**
  * @author yuntian
@@ -23,7 +23,7 @@ public interface ConditionalRequest<T extends ConditionalRequest<T>> extends Req
      * @return
      */
     default BindAndCondition<T> beginAndCondition() {
-        DefaultBindAndCondition<T> condition = new DefaultBindAndCondition(this);
+        BindAndConditionAst<T> condition = new BindAndConditionAst(this);
         setCondition(condition);
         return condition;
     }
@@ -34,7 +34,7 @@ public interface ConditionalRequest<T extends ConditionalRequest<T>> extends Req
      * @return
      */
     default BindOrCondition<T> beginOrCondition() {
-        DefaultBindOrCondition<T> condition = new DefaultBindOrCondition(this);
+        BindOrConditionAst<T> condition = new BindOrConditionAst(this);
         setCondition(condition);
         return condition;
     }
@@ -82,11 +82,11 @@ public interface ConditionalRequest<T extends ConditionalRequest<T>> extends Req
 
     }
 
-    class DefaultBindAndCondition<P extends ConditionalRequest<P>> extends DefaultAndCondition<BindAndCondition<P>> implements BindAndCondition<P> {
+    class BindAndConditionAst<P extends ConditionalRequest<P>> extends AndConditionAst<BindAndCondition<P>> implements BindAndCondition<P> {
 
         private P parent;
 
-        private DefaultBindAndCondition(P parent) {
+        private BindAndConditionAst(P parent) {
             this.parent = parent;
         }
 
@@ -96,11 +96,11 @@ public interface ConditionalRequest<T extends ConditionalRequest<T>> extends Req
         }
     }
 
-    class DefaultBindOrCondition<P extends ConditionalRequest<P>> extends DefaultOrCondition<BindOrCondition<P>> implements BindOrCondition<P> {
+    class BindOrConditionAst<P extends ConditionalRequest<P>> extends OrConditionAst<BindOrCondition<P>> implements BindOrCondition<P> {
 
         private P parent;
 
-        private DefaultBindOrCondition(P parent) {
+        private BindOrConditionAst(P parent) {
             this.parent = parent;
         }
 

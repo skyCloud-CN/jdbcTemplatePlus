@@ -7,15 +7,15 @@
 package io.github.skycloud.fastdao.core.ast;
 
 import io.github.skycloud.fastdao.core.ast.request.CountRequest;
-import io.github.skycloud.fastdao.core.ast.request.CountRequest.DefaultCountRequest;
+import io.github.skycloud.fastdao.core.ast.request.CountRequest.CountRequestAst;
 import io.github.skycloud.fastdao.core.ast.request.DeleteRequest;
-import io.github.skycloud.fastdao.core.ast.request.DeleteRequest.DefaultDeleteRequest;
+import io.github.skycloud.fastdao.core.ast.request.DeleteRequest.DeleteRequestAst;
 import io.github.skycloud.fastdao.core.ast.request.InsertRequest;
-import io.github.skycloud.fastdao.core.ast.request.InsertRequest.DefaultInsertRequest;
+import io.github.skycloud.fastdao.core.ast.request.InsertRequest.InsertRequestAst;
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest;
-import io.github.skycloud.fastdao.core.ast.request.QueryRequest.DefaultQueryRequest;
+import io.github.skycloud.fastdao.core.ast.request.QueryRequest.QueryRequestAst;
 import io.github.skycloud.fastdao.core.ast.request.UpdateRequest;
-import io.github.skycloud.fastdao.core.ast.request.UpdateRequest.DefaultUpdateRequest;
+import io.github.skycloud.fastdao.core.ast.request.UpdateRequest.UpdateRequestAst;
 import io.github.skycloud.fastdao.core.plugins.Pluggable;
 
 /**
@@ -24,22 +24,22 @@ import io.github.skycloud.fastdao.core.plugins.Pluggable;
 public interface Request extends Pluggable {
 
     static UpdateRequest updateRequest() {
-        return new DefaultUpdateRequest();
+        return new UpdateRequestAst();
     }
 
     static DeleteRequest deleteRequest() {
-        return new DefaultDeleteRequest();
+        return new DeleteRequestAst();
     }
 
     static InsertRequest insertRequest() {
-        return new DefaultInsertRequest();
+        return new InsertRequestAst();
     }
 
     static CountRequest countRequest() {
-        return new DefaultCountRequest();
+        return new CountRequestAst();
     }
 
     static QueryRequest queryRequest() {
-        return new DefaultQueryRequest();
+        return new QueryRequestAst();
     }
 }

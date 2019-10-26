@@ -19,11 +19,11 @@ import lombok.Getter;
 public interface IsNullCondition extends Condition {
 
     @Getter
-    class DefaultIsNullCondition implements IsNullCondition, SqlAst {
+    class IsNullConditionAst implements IsNullCondition, SqlAst {
 
         private String field;
 
-        public DefaultIsNullCondition(String field) {
+        public IsNullConditionAst(String field) {
             this.field = field;
         }
 
@@ -44,7 +44,7 @@ public interface IsNullCondition extends Condition {
 
         @Override
         public SqlAst copy() {
-            return new DefaultIsNullCondition(field);
+            return new IsNullConditionAst(field);
         }
     }
 }

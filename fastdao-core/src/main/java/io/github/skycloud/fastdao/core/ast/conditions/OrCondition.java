@@ -12,7 +12,6 @@ import io.github.skycloud.fastdao.core.ast.Condition;
 import io.github.skycloud.fastdao.core.ast.SqlAst;
 
 import io.github.skycloud.fastdao.core.ast.Visitor;
-import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,7 @@ public interface OrCondition<T extends OrCondition> extends Condition {
      * @author yuntian
      */
 
-    class DefaultOrCondition<T extends OrCondition> implements OrCondition<T>, SqlAst {
+    class OrConditionAst<T extends OrCondition> implements OrCondition<T>, SqlAst {
 
         private List<Condition> subConditions = Lists.newArrayList();
 
@@ -85,7 +84,7 @@ public interface OrCondition<T extends OrCondition> extends Condition {
             for (Condition condition : subConditions) {
                 copySubConditions.add((Condition) ((SqlAst) condition).copy());
             }
-            DefaultOrCondition orCondition = new DefaultOrCondition();
+            OrConditionAst orCondition = new OrConditionAst();
             orCondition.subConditions = copySubConditions;
             orCondition.allowEmpty=allowEmpty;
             return orCondition;

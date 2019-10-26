@@ -9,9 +9,9 @@ package io.github.skycloud.fastdao.demo;
 import com.google.common.collect.Lists;
 import io.github.skycloud.fastdao.core.ast.Condition;
 import io.github.skycloud.fastdao.core.ast.Request;
-import io.github.skycloud.fastdao.core.ast.request.CountRequest.DefaultCountRequest;
-import io.github.skycloud.fastdao.core.ast.request.QueryRequest.DefaultQueryRequest;
-import io.github.skycloud.fastdao.core.ast.request.UpdateRequest.DefaultUpdateRequest;
+import io.github.skycloud.fastdao.core.ast.request.CountRequest.CountRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.QueryRequest.QueryRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.UpdateRequest.UpdateRequestAst;
 import io.github.skycloud.fastdao.core.reflection.MetaClass;
 import io.github.skycloud.fastdao.core.reflection.MetaField;
 import io.github.skycloud.fastdao.demo.dao.AutoIncColumnMapPluginDAO;
@@ -195,7 +195,7 @@ public class AutoIncPluginTest {
     @Test
     @Transactional
     public void test_count() {
-        DefaultCountRequest request = new DefaultCountRequest();
+        CountRequestAst request = new CountRequestAst();
         request.setCondition(DELETED.equal(true));
         int count = dao.count(request);
         Assert.assertEquals(3, count);
@@ -211,7 +211,7 @@ public class AutoIncPluginTest {
     @Test
     @Transactional
     public void test_select_equal_multi() {
-        DefaultQueryRequest request = new DefaultQueryRequest();
+        QueryRequestAst request = new QueryRequestAst();
         request.setCondition(ID.equal(Lists.newArrayList(1, 2, 3)));
         List<AutoIncPluginTestModel> models = dao.select(request);
         request.setCondition(ID.equal(1, 2, 3));
@@ -223,7 +223,7 @@ public class AutoIncPluginTest {
 
     @Test
     public void test_select_multi_condition() {
-        DefaultQueryRequest request = new DefaultQueryRequest();
+        QueryRequestAst request = new QueryRequestAst();
         request.setCondition(Condition.and()
                 .and(ID.equal(1, 2, 3, 4, 5))
                 .and(DELETED.gt(0))
@@ -238,14 +238,14 @@ public class AutoIncPluginTest {
 
     @Test
     public void test_select_empty_condition() {
-        DefaultQueryRequest request = new DefaultQueryRequest();
+        QueryRequestAst request = new QueryRequestAst();
         request.setCondition(NAME.equal(Lists.newArrayList()));
         Assert.assertTrue(CollectionUtils.isEmpty(dao.select(request)));
     }
 
     @Test
     public void test_select_ignore_illegal_condition() {
-        DefaultQueryRequest request = new DefaultQueryRequest();
+        QueryRequestAst request = new QueryRequestAst();
         request.setCondition(Condition.and().andOptional(ID.equal(Lists.newArrayList())).allowEmpty());
         List<AutoIncPluginTestModel> models = dao.select(request);
         Assert.assertEquals(3, models.size());
@@ -253,7 +253,7 @@ public class AutoIncPluginTest {
 
     @Test
     public void test_select_complex_condition() {
-        DefaultQueryRequest request = new DefaultQueryRequest();
+        QueryRequestAst request = new QueryRequestAst();
         Condition condition = Condition.and()
                 .andOptional(ID.equal(Lists.newArrayList()))
                 .andOptional(Condition.or())
@@ -271,7 +271,7 @@ public class AutoIncPluginTest {
     @Test
     @Transactional
     public void test_count_equal_multi() {
-        DefaultCountRequest request = new DefaultCountRequest();
+        CountRequestAst request = new CountRequestAst();
         request.setCondition(ID.equal(Lists.newArrayList(1, 2, 3)));
         int count = dao.count(request);
         Assert.assertEquals(0, count);
@@ -282,7 +282,7 @@ public class AutoIncPluginTest {
 
     @Test
     public void test_count_multi_condition() {
-        DefaultCountRequest request = new DefaultCountRequest();
+        CountRequestAst request = new CountRequestAst();
         request.setCondition(Condition.and()
                 .and(ID.equal(1, 2, 3, 4, 5))
                 .and(DELETED.gt(0))
@@ -296,14 +296,14 @@ public class AutoIncPluginTest {
 
     @Test
     public void test_count_empty_condition() {
-        DefaultCountRequest request = new DefaultCountRequest();
+        CountRequestAst request = new CountRequestAst();
         request.setCondition(NAME.equal(Lists.newArrayList()));
         Assert.assertEquals(0, dao.count(request));
     }
 
     @Test
     public void test_count_ignore_illegal_condition() {
-        DefaultCountRequest request = new DefaultCountRequest();
+        CountRequestAst request = new CountRequestAst();
         request.setCondition(Condition.and().andOptional(ID.equal(Lists.newArrayList())));
         int count = dao.count(request);
         Assert.assertEquals(0, count);
@@ -315,7 +315,7 @@ public class AutoIncPluginTest {
     @Test
     @Transactional
     public void test_update_equal_multi() {
-        DefaultUpdateRequest request = new DefaultUpdateRequest();
+        UpdateRequestAst request = new UpdateRequestAst();
         request.addUpdateField(NAME, "updated");
         request.setCondition(ID.equal(Lists.newArrayList(4, 5, 6)));
         int update = dao.update(request);
@@ -332,7 +332,7 @@ public class AutoIncPluginTest {
     @Test
     @Transactional
     public void test_update_multi_condition() {
-        DefaultUpdateRequest request = new DefaultUpdateRequest();
+        UpdateRequestAst request = new UpdateRequestAst();
         request.setCondition(Condition.and()
                 .and(ID.equal(1, 2, 3, 4, 5))
                 .and(DELETED.gt(0))
@@ -348,30 +348,30 @@ public class AutoIncPluginTest {
     @Test
     @Transactional
     public void test_update_empty_condition() {
-        DefaultUpdateRequest request = new DefaultUpdateRequest();
+        UpdateRequestAst request = new UpdateRequestAst();
         request.setCondition(NAME.equal(Lists.newArrayList()));
         request.addUpdateField(NAME, "updated");
         Assert.assertEquals(0, dao.update(request));
-        Assert.assertTrue(dao.select(new DefaultQueryRequest()).stream().map(AutoIncPluginTestModel::getName)
+        Assert.assertTrue(dao.select(new QueryRequestAst()).stream().map(AutoIncPluginTestModel::getName)
                 .noneMatch(x -> Objects.equals(x, "updated")));
     }
 
     @Test
     @Transactional
     public void test_update_ignore_illegal_condition() {
-        DefaultUpdateRequest request = new DefaultUpdateRequest();
+        UpdateRequestAst request = new UpdateRequestAst();
         request.setCondition(Condition.and().andOptional(ID.equal(Lists.newArrayList())).allowEmpty());
         request.addUpdateField(NAME, "updated");
         int update = dao.update(request);
         Assert.assertEquals(3, update);
-        Assert.assertTrue(dao.select(new DefaultQueryRequest()).stream()
+        Assert.assertTrue(dao.select(new QueryRequestAst()).stream()
                 .map(AutoIncPluginTestModel::getName).allMatch(x -> x.equals("updated")));
     }
 
     @Test
     @Transactional
     public void test_update_complex_condition() {
-        DefaultUpdateRequest request = new DefaultUpdateRequest();
+        UpdateRequestAst request = new UpdateRequestAst();
         Condition condition = Condition.and()
                 .andOptional(ID.equal(Lists.newArrayList()))
                 .andOptional(Condition.or())
@@ -383,7 +383,7 @@ public class AutoIncPluginTest {
         request.addUpdateField(NAME, "updated");
         int count = dao.update(request);
         Assert.assertEquals(3, count);
-        Assert.assertTrue(dao.select(new DefaultQueryRequest()).stream()
+        Assert.assertTrue(dao.select(new QueryRequestAst()).stream()
                 .map(AutoIncPluginTestModel::getName).allMatch(x -> x.equals("updated")));
     }
 

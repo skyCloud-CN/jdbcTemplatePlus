@@ -52,7 +52,7 @@ public interface RangeCondition extends Condition {
 
 
     @Getter
-    class DefaultRangeCondition implements RangeCondition, SqlAst {
+    class RangeConditionAst implements RangeCondition, SqlAst {
 
         private String field;
 
@@ -64,33 +64,33 @@ public interface RangeCondition extends Condition {
 
         private boolean elt = false;
 
-        public DefaultRangeCondition(String field) {
+        public RangeConditionAst(String field) {
             this.field = field;
         }
 
         @Override
-        public DefaultRangeCondition gt(Object value) {
+        public RangeConditionAst gt(Object value) {
             this.gt = value;
             this.egt = false;
             return this;
         }
 
         @Override
-        public DefaultRangeCondition gte(Object value) {
+        public RangeConditionAst gte(Object value) {
             this.gt = value;
             this.egt = true;
             return this;
         }
 
         @Override
-        public DefaultRangeCondition lt(Object value) {
+        public RangeConditionAst lt(Object value) {
             this.lt = value;
             this.elt = false;
             return this;
         }
 
         @Override
-        public DefaultRangeCondition lte(Object value) {
+        public RangeConditionAst lte(Object value) {
             this.lt = value;
             this.elt = true;
             return this;
@@ -113,7 +113,7 @@ public interface RangeCondition extends Condition {
 
         @Override
         public SqlAst copy() {
-            DefaultRangeCondition condition = new DefaultRangeCondition(field);
+            RangeConditionAst condition = new RangeConditionAst(field);
             condition.gt = gt;
             condition.lt = lt;
             condition.egt = egt;

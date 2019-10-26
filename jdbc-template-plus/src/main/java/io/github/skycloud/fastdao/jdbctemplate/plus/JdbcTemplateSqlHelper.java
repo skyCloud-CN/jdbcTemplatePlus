@@ -16,7 +16,7 @@ import io.github.skycloud.fastdao.core.ast.request.CountRequest;
 import io.github.skycloud.fastdao.core.ast.request.DeleteRequest;
 import io.github.skycloud.fastdao.core.ast.request.InsertRequest;
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest;
-import io.github.skycloud.fastdao.core.ast.request.QueryRequest.DefaultQueryRequest;
+import io.github.skycloud.fastdao.core.ast.request.QueryRequest.QueryRequestAst;
 import io.github.skycloud.fastdao.core.ast.request.UpdateRequest;
 import io.github.skycloud.fastdao.core.mapping.RowMapping;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -51,7 +51,7 @@ public class JdbcTemplateSqlHelper {
     }
 
     public static <T> List<T> select(NamedParameterJdbcOperations db, QueryRequest request, Class<T> clazz) {
-        DefaultQueryRequest copyRequest=(DefaultQueryRequest)((SqlAst)request).copy();
+        QueryRequestAst copyRequest=(QueryRequestAst)((SqlAst)request).copy();
         return Optional.ofNullable(sendRequest(db, copyRequest, clazz, (visitor, source) ->
                 db.query(visitor.getSql(), source, RowMappers.of(clazz).getMapper(copyRequest.getSelectFields())))).orElse(Collections.emptyList());
     }

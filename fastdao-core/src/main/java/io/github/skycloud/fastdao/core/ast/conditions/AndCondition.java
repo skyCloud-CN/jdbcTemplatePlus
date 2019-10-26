@@ -44,7 +44,7 @@ public interface AndCondition<T extends AndCondition> extends Condition {
      * @author yuntian
      */
     @Getter
-    class DefaultAndCondition<T extends AndCondition> implements AndCondition<T>, SqlAst {
+    class AndConditionAst<T extends AndCondition> implements AndCondition<T>, SqlAst {
 
         private List<Condition> subConditions = Lists.newArrayList();
 
@@ -93,7 +93,7 @@ public interface AndCondition<T extends AndCondition> extends Condition {
 
         @Override
         public SqlAst copy() {
-            DefaultAndCondition andCondition = new DefaultAndCondition();
+            AndConditionAst andCondition = new AndConditionAst();
             ArrayList<Condition> arrayList = new ArrayList<>(subConditions.size());
             for (Condition condition : subConditions) {
                 arrayList.add((Condition) ((SqlAst) condition).copy());

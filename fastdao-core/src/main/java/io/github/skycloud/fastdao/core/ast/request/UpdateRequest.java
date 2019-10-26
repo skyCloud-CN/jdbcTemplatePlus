@@ -24,15 +24,15 @@ import java.util.Map;
  */
 public interface UpdateRequest extends Sortable<UpdateRequest>, ConditionalRequest<UpdateRequest> {
 
-    DefaultUpdateRequest addUpdateField(String field, Object value);
+    UpdateRequest addUpdateField(String field, Object value);
 
-    DefaultUpdateRequest addUpdateField(Column field, Object value);
+    UpdateRequest addUpdateField(Column field, Object value);
 
     /**
      * @author yuntian
      */
     @Getter
-    class DefaultUpdateRequest implements UpdateRequest, SqlAst {
+    class UpdateRequestAst implements UpdateRequest, SqlAst {
 
         private Map<String, Object> updateFields = Maps.newLinkedHashMap();
 
@@ -41,31 +41,31 @@ public interface UpdateRequest extends Sortable<UpdateRequest>, ConditionalReque
         private SortLimitClause sortLimitClause = new SortLimitClause();
 
         @Override
-        public DefaultUpdateRequest addUpdateField(String field, Object value) {
+        public UpdateRequest addUpdateField(String field, Object value) {
             updateFields.put(field, value);
             return this;
         }
 
         @Override
-        public DefaultUpdateRequest addUpdateField(Column field, Object value) {
+        public UpdateRequest addUpdateField(Column field, Object value) {
             updateFields.put(field.getName(), value);
             return this;
         }
 
         @Override
-        public DefaultUpdateRequest setCondition(Condition condition) {
+        public UpdateRequest setCondition(Condition condition) {
             this.condition = condition;
             return this;
         }
 
         @Override
-        public DefaultUpdateRequest limit(int limit) {
+        public UpdateRequest limit(int limit) {
             sortLimitClause.setLimit(limit);
             return this;
         }
 
         @Override
-        public DefaultUpdateRequest offset(int offset) {
+        public UpdateRequest offset(int offset) {
             sortLimitClause.setOffset(offset);
             return this;
         }
@@ -77,13 +77,19 @@ public interface UpdateRequest extends Sortable<UpdateRequest>, ConditionalReque
         }
 
         @Override
+        public UpdateRequest addSort(String field, OrderEnum order) {
+            sortLimitClause.addSort(field,order);
+            return this;
+        }
+
+        @Override
         public void accept(Visitor visitor) {
             visitor.visit(this);
         }
 
         @Override
         public SqlAst copy() {
-            DefaultUpdateRequest request = new DefaultUpdateRequest();
+            UpdateRequestAst request = new UpdateRequestAst();
             request.updateFields = Maps.newLinkedHashMap(updateFields);
             request.condition = (Condition) ((SqlAst) condition).copy();
             request.sortLimitClause = (SortLimitClause) sortLimitClause.copy();

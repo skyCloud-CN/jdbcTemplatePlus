@@ -19,15 +19,15 @@ import lombok.Getter;
  */
 public interface CountRequest extends ConditionalRequest<CountRequest> {
 
-    DefaultCountRequest setCountField(String countField);
+    CountRequest setCountField(String countField);
 
-    DefaultCountRequest setCountField(Column column);
+    CountRequest setCountField(Column column);
 
     /**
      * @author yuntian
      */
     @Getter
-    class DefaultCountRequest implements CountRequest, SqlAst {
+    class CountRequestAst implements CountRequest, SqlAst {
 
         private boolean distinct;
 
@@ -36,24 +36,24 @@ public interface CountRequest extends ConditionalRequest<CountRequest> {
         private Condition condition;
 
         @Override
-        public DefaultCountRequest setCondition(Condition condition) {
+        public CountRequest setCondition(Condition condition) {
             this.condition = condition;
             return this;
         }
 
         @Override
-        public DefaultCountRequest setCountField(String countField) {
+        public CountRequest setCountField(String countField) {
             this.countField = countField;
             return this;
         }
 
         @Override
-        public DefaultCountRequest setCountField(Column column) {
+        public CountRequest setCountField(Column column) {
             this.countField = column.toString();
             return this;
         }
 
-        public DefaultCountRequest distinct() {
+        public CountRequest distinct() {
             distinct = true;
             return this;
         }
@@ -65,7 +65,7 @@ public interface CountRequest extends ConditionalRequest<CountRequest> {
 
         @Override
         public SqlAst copy() {
-            DefaultCountRequest request = new DefaultCountRequest();
+            CountRequestAst request = new CountRequestAst();
             request.distinct = distinct;
             request.countField = countField;
             if(condition!=null) {

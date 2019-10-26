@@ -11,18 +11,18 @@ import io.github.skycloud.fastdao.core.ast.Condition;
 import io.github.skycloud.fastdao.core.ast.ConditionalRequest;
 import io.github.skycloud.fastdao.core.ast.SqlAst;
 import io.github.skycloud.fastdao.core.ast.Visitor;
-import io.github.skycloud.fastdao.core.ast.conditions.AndCondition.DefaultAndCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.EqualCondition.DefaultEqualCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.IsNullCondition.DefaultIsNullCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.LikeCondition.DefaultLikeCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.OrCondition.DefaultOrCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.RangeCondition.DefaultRangeCondition;
+import io.github.skycloud.fastdao.core.ast.conditions.AndCondition.AndConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.EqualCondition.EqualConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.IsNullCondition.IsNullConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.LikeCondition.LikeConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.OrCondition.OrConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.RangeCondition.RangeConditionAst;
 import io.github.skycloud.fastdao.core.ast.model.SortLimitClause;
-import io.github.skycloud.fastdao.core.ast.request.CountRequest.DefaultCountRequest;
-import io.github.skycloud.fastdao.core.ast.request.DeleteRequest.DefaultDeleteRequest;
-import io.github.skycloud.fastdao.core.ast.request.InsertRequest.DefaultInsertRequest;
-import io.github.skycloud.fastdao.core.ast.request.QueryRequest.DefaultQueryRequest;
-import io.github.skycloud.fastdao.core.ast.request.UpdateRequest.DefaultUpdateRequest;
+import io.github.skycloud.fastdao.core.ast.request.CountRequest.CountRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.DeleteRequest.DeleteRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.InsertRequest.InsertRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.QueryRequest.QueryRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.UpdateRequest.UpdateRequestAst;
 
 import java.util.List;
 
@@ -42,22 +42,22 @@ public class LogicDeleteVisitor implements Visitor {
     }
 
     @Override
-    public void visit(DefaultQueryRequest request) {
+    public void visit(QueryRequestAst request) {
         visit((ConditionalRequest)request);
     }
 
     @Override
-    public void visit(DefaultUpdateRequest request) {
+    public void visit(UpdateRequestAst request) {
         visit((ConditionalRequest)request);
     }
 
     @Override
-    public void visit(DefaultDeleteRequest request) {
+    public void visit(DeleteRequestAst request) {
 
     }
 
     @Override
-    public void visit(DefaultInsertRequest request) {
+    public void visit(InsertRequestAst request) {
         if(request.getInsertFields().containsKey(logicDeleteColumn)){
             return;
         }
@@ -65,7 +65,7 @@ public class LogicDeleteVisitor implements Visitor {
     }
 
     @Override
-    public void visit(DefaultCountRequest request) {
+    public void visit(CountRequestAst request) {
         visit((ConditionalRequest)request);
     }
 
@@ -75,7 +75,7 @@ public class LogicDeleteVisitor implements Visitor {
     }
     private void visit(ConditionalRequest request){
         if(request.getCondition()==null){
-            request.setCondition(new DefaultEqualCondition(logicDeleteColumn,logicDeleteDefaultValue));
+            request.setCondition(new EqualConditionAst(logicDeleteColumn,logicDeleteDefaultValue));
             return;
         }
         ((SqlAst)request.getCondition()).accept(this);
@@ -87,11 +87,11 @@ public class LogicDeleteVisitor implements Visitor {
     private void addLogicDeleteCondition(ConditionalRequest request){
         Condition condition=Condition.and()
                 .and(request.getCondition())
-                .and(new DefaultEqualCondition(logicDeleteColumn,logicDeleteDefaultValue));
+                .and(new EqualConditionAst(logicDeleteColumn,logicDeleteDefaultValue));
         request.setCondition(condition);
     }
     @Override
-    public void visit(DefaultAndCondition condition) {
+    public void visit(AndConditionAst condition) {
         List<Condition> subConditions=condition.getSubConditions();
         for(Condition subCondition:subConditions){
             ((SqlAst)subCondition).accept(this);
@@ -99,7 +99,7 @@ public class LogicDeleteVisitor implements Visitor {
     }
 
     @Override
-    public void visit(DefaultOrCondition condition) {
+    public void visit(OrConditionAst condition) {
         List<Condition> subConditions=condition.getSubConditions();
         for(Condition subCondition:subConditions){
             ((SqlAst)subCondition).accept(this);
@@ -107,22 +107,22 @@ public class LogicDeleteVisitor implements Visitor {
     }
 
     @Override
-    public void visit(DefaultEqualCondition condition) {
+    public void visit(EqualConditionAst condition) {
         hasLogicDeleteField|=logicDeleteColumn.equals(condition.getField());
     }
 
     @Override
-    public void visit(DefaultRangeCondition condition) {
+    public void visit(RangeConditionAst condition) {
         hasLogicDeleteField|=logicDeleteColumn.equals(condition.getField());
     }
 
     @Override
-    public void visit(DefaultLikeCondition condition) {
+    public void visit(LikeConditionAst condition) {
         hasLogicDeleteField|=logicDeleteColumn.equals(condition.getField());
     }
 
     @Override
-    public void visit(DefaultIsNullCondition condition) {
+    public void visit(IsNullConditionAst condition) {
         hasLogicDeleteField|=logicDeleteColumn.equals(condition.getField());
     }
 

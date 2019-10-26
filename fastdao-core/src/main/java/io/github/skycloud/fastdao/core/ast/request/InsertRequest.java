@@ -21,22 +21,23 @@ public interface InsertRequest extends Request {
 
     InsertRequest addInsertField(Column field, Object value);
 
+    InsertRequest addInsertField(String field, Object value);
 
     /**
      * @author yuntian
      */
 
-    class DefaultInsertRequest implements InsertRequest, SqlAst {
+    class InsertRequestAst implements InsertRequest, SqlAst {
 
         private Map<String, Object> insertFields = Maps.newLinkedHashMap();
 
         @Override
-        public DefaultInsertRequest addInsertField(Column field, Object value) {
+        public InsertRequest addInsertField(Column field, Object value) {
             insertFields.put(field.getName(), value);
             return this;
         }
-
-        public DefaultInsertRequest addInsertField(String field, Object value) {
+        @Override
+        public InsertRequest addInsertField(String field, Object value) {
             insertFields.put(field, value);
             return this;
         }
@@ -53,7 +54,7 @@ public interface InsertRequest extends Request {
 
         @Override
         public SqlAst copy() {
-            DefaultInsertRequest request = new DefaultInsertRequest();
+            InsertRequestAst request = new InsertRequestAst();
             request.insertFields = Maps.newLinkedHashMap(insertFields);
             return request;
         }

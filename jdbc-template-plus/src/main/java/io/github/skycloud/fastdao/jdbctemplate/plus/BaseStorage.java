@@ -7,16 +7,16 @@
 package io.github.skycloud.fastdao.jdbctemplate.plus;
 
 import io.github.skycloud.fastdao.core.Storage;
-import io.github.skycloud.fastdao.core.ast.conditions.EqualCondition.DefaultEqualCondition;
+import io.github.skycloud.fastdao.core.ast.conditions.EqualCondition.EqualConditionAst;
 import io.github.skycloud.fastdao.core.ast.request.CountRequest;
-import io.github.skycloud.fastdao.core.ast.request.CountRequest.DefaultCountRequest;
+import io.github.skycloud.fastdao.core.ast.request.CountRequest.CountRequestAst;
 import io.github.skycloud.fastdao.core.ast.request.DeleteRequest;
-import io.github.skycloud.fastdao.core.ast.request.DeleteRequest.DefaultDeleteRequest;
-import io.github.skycloud.fastdao.core.ast.request.InsertRequest.DefaultInsertRequest;
+import io.github.skycloud.fastdao.core.ast.request.DeleteRequest.DeleteRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.InsertRequest.InsertRequestAst;
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest;
-import io.github.skycloud.fastdao.core.ast.request.QueryRequest.DefaultQueryRequest;
+import io.github.skycloud.fastdao.core.ast.request.QueryRequest.QueryRequestAst;
 import io.github.skycloud.fastdao.core.ast.request.UpdateRequest;
-import io.github.skycloud.fastdao.core.ast.request.UpdateRequest.DefaultUpdateRequest;
+import io.github.skycloud.fastdao.core.ast.request.UpdateRequest.UpdateRequestAst;
 import io.github.skycloud.fastdao.core.mapping.ColumnMapping;
 import io.github.skycloud.fastdao.core.mapping.RowMapping;
 import io.github.skycloud.fastdao.core.reflection.MetaClass;
@@ -65,17 +65,17 @@ public abstract class BaseStorage<DATA, PRIM_KEY> implements Storage<DATA, PRIM_
 
     @Override
     public List<DATA> selectByPrimaryKeys(PRIM_KEY... keys) {
-        DefaultQueryRequest request = new DefaultQueryRequest();
+        QueryRequestAst request = new QueryRequestAst();
         RowMapping rowMapping = RowMapping.of(dataClass);
-        request.setCondition(new DefaultEqualCondition(rowMapping.getPrimaryKeyColumn().getColumnName(), keys));
+        request.setCondition(new EqualConditionAst(rowMapping.getPrimaryKeyColumn().getColumnName(), keys));
         List<DATA> result = JdbcTemplateSqlHelper.select(getJdbcTemplate(), request, dataClass);
         return result;
     }
 
     @Override
     public List<DATA> selectPage(QueryRequest request, Page page) {
-        DefaultQueryRequest queryRequest = (DefaultQueryRequest) request;
-        DefaultCountRequest countRequest = new DefaultCountRequest();
+        QueryRequestAst queryRequest = (QueryRequestAst) request;
+        CountRequestAst countRequest = new CountRequestAst();
         countRequest.setCondition(queryRequest.getCondition());
         int count = JdbcTemplateSqlHelper.count(getJdbcTemplate(), countRequest, dataClass);
         page.setTotal(count);
@@ -93,7 +93,7 @@ public abstract class BaseStorage<DATA, PRIM_KEY> implements Storage<DATA, PRIM_
     }
 
     private int insert(DATA t, boolean selective) {
-        DefaultInsertRequest request = new DefaultInsertRequest();
+        InsertRequestAst request = new InsertRequestAst();
         MetaClass metaClass = MetaClass.of(dataClass);
         RowMapping rowMapping = RowMapping.of(dataClass);
         for (ColumnMapping columnMapping : rowMapping.getColumnMapping()) {
@@ -123,7 +123,7 @@ public abstract class BaseStorage<DATA, PRIM_KEY> implements Storage<DATA, PRIM_
     }
 
     private int updateByPrimaryKey(DATA t, boolean selective) {
-        DefaultUpdateRequest request = new DefaultUpdateRequest();
+        UpdateRequestAst request = new UpdateRequestAst();
         MetaClass metaClass = MetaClass.of(dataClass);
         RowMapping rowMapping = RowMapping.of(dataClass);
         ColumnMapping primaryColumn = rowMapping.getPrimaryKeyColumn();
@@ -144,7 +144,7 @@ public abstract class BaseStorage<DATA, PRIM_KEY> implements Storage<DATA, PRIM_
         }
 
         Object primaryKeyValue = metaClass.getMetaField(primaryColumn.getColumnName()).invokeGetter(t);
-        request.setCondition(new DefaultEqualCondition(primaryColumn.getColumnName(), primaryKeyValue));
+        request.setCondition(new EqualConditionAst(primaryColumn.getColumnName(), primaryKeyValue));
         return JdbcTemplateSqlHelper.update(getJdbcTemplate(), request, dataClass);
     }
 
@@ -152,8 +152,8 @@ public abstract class BaseStorage<DATA, PRIM_KEY> implements Storage<DATA, PRIM_
     public int deleteByPrimaryKey(PRIM_KEY t) {
         RowMapping rowMapping = RowMapping.of(dataClass);
         ColumnMapping primaryKeyColumn = rowMapping.getPrimaryKeyColumn();
-        DefaultDeleteRequest deleteRequest = new DefaultDeleteRequest();
-        deleteRequest.setCondition(new DefaultEqualCondition(primaryKeyColumn.getColumnName(), t));
+        DeleteRequestAst deleteRequest = new DeleteRequestAst();
+        deleteRequest.setCondition(new EqualConditionAst(primaryKeyColumn.getColumnName(), t));
         deleteRequest.limit(1);
         return JdbcTemplateSqlHelper.delete(getJdbcTemplate(), deleteRequest, dataClass);
     }

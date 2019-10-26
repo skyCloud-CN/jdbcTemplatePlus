@@ -8,11 +8,14 @@ package io.github.skycloud.fastdao.core.ast.request;
 
 import io.github.skycloud.fastdao.core.ast.Condition;
 import io.github.skycloud.fastdao.core.ast.ConditionalRequest;
-
+import io.github.skycloud.fastdao.core.ast.Request;
 import io.github.skycloud.fastdao.core.ast.SqlAst;
 import io.github.skycloud.fastdao.core.ast.Visitor;
+import io.github.skycloud.fastdao.core.exceptions.IllegalConditionException;
 import io.github.skycloud.fastdao.core.table.Column;
 import lombok.Getter;
+
+import java.util.function.Function;
 
 /**
  * @author yuntian
@@ -34,6 +37,8 @@ public interface CountRequest extends ConditionalRequest<CountRequest> {
         private String countField;
 
         private Condition condition;
+
+        private Function<IllegalConditionException, ?> onSyntaxError;
 
         @Override
         public CountRequest setCondition(Condition condition) {
@@ -68,11 +73,22 @@ public interface CountRequest extends ConditionalRequest<CountRequest> {
             CountRequestAst request = new CountRequestAst();
             request.distinct = distinct;
             request.countField = countField;
-            if(condition!=null) {
+            if (condition != null) {
                 request.condition = (Condition) ((SqlAst) condition).copy();
             }
+            request.onSyntaxError=onSyntaxError;
             return request;
         }
 
+        @Override
+        public <T extends Request> T onSyntaxError(Function<IllegalConditionException, ?> action) {
+            this.onSyntaxError=action;
+            return (T)this;
+        }
+
+        @Override
+        public Function<IllegalConditionException, ?> getOnSyntaxError() {
+            return onSyntaxError;
+        }
     }
 }

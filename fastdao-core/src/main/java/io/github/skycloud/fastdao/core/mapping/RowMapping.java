@@ -67,7 +67,8 @@ public class RowMapping implements Pluggable {
                     .setFieldName(metaField.getFieldName())
                     .setHandler(TypeHandlerResolver.getTypeHandler(metaField.getFieldType()))
                     .setPrimary(false)
-                    .setRowMapping(this).invokePlugin(clazz);
+                    .setRowMapping(this)
+                    .invokePlugin(clazz);
             this.fieldNameMap.put(columnMapping.getFieldName(), columnMapping);
             this.columnNameMap.put(columnMapping.getColumnName(), columnMapping);
             if (isPrimaryField(metaField)) {

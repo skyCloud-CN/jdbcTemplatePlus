@@ -8,11 +8,14 @@ package io.github.skycloud.fastdao.core.ast.request;
 
 import com.google.common.collect.Maps;
 import io.github.skycloud.fastdao.core.ast.FieldUpdateRequest;
+import io.github.skycloud.fastdao.core.ast.Request;
 import io.github.skycloud.fastdao.core.ast.SqlAst;
 import io.github.skycloud.fastdao.core.ast.Visitor;
+import io.github.skycloud.fastdao.core.exceptions.IllegalConditionException;
 import io.github.skycloud.fastdao.core.table.Column;
 
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * @author yuntian
@@ -32,6 +35,8 @@ public interface InsertRequest extends FieldUpdateRequest<InsertRequest> {
     class InsertRequestAst implements InsertRequest, SqlAst {
 
         private Map<String, Object> updateFields = Maps.newLinkedHashMap();
+
+        private Function<IllegalConditionException, ?> onSyntaxError;
 
         @Override
         public InsertRequest addUpdateField(Column field, Object value) {
@@ -60,7 +65,19 @@ public interface InsertRequest extends FieldUpdateRequest<InsertRequest> {
         public SqlAst copy() {
             InsertRequestAst request = new InsertRequestAst();
             request.updateFields = Maps.newLinkedHashMap(updateFields);
+            request.onSyntaxError=onSyntaxError;
             return request;
+        }
+
+        @Override
+        public <T extends Request> T onSyntaxError(Function<IllegalConditionException, ?> action) {
+            onSyntaxError = action;
+            return (T) this;
+        }
+
+        @Override
+        public Function<IllegalConditionException, ?> getOnSyntaxError() {
+            return onSyntaxError;
         }
     }
 }

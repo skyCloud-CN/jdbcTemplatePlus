@@ -29,6 +29,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -85,7 +86,7 @@ public class AutoIncPluginTest {
                 .and(DELETED.equal(true))
                 .endCondition())
                 .stream().findFirst().orElse(null);
-        assertEqual(model, fromDB, "exclude","created","updated");
+        assertEqual(model, fromDB, "exclude", "created", "updated");
         Assert.assertNotEquals(model.getExclude(), fromDB.getExclude());
     }
 
@@ -239,7 +240,8 @@ public class AutoIncPluginTest {
     @Test
     public void test_select_empty_condition() {
         QueryRequestAst request = new QueryRequestAst();
-        request.setCondition(NAME.equal(Lists.newArrayList()));
+        request.setCondition(NAME.equal(Lists.newArrayList()))
+                .onSyntaxError(e -> Collections.emptyList());
         Assert.assertTrue(CollectionUtils.isEmpty(dao.select(request)));
     }
 
@@ -297,14 +299,16 @@ public class AutoIncPluginTest {
     @Test
     public void test_count_empty_condition() {
         CountRequestAst request = new CountRequestAst();
-        request.setCondition(NAME.equal(Lists.newArrayList()));
+        request.setCondition(NAME.equal(Lists.newArrayList()))
+                .onSyntaxError(e -> 0);
         Assert.assertEquals(0, dao.count(request));
     }
 
     @Test
     public void test_count_ignore_illegal_condition() {
         CountRequestAst request = new CountRequestAst();
-        request.setCondition(Condition.and().andOptional(ID.equal(Lists.newArrayList())));
+        request.setCondition(Condition.and().andOptional(ID.equal(Lists.newArrayList())))
+                .onSyntaxError(e -> 0);
         int count = dao.count(request);
         Assert.assertEquals(0, count);
     }
@@ -351,6 +355,7 @@ public class AutoIncPluginTest {
         UpdateRequestAst request = new UpdateRequestAst();
         request.setCondition(NAME.equal(Lists.newArrayList()));
         request.addUpdateField(NAME, "updated");
+        request.onSyntaxError(e -> 0);
         Assert.assertEquals(0, dao.update(request));
         Assert.assertTrue(dao.select(new QueryRequestAst()).stream().map(AutoIncPluginTestModel::getName)
                 .noneMatch(x -> Objects.equals(x, "updated")));

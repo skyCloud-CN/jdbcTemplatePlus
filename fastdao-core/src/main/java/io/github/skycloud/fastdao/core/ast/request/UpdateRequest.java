@@ -10,15 +10,18 @@ import com.google.common.collect.Maps;
 import io.github.skycloud.fastdao.core.ast.Condition;
 import io.github.skycloud.fastdao.core.ast.ConditionalRequest;
 import io.github.skycloud.fastdao.core.ast.FieldUpdateRequest;
+import io.github.skycloud.fastdao.core.ast.Request;
 import io.github.skycloud.fastdao.core.ast.Sortable;
 import io.github.skycloud.fastdao.core.ast.SqlAst;
 import io.github.skycloud.fastdao.core.ast.Visitor;
 import io.github.skycloud.fastdao.core.ast.enums.OrderEnum;
 import io.github.skycloud.fastdao.core.ast.model.SortLimitClause;
+import io.github.skycloud.fastdao.core.exceptions.IllegalConditionException;
 import io.github.skycloud.fastdao.core.table.Column;
 import lombok.Getter;
 
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * @author yuntian
@@ -43,6 +46,7 @@ public interface UpdateRequest extends Sortable<UpdateRequest>, ConditionalReque
     @Override
     UpdateRequest addSort(String field, OrderEnum order);
 
+
     /**
      * @author yuntian
      */
@@ -54,6 +58,8 @@ public interface UpdateRequest extends Sortable<UpdateRequest>, ConditionalReque
         private Condition condition;
 
         private SortLimitClause sortLimitClause = new SortLimitClause();
+
+        private Function<IllegalConditionException, ?> onSyntaxError;
 
         @Override
         public UpdateRequest addUpdateField(String field, Object value) {
@@ -108,7 +114,19 @@ public interface UpdateRequest extends Sortable<UpdateRequest>, ConditionalReque
             request.updateFields = Maps.newLinkedHashMap(updateFields);
             request.condition = (Condition) ((SqlAst) condition).copy();
             request.sortLimitClause = (SortLimitClause) sortLimitClause.copy();
+            request.onSyntaxError=onSyntaxError;
             return request;
+        }
+
+        @Override
+        public <T extends Request> T onSyntaxError(Function<IllegalConditionException, ?> action) {
+            this.onSyntaxError=action;
+            return (T)this;
+        }
+
+        @Override
+        public Function<IllegalConditionException, ?> getOnSyntaxError() {
+            return onSyntaxError;
         }
     }
 }

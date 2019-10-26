@@ -80,18 +80,14 @@ public class MysqlVisitor extends SqlVisitor {
         if (condition == null) {
             return;
         }
-        try {
-            if (!condition.isLegal()) {
-                throw new IllegalConditionException();
-            }
-            if (condition.isEmpty()) {
-                return;
-            }
-            sb.append(SQLConstant.WHERE);
-            ((SqlAst) condition).accept(this);
-        } catch (IllegalConditionException e) {
-            isLegal = false;
+        if (!condition.isLegal()) {
+            throw new IllegalConditionException();
         }
+        if (condition.isEmpty()) {
+            return;
+        }
+        sb.append(SQLConstant.WHERE);
+        ((SqlAst) condition).accept(this);
     }
 
     @Override

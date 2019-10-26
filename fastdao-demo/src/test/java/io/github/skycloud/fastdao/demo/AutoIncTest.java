@@ -224,7 +224,9 @@ public class AutoIncTest {
     @Test
     public void test_select_empty_condition() {
         QueryRequestAst request = new QueryRequestAst();
-        request.setCondition(NAME.equal(Lists.newArrayList()));
+        request.setCondition(NAME.equal(Lists.newArrayList()))
+                .onSyntaxError(e -> Lists.newArrayList());
+
         Assert.assertTrue(CollectionUtils.isEmpty(dao.select(request)));
     }
 
@@ -282,7 +284,8 @@ public class AutoIncTest {
     @Test
     public void test_count_empty_condition() {
         CountRequestAst request = new CountRequestAst();
-        request.setCondition(NAME.equal(Lists.newArrayList()));
+        request.setCondition(NAME.equal(Lists.newArrayList()))
+                .onSyntaxError(e -> 0);
         Assert.assertEquals(0, dao.count(request));
     }
 
@@ -333,7 +336,8 @@ public class AutoIncTest {
     @Transactional
     public void test_update_empty_condition() {
         UpdateRequestAst request = new UpdateRequestAst();
-        request.setCondition(NAME.equal(Lists.newArrayList()));
+        request.setCondition(NAME.equal(Lists.newArrayList()))
+                .onSyntaxError(e -> 0);
         request.addUpdateField(NAME, "updated");
         Assert.assertEquals(0, dao.update(request));
         Assert.assertTrue(dao.select(new QueryRequestAst()).stream().map(AutoIncModel::getName)
@@ -421,14 +425,17 @@ public class AutoIncTest {
                 .endCondition();
         System.out.println(dao.select(request));
     }
+
     @Test
-    public void testGet(){
-        QueryRequest request=Request.queryRequest()
+    public void testGet() {
+        QueryRequest request = Request.queryRequest()
                 .beginAndCondition()
                 .and(Condition.and().allowEmpty())
                 .allowEmpty()
-                .endCondition();
-        System.out.println(dao.select(request));
+                .endCondition()
+                .onSyntaxError(e -> Lists.newArrayList());
+
+
     }
 
 

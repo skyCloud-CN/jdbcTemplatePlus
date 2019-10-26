@@ -16,15 +16,22 @@ import io.github.skycloud.fastdao.core.ast.request.QueryRequest;
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest.QueryRequestAst;
 import io.github.skycloud.fastdao.core.ast.request.UpdateRequest;
 import io.github.skycloud.fastdao.core.ast.request.UpdateRequest.UpdateRequestAst;
+import io.github.skycloud.fastdao.core.exceptions.IllegalConditionException;
 import io.github.skycloud.fastdao.core.plugins.Pluggable;
+
+import java.util.function.Function;
 
 /**
  * @author yuntian
  * all request can be get from here by static method, or you can just new one
- *
+ * <p>
  * all request are provided to user by interface just to hide unsafe method
  */
 public interface Request extends Pluggable {
+
+    <T extends Request> T onSyntaxError(Function<IllegalConditionException, ?> action);
+
+    Function<IllegalConditionException, ?> getOnSyntaxError();
 
     static UpdateRequest updateRequest() {
         return new UpdateRequestAst();

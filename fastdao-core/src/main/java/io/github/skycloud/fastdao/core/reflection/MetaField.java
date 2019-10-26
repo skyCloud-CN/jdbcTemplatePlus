@@ -18,8 +18,6 @@ import java.util.List;
 
 public class MetaField {
 
-    private MetaClass metaClass;
-
     private String fieldName;
 
     private int getterIndex;
@@ -33,7 +31,6 @@ public class MetaField {
     private List<Annotation> annotations;
 
     MetaField(MetaClass metaClass, BeanProperty beanProperty) {
-        this.metaClass = metaClass;
         this.methodAccess = metaClass.getMethodAccess();
         this.fieldType = beanProperty.getType();
         this.fieldName = beanProperty.getName();
@@ -71,12 +68,5 @@ public class MetaField {
     public Class<?> getFieldType() {
         return fieldType;
     }
-
-    public List<Annotation> getAnnotations() {
-        return annotations;
-    }
-
-    public MetaClass getMetaClass() {
-        return metaClass;
-    }
+    ;
 }

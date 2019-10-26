@@ -107,7 +107,8 @@ public abstract class BaseStorage<DATA, PRIM_KEY> implements Storage<DATA, PRIM_
         }
         Number[] result = JdbcTemplateSqlHelper.insert(getJdbcTemplate(), request, dataClass);
         if (result[1] != null) {
-            metaClass.invokeSetter(t, rowMapping.getPrimaryKeyColumn().getFieldName(), result[1]);
+            metaClass.getMetaField(rowMapping.getPrimaryKeyColumn().getFieldName())
+                    .invokeSetter(t,result[1]);
         }
         return (int) result[0];
     }

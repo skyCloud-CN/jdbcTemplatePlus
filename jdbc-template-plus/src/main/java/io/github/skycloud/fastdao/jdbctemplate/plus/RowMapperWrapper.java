@@ -43,7 +43,7 @@ public class RowMapperWrapper<T> {
                 for (ColumnMapping cm : columnMappings) {
                     TypeHandler handler = cm.getHandler();
                     Object value = handler.getResult(rs, cm.getColumnName());
-                    metaClass.invokeSetter(instance, cm.getFieldName(), value);
+                    metaClass.getMetaField(cm.getFieldName()).invokeSetter(instance,value);
                 }
                 return instance;
             } catch (Exception e) {

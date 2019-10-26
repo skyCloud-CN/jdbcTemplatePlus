@@ -57,24 +57,8 @@ public class MetaClass {
         return methodAccess;
     }
 
-    public boolean fieldExist(String fieldName) {
-        return map.get(fieldName) != null;
-    }
-
-    public Object invokeGetter(Object obj, String fieldName) {
-        return map.get(fieldName).invokeGetter(obj);
-    }
-
-    public void invokeSetter(Object obj, String fieldName, Object value) {
-        map.get(fieldName).invokeSetter(obj, value);
-    }
-
     public Iterable<MetaField> metaFields() {
         return map.values();
-    }
-
-    public List<Annotation> getAnnotations() {
-        return annotations;
     }
 
     public <T extends Annotation> T getAnnotation(Class<T> clazz) {

@@ -14,7 +14,6 @@ import io.github.skycloud.fastdao.core.ast.SqlAst;
 import io.github.skycloud.fastdao.core.ast.Visitor;
 import io.github.skycloud.fastdao.core.ast.enums.OrderEnum;
 import io.github.skycloud.fastdao.core.ast.model.SortLimitClause;
-
 import io.github.skycloud.fastdao.core.table.Column;
 import lombok.Getter;
 
@@ -22,6 +21,18 @@ import lombok.Getter;
  * @author yuntian
  */
 public interface DeleteRequest extends Sortable<DeleteRequest>, ConditionalRequest<DeleteRequest> {
+
+    @Override
+    DeleteRequest limit(int limit);
+
+    @Override
+    DeleteRequest offset(int offset);
+
+    @Override
+    DeleteRequest addSort(Column column, OrderEnum order);
+
+    @Override
+    DeleteRequest addSort(String field, OrderEnum order);
 
     /**
      * @author yuntian
@@ -53,7 +64,7 @@ public interface DeleteRequest extends Sortable<DeleteRequest>, ConditionalReque
 
         @Override
         public DeleteRequest addSort(String field, OrderEnum order) {
-            sortLimitClause.addSort(field,order);
+            sortLimitClause.addSort(field, order);
             return this;
         }
 

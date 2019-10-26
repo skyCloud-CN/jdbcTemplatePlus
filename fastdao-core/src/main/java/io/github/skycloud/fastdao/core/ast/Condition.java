@@ -14,8 +14,8 @@ import io.github.skycloud.fastdao.core.ast.conditions.IsNullCondition;
 import io.github.skycloud.fastdao.core.ast.conditions.IsNullCondition.IsNullConditionAst;
 import io.github.skycloud.fastdao.core.ast.conditions.LikeCondition;
 import io.github.skycloud.fastdao.core.ast.conditions.LikeCondition.LikeConditionAst;
-import io.github.skycloud.fastdao.core.ast.conditions.OrCondition.OrConditionAst;
 import io.github.skycloud.fastdao.core.ast.conditions.OrCondition;
+import io.github.skycloud.fastdao.core.ast.conditions.OrCondition.OrConditionAst;
 import io.github.skycloud.fastdao.core.ast.conditions.RangeCondition;
 import io.github.skycloud.fastdao.core.ast.conditions.RangeCondition.RangeConditionAst;
 
@@ -23,8 +23,12 @@ import java.util.Collection;
 
 /**
  * @author yuntian
+ * all Condition can be get from this class, but only or/and method is recommaned
+ * other condition is recommend to create by define a static {@link io.github.skycloud.fastdao.core.table.Column}
+ *
+ * all Condition class is provided to user by an interface, this is just to hide some unsafe method
  */
-public interface Condition{
+public interface Condition {
 
     boolean isLegal();
 
@@ -38,11 +42,11 @@ public interface Condition{
         return new OrConditionAst();
     }
 
-    static EqualCondition equal(String column,Object... value) {
+    static EqualCondition equal(String column, Object... value) {
         return new EqualConditionAst(column, value);
     }
 
-    static EqualCondition equal(String column,Collection value) {
+    static EqualCondition equal(String column, Collection value) {
         return new EqualConditionAst(column, value);
     }
 
@@ -50,7 +54,7 @@ public interface Condition{
         return new RangeConditionAst(column);
     }
 
-    static LikeCondition like(String column,Object value) {
+    static LikeCondition like(String column, Object value) {
         return new LikeConditionAst(column, value);
     }
 

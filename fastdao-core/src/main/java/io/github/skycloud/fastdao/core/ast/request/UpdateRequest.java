@@ -28,6 +28,18 @@ public interface UpdateRequest extends Sortable<UpdateRequest>, ConditionalReque
 
     UpdateRequest addUpdateField(Column field, Object value);
 
+    @Override
+    UpdateRequest limit(int limit);
+
+    @Override
+    UpdateRequest offset(int offset);
+
+    @Override
+    UpdateRequest addSort(Column column, OrderEnum order);
+
+    @Override
+    UpdateRequest addSort(String field, OrderEnum order);
+
     /**
      * @author yuntian
      */
@@ -72,13 +84,13 @@ public interface UpdateRequest extends Sortable<UpdateRequest>, ConditionalReque
 
         @Override
         public UpdateRequest addSort(Column column, OrderEnum order) {
-            sortLimitClause.addSort(column.getName(),order);
+            sortLimitClause.addSort(column.getName(), order);
             return this;
         }
 
         @Override
         public UpdateRequest addSort(String field, OrderEnum order) {
-            sortLimitClause.addSort(field,order);
+            sortLimitClause.addSort(field, order);
             return this;
         }
 

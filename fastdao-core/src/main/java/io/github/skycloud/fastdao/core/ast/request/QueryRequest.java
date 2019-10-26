@@ -7,12 +7,10 @@
 package io.github.skycloud.fastdao.core.ast.request;
 
 import com.google.common.collect.Lists;
-
 import io.github.skycloud.fastdao.core.ast.Condition;
 import io.github.skycloud.fastdao.core.ast.ConditionalRequest;
 import io.github.skycloud.fastdao.core.ast.Sortable;
 import io.github.skycloud.fastdao.core.ast.SqlAst;
-
 import io.github.skycloud.fastdao.core.ast.Visitor;
 import io.github.skycloud.fastdao.core.ast.enums.OrderEnum;
 import io.github.skycloud.fastdao.core.ast.model.SortLimitClause;
@@ -27,6 +25,12 @@ import java.util.List;
  */
 public interface QueryRequest extends Sortable<QueryRequest>, ConditionalRequest<QueryRequest> {
 
+    QueryRequest distinct();
+
+    QueryRequest addSelectFields(Column... fields);
+
+    QueryRequest addSelectFields(Collection<Column> fields);
+
     @Override
     QueryRequest limit(int limit);
 
@@ -36,11 +40,8 @@ public interface QueryRequest extends Sortable<QueryRequest>, ConditionalRequest
     @Override
     QueryRequest addSort(Column column, OrderEnum order);
 
-    QueryRequest distinct();
-
-    QueryRequest addSelectFields(Column... fields);
-
-    QueryRequest addSelectFields(Collection<Column> fields);
+    @Override
+    QueryRequest addSort(String field, OrderEnum order);
 
     /**
      * @author yuntian
@@ -126,7 +127,7 @@ public interface QueryRequest extends Sortable<QueryRequest>, ConditionalRequest
 
         @Override
         public QueryRequest addSort(String field, OrderEnum order) {
-            sortLimitClause.addSort(field,order);
+            sortLimitClause.addSort(field, order);
             return this;
         }
 

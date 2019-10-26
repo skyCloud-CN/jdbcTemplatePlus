@@ -20,6 +20,9 @@ import io.github.skycloud.fastdao.core.plugins.Pluggable;
 
 /**
  * @author yuntian
+ * all request can be get from here by static method, or you can just new one
+ *
+ * all request are provided to user by interface just to hide unsafe method
  */
 public interface Request extends Pluggable {
 

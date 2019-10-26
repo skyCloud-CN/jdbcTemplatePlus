@@ -85,7 +85,7 @@ public class AutoIncPluginTest {
                 .and(DELETED.equal(true))
                 .endCondition())
                 .stream().findFirst().orElse(null);
-        assertEqual(model, fromDB, "exclude");
+        assertEqual(model, fromDB, "exclude","created","updated");
         Assert.assertNotEquals(model.getExclude(), fromDB.getExclude());
     }
 

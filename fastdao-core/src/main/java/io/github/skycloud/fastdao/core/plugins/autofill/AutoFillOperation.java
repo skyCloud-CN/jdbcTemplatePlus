@@ -6,9 +6,13 @@
  */
 package io.github.skycloud.fastdao.core.plugins.autofill;
 
+import lombok.Getter;
+
 /**
  * @author yuntian
  */
+@Getter
 public enum AutoFillOperation {
-    INSERT, UPDATE;
+    INSERT,
+    UPDATE;
 }

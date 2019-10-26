@@ -1,65 +1,53 @@
 /**
- * @(#)AutoFillRequestHandler.java, 10月 24, 2019.
+ * @(#)AutoFillRequstHandler.java, 10月 12, 2019.
  * <p>
  * Copyright 2019 fenbi.com. All rights reserved.
  * FENBI.COM PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
 package io.github.skycloud.fastdao.core.plugins.autofill;
 
-import com.google.common.collect.Maps;
-import io.github.skycloud.fastdao.core.ast.Request;
-import io.github.skycloud.fastdao.core.mapping.ColumnMapping;
+import com.google.common.collect.Sets;
+import io.github.skycloud.fastdao.core.ast.FieldUpdateRequest;
+import io.github.skycloud.fastdao.core.ast.request.InsertRequest;
+import io.github.skycloud.fastdao.core.ast.request.UpdateRequest;
 import io.github.skycloud.fastdao.core.mapping.RowMapping;
-import io.github.skycloud.fastdao.core.plugins.PluggableHandler;
-import io.github.skycloud.fastdao.core.reflection.MetaClass;
-import io.github.skycloud.fastdao.core.reflection.MetaField;
-import io.github.skycloud.fastdao.core.util.SingletonCache;
+import io.github.skycloud.fastdao.core.plugins.AnnotationInfo;
+import io.github.skycloud.fastdao.core.plugins.AnnotationPluggableHandler;
+import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.Map;
+import java.util.Set;
 
 /**
  * @author yuntian
  */
-public abstract class AutoFillRequestHandler<T extends Request> implements PluggableHandler<T>{
-    protected Map<Class, Map<String, AutoFillHandler>> autoFillHandlerMap = new SingletonCache<>(Maps.newConcurrentMap(),this::fillAutoFillHandlerMap);
+public class AutoFillRequestHandler<T extends FieldUpdateRequest> extends AnnotationPluggableHandler<T, AutoFill> {
 
-    protected AutoFillOperation handleOnOperation;
 
-    public AutoFillRequestHandler(AutoFillOperation handleOnOperation){
-        this.handleOnOperation=handleOnOperation;
+    @Override
+    protected T doHandle(T pluggable, AnnotationInfo<AutoFill> annotationInfo, Class clazz) {
+        RowMapping rowMapping = RowMapping.of(clazz);
+        annotationInfo.forEachAnnotatedField((autoFill, metaField) -> {
+            if (match(pluggable, autoFill)) {
+                String columnName = rowMapping.getColumnMappingByFieldName(metaField.getFieldName()).getColumnName();
+                AutoFillHandler handler = createHandler(autoFill);
+                pluggable.addUpdateField(columnName, handler.handle(pluggable));
+
+            }
+        });
+        return pluggable;
     }
 
-    private Map<String, AutoFillHandler> fillAutoFillHandlerMap(Class clazz) {
-        MetaClass metaClass = MetaClass.of(clazz);
-        RowMapping rowMapping = RowMapping.of(clazz);
-        Map<String, AutoFillHandler> fieldAutoFillHandlerMap = Maps.newHashMap();
-        for (MetaField metaField : metaClass.metaFields()) {
-            AutoFill autoFill = metaField.getAnnotation(AutoFill.class);
-            if (autoFill == null) {
-                continue;
-            }
-            ColumnMapping columnMapping = rowMapping.getColumnMappingByFieldName(metaField.getFieldName());
-            if (columnMapping == null) {
-                continue;
-            }
-            AutoFillHandler handler=createHandler(autoFill);
-            if(handler!=null) {
-                fieldAutoFillHandlerMap.put(columnMapping.getColumnName(), handler);
-            }
+    private boolean match(T request, AutoFill autoFill) {
+        if (request instanceof UpdateRequest) {
+            return ArrayUtils.contains(autoFill.onOperation(), AutoFillOperation.UPDATE);
+        } else if (request instanceof InsertRequest) {
+            return ArrayUtils.contains(autoFill.onOperation(), AutoFillOperation.INSERT);
+        } else {
+            return false;
         }
-        return fieldAutoFillHandlerMap;
     }
 
     private AutoFillHandler createHandler(AutoFill autoFill) {
-        boolean match = false;
-        for (AutoFillOperation operation : autoFill.onOperation()) {
-            if (operation == handleOnOperation) {
-                match = true;
-            }
-        }
-        if (!match) {
-            return null;
-        }
         if (autoFill.fillValue() == AutoFillValueEnum.NOW) {
             return new NowDateAutoFillHandler();
         }

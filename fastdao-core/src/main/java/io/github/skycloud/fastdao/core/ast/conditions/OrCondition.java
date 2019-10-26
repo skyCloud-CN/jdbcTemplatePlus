@@ -7,10 +7,8 @@
 package io.github.skycloud.fastdao.core.ast.conditions;
 
 import com.google.common.collect.Lists;
-
 import io.github.skycloud.fastdao.core.ast.Condition;
 import io.github.skycloud.fastdao.core.ast.SqlAst;
-
 import io.github.skycloud.fastdao.core.ast.Visitor;
 
 import java.util.ArrayList;
@@ -25,6 +23,11 @@ public interface OrCondition<T extends OrCondition> extends Condition {
 
     T orOptional(Condition condition);
 
+    /**
+     * this method is for dynamic SQL when there is no subCondition.
+     * if this method is executed,request will translate to SQL `SELECT * FROM table`
+     * or else ,request will be seen as a illegal request and return nothing
+     */
     T allowEmpty();
 
     /**
@@ -86,7 +89,7 @@ public interface OrCondition<T extends OrCondition> extends Condition {
             }
             OrConditionAst orCondition = new OrConditionAst();
             orCondition.subConditions = copySubConditions;
-            orCondition.allowEmpty=allowEmpty;
+            orCondition.allowEmpty = allowEmpty;
             return orCondition;
         }
 

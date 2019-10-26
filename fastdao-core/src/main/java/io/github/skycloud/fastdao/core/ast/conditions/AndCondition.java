@@ -31,13 +31,17 @@ public interface AndCondition<T extends AndCondition> extends Condition {
     /**
      * add a {@link Condition} as subCondition only when the condition is legal,
      * for example,  if a {@link EqualCondition} has value = null, then it is a illegal condition
-     * but {@link AndCondition} and {@link OrCondition} is always seen as a legal condition
+     * but {@link AndCondition} and {@link OrCondition} is always seen as a legal condition if it allow empty
      *
      * @param condition
      * @return
      */
     T andOptional(Condition condition);
-
+    /**
+     * this method is for dynamic SQL when there is no subCondition.
+     * if this method is executed,request will translate to SQL `SELECT * FROM table`
+     * or else ,request will be seen as a illegal request and return nothing
+     */
     T allowEmpty();
 
     /**

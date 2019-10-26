@@ -9,6 +9,7 @@ package io.github.skycloud.fastdao.core.ast.request;
 import com.google.common.collect.Maps;
 import io.github.skycloud.fastdao.core.ast.Condition;
 import io.github.skycloud.fastdao.core.ast.ConditionalRequest;
+import io.github.skycloud.fastdao.core.ast.FieldUpdateRequest;
 import io.github.skycloud.fastdao.core.ast.Sortable;
 import io.github.skycloud.fastdao.core.ast.SqlAst;
 import io.github.skycloud.fastdao.core.ast.Visitor;
@@ -22,10 +23,12 @@ import java.util.Map;
 /**
  * @author yuntian
  */
-public interface UpdateRequest extends Sortable<UpdateRequest>, ConditionalRequest<UpdateRequest> {
+public interface UpdateRequest extends Sortable<UpdateRequest>, ConditionalRequest<UpdateRequest>, FieldUpdateRequest<UpdateRequest> {
 
+    @Override
     UpdateRequest addUpdateField(String field, Object value);
 
+    @Override
     UpdateRequest addUpdateField(Column field, Object value);
 
     @Override

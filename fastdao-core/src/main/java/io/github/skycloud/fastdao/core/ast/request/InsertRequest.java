@@ -7,7 +7,7 @@
 package io.github.skycloud.fastdao.core.ast.request;
 
 import com.google.common.collect.Maps;
-import io.github.skycloud.fastdao.core.ast.Request;
+import io.github.skycloud.fastdao.core.ast.FieldUpdateRequest;
 import io.github.skycloud.fastdao.core.ast.SqlAst;
 import io.github.skycloud.fastdao.core.ast.Visitor;
 import io.github.skycloud.fastdao.core.table.Column;
@@ -17,11 +17,13 @@ import java.util.Map;
 /**
  * @author yuntian
  */
-public interface InsertRequest extends Request {
+public interface InsertRequest extends FieldUpdateRequest<InsertRequest> {
 
-    InsertRequest addInsertField(Column field, Object value);
+    @Override
+    InsertRequest addUpdateField(Column field, Object value);
 
-    InsertRequest addInsertField(String field, Object value);
+    @Override
+    InsertRequest addUpdateField(String field, Object value);
 
     /**
      * @author yuntian
@@ -29,22 +31,24 @@ public interface InsertRequest extends Request {
 
     class InsertRequestAst implements InsertRequest, SqlAst {
 
-        private Map<String, Object> insertFields = Maps.newLinkedHashMap();
+        private Map<String, Object> updateFields = Maps.newLinkedHashMap();
 
         @Override
-        public InsertRequest addInsertField(Column field, Object value) {
-            insertFields.put(field.getName(), value);
-            return this;
-        }
-        @Override
-        public InsertRequest addInsertField(String field, Object value) {
-            insertFields.put(field, value);
+        public InsertRequest addUpdateField(Column field, Object value) {
+            updateFields.put(field.getName(), value);
             return this;
         }
 
+        @Override
+        public InsertRequest addUpdateField(String field, Object value) {
+            updateFields.put(field, value);
+            return this;
+        }
 
-        public Map<String, Object> getInsertFields() {
-            return insertFields;
+
+        @Override
+        public Map<String, Object> getUpdateFields() {
+            return updateFields;
         }
 
         @Override
@@ -55,7 +59,7 @@ public interface InsertRequest extends Request {
         @Override
         public SqlAst copy() {
             InsertRequestAst request = new InsertRequestAst();
-            request.insertFields = Maps.newLinkedHashMap(insertFields);
+            request.updateFields = Maps.newLinkedHashMap(updateFields);
             return request;
         }
     }

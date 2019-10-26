@@ -152,7 +152,7 @@ public class MysqlVisitor extends SqlVisitor {
         sb.append(SQLConstant.INSERT_INTO);
         visitField(tableName);
         sb.append(SQLConstant.SET);
-        visitCollection(request.getInsertFields().entrySet(), (entry) -> {
+        visitCollection(request.getUpdateFields().entrySet(), (entry) -> {
             visitField(entry.getKey());
             sb.append(SQLConstant.EQUAL);
             visitValue(entry.getKey(), entry.getValue());

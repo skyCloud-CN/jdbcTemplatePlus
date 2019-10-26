@@ -58,10 +58,10 @@ public class LogicDeleteVisitor implements Visitor {
 
     @Override
     public void visit(InsertRequestAst request) {
-        if(request.getInsertFields().containsKey(logicDeleteColumn)){
+        if(request.getUpdateFields().containsKey(logicDeleteColumn)){
             return;
         }
-        request.addInsertField(logicDeleteColumn,logicDeleteDefaultValue);
+        request.addUpdateField(logicDeleteColumn,logicDeleteDefaultValue);
     }
 
     @Override

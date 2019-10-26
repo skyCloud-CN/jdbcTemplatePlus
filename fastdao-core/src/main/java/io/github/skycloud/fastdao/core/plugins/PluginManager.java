@@ -78,7 +78,7 @@ public class PluginManager {
     }
 
     private static void register(PluggableHandler handler) {
-        Class pluggableClass = (Class) TypeToken.of(handler.getClass()).resolveType(PluggableHandler.class.getTypeParameters()[0]).getType();
+        Class pluggableClass = TypeToken.of(handler.getClass()).resolveType(PluggableHandler.class.getTypeParameters()[0]).getRawType();
         int order = handlerNumber.incrementAndGet();
         handlers.put(pluggableClass, new Ordered<>(handler, order));
     }

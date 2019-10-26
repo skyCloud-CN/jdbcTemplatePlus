@@ -102,7 +102,7 @@ public abstract class BaseStorage<DATA, PRIM_KEY> implements Storage<DATA, PRIM_
             if (selective && value == null) {
                 continue;
             }
-            request.addInsertField(columnMapping.getColumnName(), value);
+            request.addUpdateField(columnMapping.getColumnName(), value);
 
         }
         Number[] result = JdbcTemplateSqlHelper.insert(getJdbcTemplate(), request, dataClass);

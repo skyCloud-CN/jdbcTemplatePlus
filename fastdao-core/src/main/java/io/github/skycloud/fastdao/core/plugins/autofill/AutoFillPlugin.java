@@ -19,6 +19,6 @@ public class AutoFillPlugin implements Plugin {
 
     @Override
     public List<PluggableHandler> getHandlers() {
-        return Lists.newArrayList(new AutoFillInsertRequestHandler(), new AutoFillUpdateRequestHandler());
+        return Lists.newArrayList(new AutoFillRequestHandler());
     }
 }

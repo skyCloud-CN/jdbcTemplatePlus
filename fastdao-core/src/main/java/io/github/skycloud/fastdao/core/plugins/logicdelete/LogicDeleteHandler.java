@@ -1,21 +1,14 @@
 package io.github.skycloud.fastdao.core.plugins.logicdelete;
 
-import com.google.common.collect.Maps;
-import io.github.skycloud.fastdao.core.ast.Condition;
-import io.github.skycloud.fastdao.core.ast.ConditionalRequest;
 import io.github.skycloud.fastdao.core.ast.Request;
 import io.github.skycloud.fastdao.core.ast.SqlAst;
 import io.github.skycloud.fastdao.core.exceptions.FastDAOException;
+import io.github.skycloud.fastdao.core.mapping.ColumnMapping;
 import io.github.skycloud.fastdao.core.mapping.RowMapping;
-import io.github.skycloud.fastdao.core.plugins.PluggableHandler;
-import io.github.skycloud.fastdao.core.reflection.MetaClass;
-import io.github.skycloud.fastdao.core.reflection.MetaField;
-import io.github.skycloud.fastdao.core.util.SingletonCache;
+import io.github.skycloud.fastdao.core.plugins.AnnotationInfo;
+import io.github.skycloud.fastdao.core.plugins.AnnotationPluggableHandler;
 
-import java.lang.annotation.Annotation;
-
-public class LogicDeleteHandler implements PluggableHandler<Request> {
-    private SingletonCache<Class, LogicDeleteConfig> logicDeleteCache = new SingletonCache<>(Maps.newConcurrentMap(), this::getLogicDeleteConfig);
+public class LogicDeleteHandler extends AnnotationPluggableHandler<Request, LogicDelete> {
 
     /**
      * DeleteRequest : do not need Handle
@@ -23,34 +16,24 @@ public class LogicDeleteHandler implements PluggableHandler<Request> {
      * InsertRequest : if logicDelete field is not in insert field or logicDelete field=null, set logicDelete field to defaultUnDeleteValue;
      * QueryRequest : if logicDelete field is not in condition, add condition of logicDelete
      * CountRequest : if logicDelete field is not in condition, add condition of logicDelete
+     *
      * @param pluggable
      * @param clazz
      * @return
      */
     @Override
-    public Request handle(Request pluggable, Class clazz) {
-        LogicDeleteConfig config= logicDeleteCache.get(clazz);
-        if(!config.exist){
-            return pluggable;
+    protected Request doHandle(Request pluggable, AnnotationInfo<LogicDelete> annotationInfo, Class clazz) {
+        if (annotationInfo.annotatedFieldSize() > 1) {
+            throw new RuntimeException();
         }
-        LogicDeleteVisitor logicDeleteVisitor=new LogicDeleteVisitor(config.columnName,config.defaultUnDeleteValue);
-        ((SqlAst)pluggable).accept(logicDeleteVisitor);
-        return pluggable;
-    }
-
-    private LogicDeleteConfig getLogicDeleteConfig(Class clazz) {
         RowMapping rowMapping = RowMapping.of(clazz);
-        MetaClass metaClass = MetaClass.of(clazz);
-        LogicDeleteConfig config=new LogicDeleteConfig();
-        for (MetaField metaField : metaClass.metaFields()) {
-            Annotation annotation = metaField.getAnnotation(LogicDelete.class);
-            if (annotation != null) {
-                config.columnName=rowMapping.getColumnMappingByColumnName(metaField.getFieldName()).getColumnName();
-                config.defaultUnDeleteValue=rowMapping.getColumnMappingByFieldName(metaField.getFieldName()).getHandler().parseParam(getDefaultUnDeleteValue(metaField.getFieldType()));
-                config.exist=true;
-            }
-        }
-        return config;
+        annotationInfo.forEachAnnotatedField((annotation, metaField) -> {
+            ColumnMapping columnMapping = rowMapping.getColumnMappingByFieldName(metaField.getFieldName());
+            Object defaultValue = getDefaultUnDeleteValue(metaField.getFieldType());
+            LogicDeleteVisitor logicDeleteVisitor = new LogicDeleteVisitor(columnMapping.getColumnName(), defaultValue);
+            ((SqlAst) pluggable).accept(logicDeleteVisitor);
+        });
+        return pluggable;
     }
 
     private Object getDefaultUnDeleteValue(Class clazz) {
@@ -62,9 +45,13 @@ public class LogicDeleteHandler implements PluggableHandler<Request> {
             throw new FastDAOException("can't define LogicDelete default value");
         }
     }
-    private static class LogicDeleteConfig{
+
+    private static class LogicDeleteConfig {
+
         public Object defaultUnDeleteValue;
+
         public String columnName;
+
         public boolean exist;
     }
 }

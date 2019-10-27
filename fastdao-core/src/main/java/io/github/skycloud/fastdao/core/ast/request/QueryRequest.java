@@ -15,6 +15,7 @@ import io.github.skycloud.fastdao.core.ast.SqlAst;
 import io.github.skycloud.fastdao.core.ast.Visitor;
 import io.github.skycloud.fastdao.core.ast.enums.OrderEnum;
 import io.github.skycloud.fastdao.core.ast.model.SortLimitClause;
+import io.github.skycloud.fastdao.core.ast.model.SqlFunction;
 import io.github.skycloud.fastdao.core.exceptions.IllegalConditionException;
 import io.github.skycloud.fastdao.core.table.Column;
 import lombok.Getter;
@@ -33,6 +34,8 @@ public interface QueryRequest extends Sortable<QueryRequest>, ConditionalRequest
     QueryRequest addSelectFields(Column... fields);
 
     QueryRequest addSelectFields(Collection<Column> fields);
+
+    QueryRequest addSelectField(SqlFunction function);
 
     @Override
     QueryRequest limit(int limit);
@@ -58,9 +61,12 @@ public interface QueryRequest extends Sortable<QueryRequest>, ConditionalRequest
 
         private List<String> selectFields = Lists.newArrayList();
 
+        private List<SqlFunction> functionFields=Lists.newArrayList();
+
         private SortLimitClause sortLimitClause = new SortLimitClause();
 
-        private Function<IllegalConditionException,?> onSyntaxError;
+        private Function<IllegalConditionException, ?> onSyntaxError;
+
         @Override
         public QueryRequest addSelectFields(Column... fields) {
             for (Column field : fields) {
@@ -74,6 +80,12 @@ public interface QueryRequest extends Sortable<QueryRequest>, ConditionalRequest
             for (Column field : fields) {
                 addSelectField(field.toString());
             }
+            return this;
+        }
+
+        @Override
+        public QueryRequest addSelectField(SqlFunction function) {
+            this.functionFields.add(function);
             return this;
         }
 
@@ -97,7 +109,7 @@ public interface QueryRequest extends Sortable<QueryRequest>, ConditionalRequest
             }
             request.distinct = distinct;
             request.sortLimitClause = (SortLimitClause) sortLimitClause.copy();
-            request.onSyntaxError=onSyntaxError;
+            request.onSyntaxError = onSyntaxError;
             return request;
         }
 
@@ -143,8 +155,8 @@ public interface QueryRequest extends Sortable<QueryRequest>, ConditionalRequest
 
         @Override
         public <T extends Request> T onSyntaxError(Function<IllegalConditionException, ?> action) {
-            this.onSyntaxError=action;
-            return (T)this;
+            this.onSyntaxError = action;
+            return (T) this;
         }
 
         @Override

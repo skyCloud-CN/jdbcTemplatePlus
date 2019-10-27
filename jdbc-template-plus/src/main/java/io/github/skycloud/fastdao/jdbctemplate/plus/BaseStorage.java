@@ -7,11 +7,13 @@
 package io.github.skycloud.fastdao.jdbctemplate.plus;
 
 import io.github.skycloud.fastdao.core.Storage;
+import io.github.skycloud.fastdao.core.ast.Request;
 import io.github.skycloud.fastdao.core.ast.conditions.EqualCondition.EqualConditionAst;
 import io.github.skycloud.fastdao.core.ast.request.CountRequest;
 import io.github.skycloud.fastdao.core.ast.request.CountRequest.CountRequestAst;
 import io.github.skycloud.fastdao.core.ast.request.DeleteRequest;
 import io.github.skycloud.fastdao.core.ast.request.DeleteRequest.DeleteRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.InsertRequest;
 import io.github.skycloud.fastdao.core.ast.request.InsertRequest.InsertRequestAst;
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest;
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest.QueryRequestAst;
@@ -85,6 +87,14 @@ public abstract class BaseStorage<DATA, PRIM_KEY> implements Storage<DATA, PRIM_
     @Override
     public int insert(DATA t) {
         return insert(t, false);
+    }
+
+    @Override
+    public int insert(InsertRequest insertRequest) {
+        MetaClass metaClass=MetaClass.of(dataClass);
+        JdbcTemplateSqlHelper.insert(getJdbcTemplate(), insertRequest,dataClass);
+        Number[] result = JdbcTemplateSqlHelper.insert(getJdbcTemplate(), insertRequest, dataClass);
+        return 0;
     }
 
     @Override

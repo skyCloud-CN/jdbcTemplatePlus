@@ -8,6 +8,7 @@ package io.github.skycloud.fastdao.core;
 
 import io.github.skycloud.fastdao.core.ast.request.CountRequest;
 import io.github.skycloud.fastdao.core.ast.request.DeleteRequest;
+import io.github.skycloud.fastdao.core.ast.request.InsertRequest;
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest;
 import io.github.skycloud.fastdao.core.ast.request.UpdateRequest;
 import io.github.skycloud.fastdao.core.util.Page;
@@ -26,6 +27,7 @@ public interface Storage<DATA, PRIM_KEY> {
      */
     int insert(DATA t);
 
+    int insert(InsertRequest insertRequest);
     /**
      * insert DATA to db, only non-null field will be insert
      * if you want null field to be default value in db ,you can use this method

@@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
 import io.github.skycloud.fastdao.core.ast.Condition;
 import io.github.skycloud.fastdao.core.ast.Request;
 import io.github.skycloud.fastdao.core.ast.request.CountRequest.CountRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.InsertRequest;
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest.QueryRequestAst;
 import io.github.skycloud.fastdao.core.ast.request.UpdateRequest.UpdateRequestAst;
 import io.github.skycloud.fastdao.core.reflection.MetaClass;
@@ -38,6 +39,7 @@ import static io.github.skycloud.fastdao.demo.model.Columns.CREATED;
 import static io.github.skycloud.fastdao.demo.model.Columns.DELETED;
 import static io.github.skycloud.fastdao.demo.model.Columns.ID;
 import static io.github.skycloud.fastdao.demo.model.Columns.NAME;
+import static io.github.skycloud.fastdao.demo.model.Columns.TEXT;
 import static io.github.skycloud.fastdao.demo.model.Columns.UPDATED;
 
 /**
@@ -392,6 +394,16 @@ public class AutoIncPluginTest {
                 .map(AutoIncPluginTestModel::getName).allMatch(x -> x.equals("updated")));
     }
 
+    @Test
+    public void test_onDuplicateKey(){
+        InsertRequest request=Request.insertRequest();
+        request.addUpdateField(ID,6);
+        request.addUpdateField(NAME,"hello");
+        request.addUpdateField(TEXT,"test1111");
+        request.addOnDuplicateUpdateField(NAME);
+        dao.insert(request);
+        System.out.println();
+    }
 
     private AutoIncPluginTestModel getDefaultModel() {
         AutoIncPluginTestModel model = new AutoIncPluginTestModel();

@@ -153,6 +153,15 @@ public class MysqlVisitor extends SqlVisitor {
             sb.append(SQLConstant.EQUAL);
             visitValue(entry.getKey(), entry.getValue());
         }, SQLConstant.COMMA);
+        if(CollectionUtils.sizeIsEmpty(request.getOnDuplicateKeyUpdateFields())){
+            return;
+        }
+        sb.append(SQLConstant.ON_DUPLICATE_KEY_UPDATE);
+        visitCollection(request.getOnDuplicateKeyUpdateFields().entrySet(),entry -> {
+            visitField(entry.getKey());
+            sb.append(SQLConstant.EQUAL);
+            visitValue(entry.getKey(),entry.getValue());
+        },SQLConstant.COMMA);
     }
 
 

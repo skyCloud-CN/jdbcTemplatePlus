@@ -14,6 +14,7 @@ import io.github.skycloud.fastdao.core.ast.Visitor;
 import io.github.skycloud.fastdao.core.exceptions.IllegalConditionException;
 import io.github.skycloud.fastdao.core.table.Column;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -28,6 +29,12 @@ public interface InsertRequest extends FieldUpdateRequest<InsertRequest> {
     @Override
     InsertRequest addUpdateField(String field, Object value);
 
+    InsertRequest addOnDuplicateUpdateField(Column... fields);
+
+    InsertRequest addOnDuplicateUpdateField(Collection<Column> fields);
+
+    InsertRequest addOnDuplicateUpdateField(Column field, Object value);
+
     /**
      * @author yuntian
      */
@@ -37,6 +44,8 @@ public interface InsertRequest extends FieldUpdateRequest<InsertRequest> {
         private Map<String, Object> updateFields = Maps.newLinkedHashMap();
 
         private Function<IllegalConditionException, ?> onSyntaxError;
+
+        private Map<String, Object> onDuplicateKeyUpdateFields = Maps.newLinkedHashMap();
 
         @Override
         public InsertRequest addUpdateField(Column field, Object value) {
@@ -50,10 +59,36 @@ public interface InsertRequest extends FieldUpdateRequest<InsertRequest> {
             return this;
         }
 
+        @Override
+        public InsertRequest addOnDuplicateUpdateField(Column... fields) {
+            for (Column field : fields) {
+                onDuplicateKeyUpdateFields.put(field.getName(), null);
+            }
+            return this;
+        }
+
+        @Override
+        public InsertRequest addOnDuplicateUpdateField(Collection<Column> fields) {
+            for (Column field : fields) {
+                onDuplicateKeyUpdateFields.put(field.getName(), null);
+            }
+            return this;
+        }
+
+        @Override
+        public InsertRequest addOnDuplicateUpdateField(Column field, Object value) {
+            onDuplicateKeyUpdateFields.put(field.getName(), value);
+            return this;
+        }
+
 
         @Override
         public Map<String, Object> getUpdateFields() {
             return updateFields;
+        }
+
+        public Map<String, Object> getOnDuplicateKeyUpdateFields() {
+            return onDuplicateKeyUpdateFields;
         }
 
         @Override
@@ -65,7 +100,8 @@ public interface InsertRequest extends FieldUpdateRequest<InsertRequest> {
         public SqlAst copy() {
             InsertRequestAst request = new InsertRequestAst();
             request.updateFields = Maps.newLinkedHashMap(updateFields);
-            request.onSyntaxError=onSyntaxError;
+            request.onSyntaxError = onSyntaxError;
+            request.onDuplicateKeyUpdateFields=onDuplicateKeyUpdateFields;
             return request;
         }
 

@@ -37,12 +37,19 @@ public interface AndCondition<T extends AndCondition> extends Condition {
      * @return
      */
     T andOptional(Condition condition);
+
+    /**
+     * condition is add only when preCondition is true
+     */
+    T andIf(Condition condition, boolean preCondition);
+
     /**
      * this method is for dynamic SQL when there is no subCondition.
      * if this method is executed,request will translate to SQL `SELECT * FROM table`
      * or else ,request will be seen as a illegal request and return nothing
      */
     T allowEmpty();
+
 
     /**
      * @author yuntian
@@ -67,6 +74,15 @@ public interface AndCondition<T extends AndCondition> extends Condition {
             }
             return (T) this;
         }
+
+        @Override
+        public T andIf(Condition condition, boolean preCondition) {
+            if (preCondition) {
+                subConditions.add(condition);
+            }
+            return (T) this;
+        }
+
 
         @Override
         public T allowEmpty() {
@@ -103,7 +119,7 @@ public interface AndCondition<T extends AndCondition> extends Condition {
                 arrayList.add((Condition) ((SqlAst) condition).copy());
             }
             andCondition.subConditions = arrayList;
-            andCondition.allowEmpty=allowEmpty;
+            andCondition.allowEmpty = allowEmpty;
             return andCondition;
         }
 

@@ -6,35 +6,35 @@
  */
 package io.github.skycloud.fastdao.core.util;
 
-import io.github.skycloud.fastdao.core.ast.enums.SqlFunctionEnum;
-import io.github.skycloud.fastdao.core.ast.request.QueryRequest;
+import io.github.skycloud.fastdao.core.ast.enums.SqlFunEnum;
 import io.github.skycloud.fastdao.core.table.Column;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Map;
 
 /**
  * @author yuntian
  */
+@Data
+@NoArgsConstructor
 public class QueryResult<DATA> {
 
     private DATA data;
 
-    private Map<String, Object> sqlFunctionData;
+    private Map<String, Object> sqlFunData;
 
-    public QueryResult(DATA  data,Map sqlFunctionData){
-        this.data=data;
-        this.sqlFunctionData=sqlFunctionData;
+    public QueryResult(DATA data, Map<String,Object> sqlFunData) {
+        this.data = data;
+        this.sqlFunData = sqlFunData;
     }
-    public Object getSqlFunctionData(SqlFunctionEnum type, Column field) {
-        return sqlFunctionData.get(genKey(type, field.getName()));
+
+    public Object getSqlFunData(SqlFunEnum type, Column field) {
+        return sqlFunData.get(type.genKey(field.getName()));
     }
 
     public DATA getData() {
         return data;
-    }
-
-    private String genKey(SqlFunctionEnum type, String field) {
-        return type.name() + '|' + field;
     }
 
 }

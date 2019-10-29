@@ -70,4 +70,6 @@ public class SQLConstant {
     public static final String IS_NULL = "IS NULL ";
 
     public static final String ON_DUPLICATE_KEY_UPDATE="ON DUPLICATE KEY UPDATE ";
+
+    public static final String AS = "AS ";
 }

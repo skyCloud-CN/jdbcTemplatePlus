@@ -9,12 +9,17 @@ package io.github.skycloud.fastdao.demo;
 import com.google.common.collect.Lists;
 import io.github.skycloud.fastdao.core.ast.Condition;
 import io.github.skycloud.fastdao.core.ast.Request;
+import io.github.skycloud.fastdao.core.ast.conditions.EqualCondition;
+import io.github.skycloud.fastdao.core.ast.conditions.EqualCondition.EqualConditionAst;
+import io.github.skycloud.fastdao.core.ast.enums.SqlFunEnum;
+import io.github.skycloud.fastdao.core.ast.model.SqlFun;
 import io.github.skycloud.fastdao.core.ast.request.CountRequest.CountRequestAst;
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest;
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest.QueryRequestAst;
 import io.github.skycloud.fastdao.core.ast.request.UpdateRequest.UpdateRequestAst;
 import io.github.skycloud.fastdao.core.reflection.MetaClass;
 import io.github.skycloud.fastdao.core.reflection.MetaField;
+import io.github.skycloud.fastdao.core.util.QueryResult;
 import io.github.skycloud.fastdao.demo.dao.AutoIncDAO;
 import io.github.skycloud.fastdao.demo.model.AutoIncModel;
 import lombok.extern.slf4j.Slf4j;
@@ -417,7 +422,6 @@ public class AutoIncTest {
     @Test
     public void testIsNullCondition() {
         QueryRequest request = Request.queryRequest()
-                .addSelectFields()
                 .beginAndCondition()
                 .and(NAME.isNull())
                 .and(NAME.equal(3))
@@ -437,6 +441,14 @@ public class AutoIncTest {
 
 
     }
-
-
+    @Test
+    public void test_function(){
+        QueryRequest request=Request.queryRequest();
+        request.addSelectFields(new SqlFun(SqlFunEnum.MAX,ID));
+        List<QueryResult<AutoIncModel>> results=dao.selectAdvance(request);
+    }
+    @Test
+    public  void test(){
+        EqualCondition equalCondition=new EqualConditionAst("hello",Lists.newArrayList());
+    }
 }

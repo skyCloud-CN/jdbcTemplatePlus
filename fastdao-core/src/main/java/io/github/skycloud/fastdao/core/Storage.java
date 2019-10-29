@@ -12,6 +12,7 @@ import io.github.skycloud.fastdao.core.ast.request.InsertRequest;
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest;
 import io.github.skycloud.fastdao.core.ast.request.UpdateRequest;
 import io.github.skycloud.fastdao.core.util.Page;
+import io.github.skycloud.fastdao.core.util.QueryResult;
 
 import java.util.Collection;
 import java.util.List;
@@ -28,6 +29,7 @@ public interface Storage<DATA, PRIM_KEY> {
     int insert(DATA t);
 
     int insert(InsertRequest insertRequest);
+
     /**
      * insert DATA to db, only non-null field will be insert
      * if you want null field to be default value in db ,you can use this method
@@ -73,8 +75,13 @@ public interface Storage<DATA, PRIM_KEY> {
 
     /**
      * select by QueryRequest
+     * this method doesn't support extra function
      */
     List<DATA> select(QueryRequest queryRequest);
+    /**
+     * support SqlFunction as request field
+     */
+    List<QueryResult<DATA>> selectAdvance(QueryRequest queryRequest);
 
     /**
      * multiple selection

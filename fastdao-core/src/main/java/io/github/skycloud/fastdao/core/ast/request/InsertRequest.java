@@ -12,6 +12,7 @@ import io.github.skycloud.fastdao.core.ast.Request;
 import io.github.skycloud.fastdao.core.ast.SqlAst;
 import io.github.skycloud.fastdao.core.ast.Visitor;
 import io.github.skycloud.fastdao.core.exceptions.IllegalConditionException;
+import io.github.skycloud.fastdao.core.exceptions.IllegalRequestException;
 import io.github.skycloud.fastdao.core.table.Column;
 
 import java.util.Collection;
@@ -23,17 +24,30 @@ import java.util.function.Function;
  */
 public interface InsertRequest extends FieldUpdateRequest<InsertRequest> {
 
+    /**
+     * override from {@link FieldUpdateRequest}
+     */
     @Override
     InsertRequest addUpdateField(Column field, Object value);
 
+    /**
+     * override from {@link FieldUpdateRequest}
+     */
     @Override
     InsertRequest addUpdateField(String field, Object value);
 
+    /**
+     * add onDuplicateUpdateField
+     */
     InsertRequest addOnDuplicateUpdateField(Column... fields);
 
-    InsertRequest addOnDuplicateUpdateField(Collection<Column> fields);
+    InsertRequest addOnDuplicateUpdateField(String... fields);
+
+    InsertRequest addOnDuplicateUpdateField(Collection fields);
 
     InsertRequest addOnDuplicateUpdateField(Column field, Object value);
+
+    InsertRequest addOnDuplicateUpdateField(String field, Object value);
 
     /**
      * @author yuntian
@@ -62,25 +76,44 @@ public interface InsertRequest extends FieldUpdateRequest<InsertRequest> {
         @Override
         public InsertRequest addOnDuplicateUpdateField(Column... fields) {
             for (Column field : fields) {
-                onDuplicateKeyUpdateFields.put(field.getName(), null);
+                addOnDuplicateUpdateField(field.getName(), null);
             }
             return this;
         }
 
         @Override
-        public InsertRequest addOnDuplicateUpdateField(Collection<Column> fields) {
-            for (Column field : fields) {
-                onDuplicateKeyUpdateFields.put(field.getName(), null);
+        public InsertRequest addOnDuplicateUpdateField(String... fields) {
+            for (String field : fields) {
+                addOnDuplicateUpdateField(field, null);
             }
             return this;
         }
 
         @Override
         public InsertRequest addOnDuplicateUpdateField(Column field, Object value) {
-            onDuplicateKeyUpdateFields.put(field.getName(), value);
+            addOnDuplicateUpdateField(field.getName(), value);
             return this;
         }
 
+        @Override
+        public InsertRequest addOnDuplicateUpdateField(String field, Object value) {
+            onDuplicateKeyUpdateFields.put(field, null);
+            return this;
+        }
+
+        @Override
+        public InsertRequest addOnDuplicateUpdateField(Collection fields) {
+            for (Object field : fields) {
+                if (field instanceof Column) {
+                    addOnDuplicateUpdateField(((Column) field).getName(), null);
+                } else if (field instanceof String) {
+                    addOnDuplicateUpdateField((String) field, null);
+                } else {
+                    throw new IllegalRequestException("only Column, String is allowed as onDuplicateUpdateField type");
+                }
+            }
+            return this;
+        }
 
         @Override
         public Map<String, Object> getUpdateFields() {
@@ -89,20 +122,6 @@ public interface InsertRequest extends FieldUpdateRequest<InsertRequest> {
 
         public Map<String, Object> getOnDuplicateKeyUpdateFields() {
             return onDuplicateKeyUpdateFields;
-        }
-
-        @Override
-        public void accept(Visitor visitor) {
-            visitor.visit(this);
-        }
-
-        @Override
-        public SqlAst copy() {
-            InsertRequestAst request = new InsertRequestAst();
-            request.updateFields = Maps.newLinkedHashMap(updateFields);
-            request.onSyntaxError = onSyntaxError;
-            request.onDuplicateKeyUpdateFields=onDuplicateKeyUpdateFields;
-            return request;
         }
 
         @Override
@@ -115,5 +134,21 @@ public interface InsertRequest extends FieldUpdateRequest<InsertRequest> {
         public Function<IllegalConditionException, ?> getOnSyntaxError() {
             return onSyntaxError;
         }
+
+        @Override
+        public void accept(Visitor visitor) {
+            visitor.visit(this);
+        }
+
+        @Override
+        public SqlAst copy() {
+            InsertRequestAst request = new InsertRequestAst();
+            request.updateFields = Maps.newLinkedHashMap(updateFields);
+            request.onSyntaxError = onSyntaxError;
+            request.onDuplicateKeyUpdateFields = onDuplicateKeyUpdateFields;
+            return request;
+        }
+
+
     }
 }

@@ -17,6 +17,10 @@ import io.github.skycloud.fastdao.core.ast.conditions.OrCondition.OrConditionAst
  */
 public interface ConditionalRequest<T extends ConditionalRequest<T>> extends Request {
 
+    Condition getCondition();
+
+    T setCondition(Condition condition);
+
     /**
      * to support stream api, equals to setCondition(Condition.and()...)
      *
@@ -38,10 +42,6 @@ public interface ConditionalRequest<T extends ConditionalRequest<T>> extends Req
         setCondition(condition);
         return condition;
     }
-
-    T setCondition(Condition condition);
-
-    Condition getCondition();
 
     interface BindAndCondition<P extends ConditionalRequest<P>> extends AndCondition<BindAndCondition<P>> {
 
@@ -73,6 +73,7 @@ public interface ConditionalRequest<T extends ConditionalRequest<T>> extends Req
 
         @Override
         BindOrCondition<P> allowEmpty();
+
         /**
          * return to Bind ConditionalRequest
          *

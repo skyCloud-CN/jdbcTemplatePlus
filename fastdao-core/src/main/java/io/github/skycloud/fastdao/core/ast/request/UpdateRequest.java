@@ -28,21 +28,39 @@ import java.util.function.Function;
  */
 public interface UpdateRequest extends Sortable<UpdateRequest>, ConditionalRequest<UpdateRequest>, FieldUpdateRequest<UpdateRequest> {
 
+    /**
+     * override from {@link FieldUpdateRequest}
+     */
     @Override
     UpdateRequest addUpdateField(String field, Object value);
 
+    /**
+     * override from {@link FieldUpdateRequest}
+     */
     @Override
     UpdateRequest addUpdateField(Column field, Object value);
 
+    /**
+     * override from {@link Sortable}
+     */
     @Override
     UpdateRequest limit(int limit);
 
+    /**
+     * override from {@link Sortable}
+     */
     @Override
     UpdateRequest offset(int offset);
 
+    /**
+     * override from {@link Sortable}
+     */
     @Override
     UpdateRequest addSort(Column column, OrderEnum order);
 
+    /**
+     * override from {@link Sortable}
+     */
     @Override
     UpdateRequest addSort(String field, OrderEnum order);
 
@@ -80,6 +98,17 @@ public interface UpdateRequest extends Sortable<UpdateRequest>, ConditionalReque
         }
 
         @Override
+        public <T extends Request> T onSyntaxError(Function<IllegalConditionException, ?> action) {
+            this.onSyntaxError = action;
+            return (T) this;
+        }
+
+        @Override
+        public Function<IllegalConditionException, ?> getOnSyntaxError() {
+            return onSyntaxError;
+        }
+
+        @Override
         public UpdateRequest limit(int limit) {
             sortLimitClause.setLimit(limit);
             return this;
@@ -114,19 +143,9 @@ public interface UpdateRequest extends Sortable<UpdateRequest>, ConditionalReque
             request.updateFields = Maps.newLinkedHashMap(updateFields);
             request.condition = (Condition) ((SqlAst) condition).copy();
             request.sortLimitClause = (SortLimitClause) sortLimitClause.copy();
-            request.onSyntaxError=onSyntaxError;
+            request.onSyntaxError = onSyntaxError;
             return request;
         }
 
-        @Override
-        public <T extends Request> T onSyntaxError(Function<IllegalConditionException, ?> action) {
-            this.onSyntaxError=action;
-            return (T)this;
-        }
-
-        @Override
-        public Function<IllegalConditionException, ?> getOnSyntaxError() {
-            return onSyntaxError;
-        }
     }
 }

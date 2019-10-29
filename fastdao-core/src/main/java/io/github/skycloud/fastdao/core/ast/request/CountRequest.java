@@ -22,9 +22,20 @@ import java.util.function.Function;
  */
 public interface CountRequest extends ConditionalRequest<CountRequest> {
 
-    CountRequest setCountField(String countField);
+    /**
+     * SELECT DISTINCT COUNT(*) ...
+     */
+    CountRequest distinct();
 
-    CountRequest setCountField(Column column);
+    /**
+     * SELECT COUNT(field)
+     */
+    CountRequest setCountField(String field);
+
+    /**
+     * SELECT COUNT(field)
+     */
+    CountRequest setCountField(Column field);
 
     /**
      * @author yuntian
@@ -41,26 +52,38 @@ public interface CountRequest extends ConditionalRequest<CountRequest> {
         private Function<IllegalConditionException, ?> onSyntaxError;
 
         @Override
+        public CountRequest setCountField(String field) {
+            this.countField = field;
+            return this;
+        }
+
+        @Override
+        public CountRequest setCountField(Column field) {
+            this.countField = field.toString();
+            return this;
+        }
+
+        @Override
+        public CountRequest distinct() {
+            distinct = true;
+            return this;
+        }
+
+        @Override
         public CountRequest setCondition(Condition condition) {
             this.condition = condition;
             return this;
         }
 
         @Override
-        public CountRequest setCountField(String countField) {
-            this.countField = countField;
-            return this;
+        public <T extends Request> T onSyntaxError(Function<IllegalConditionException, ?> action) {
+            this.onSyntaxError = action;
+            return (T) this;
         }
 
         @Override
-        public CountRequest setCountField(Column column) {
-            this.countField = column.toString();
-            return this;
-        }
-
-        public CountRequest distinct() {
-            distinct = true;
-            return this;
+        public Function<IllegalConditionException, ?> getOnSyntaxError() {
+            return onSyntaxError;
         }
 
         @Override
@@ -76,19 +99,9 @@ public interface CountRequest extends ConditionalRequest<CountRequest> {
             if (condition != null) {
                 request.condition = (Condition) ((SqlAst) condition).copy();
             }
-            request.onSyntaxError=onSyntaxError;
+            request.onSyntaxError = onSyntaxError;
             return request;
         }
 
-        @Override
-        public <T extends Request> T onSyntaxError(Function<IllegalConditionException, ?> action) {
-            this.onSyntaxError=action;
-            return (T)this;
-        }
-
-        @Override
-        public Function<IllegalConditionException, ?> getOnSyntaxError() {
-            return onSyntaxError;
-        }
     }
 }

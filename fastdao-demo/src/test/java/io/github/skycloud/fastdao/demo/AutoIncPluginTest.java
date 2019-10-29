@@ -6,15 +6,20 @@
  */
 package io.github.skycloud.fastdao.demo;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import io.github.skycloud.fastdao.core.ast.Condition;
 import io.github.skycloud.fastdao.core.ast.Request;
+import io.github.skycloud.fastdao.core.ast.enums.SqlFunEnum;
+import io.github.skycloud.fastdao.core.ast.model.SqlFun;
 import io.github.skycloud.fastdao.core.ast.request.CountRequest.CountRequestAst;
 import io.github.skycloud.fastdao.core.ast.request.InsertRequest;
+import io.github.skycloud.fastdao.core.ast.request.QueryRequest;
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest.QueryRequestAst;
 import io.github.skycloud.fastdao.core.ast.request.UpdateRequest.UpdateRequestAst;
 import io.github.skycloud.fastdao.core.reflection.MetaClass;
 import io.github.skycloud.fastdao.core.reflection.MetaField;
+import io.github.skycloud.fastdao.core.util.QueryResult;
 import io.github.skycloud.fastdao.demo.dao.AutoIncColumnMapPluginDAO;
 import io.github.skycloud.fastdao.demo.model.AutoIncPluginTestModel;
 import lombok.extern.slf4j.Slf4j;
@@ -395,14 +400,22 @@ public class AutoIncPluginTest {
     }
 
     @Test
-    public void test_onDuplicateKey(){
-        InsertRequest request=Request.insertRequest();
-        request.addUpdateField(ID,6);
-        request.addUpdateField(NAME,"hello");
-        request.addUpdateField(TEXT,"test1111");
+    public void test_onDuplicateKey() {
+        InsertRequest request = Request.insertRequest();
+        request.addUpdateField(ID, 6);
+        request.addUpdateField(NAME, "hello");
+        request.addUpdateField(TEXT, "test1111");
         request.addOnDuplicateUpdateField(NAME);
         dao.insert(request);
         System.out.println();
+    }
+
+    @Test
+    public void test_selectAdvance() {
+        QueryRequest request = Request.queryRequest();
+        request.addSelectFields(new SqlFun(SqlFunEnum.MAX, ID));
+        List<QueryResult<AutoIncPluginTestModel>> models = dao.selectAdvance(request);
+        System.out.println(JSON.toJSONString(models));
     }
 
     private AutoIncPluginTestModel getDefaultModel() {

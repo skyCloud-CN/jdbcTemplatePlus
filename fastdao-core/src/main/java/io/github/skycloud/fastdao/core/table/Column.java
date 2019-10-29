@@ -28,7 +28,7 @@ public class Column {
         this.name = name;
     }
 
-    private String name;
+    private final String name;
 
     public EqualCondition equal(Object... value) {
         return new EqualConditionAst(this.name, value);

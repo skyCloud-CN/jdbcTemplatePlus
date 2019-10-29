@@ -24,6 +24,7 @@ import io.github.skycloud.fastdao.core.mapping.RowMapping;
 import io.github.skycloud.fastdao.core.reflection.MetaClass;
 import io.github.skycloud.fastdao.core.reflection.MetaField;
 import io.github.skycloud.fastdao.core.util.Page;
+import io.github.skycloud.fastdao.core.util.QueryResult;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 
@@ -172,6 +173,11 @@ public abstract class BaseStorage<DATA, PRIM_KEY> implements Storage<DATA, PRIM_
     @Override
     public List<DATA> select(QueryRequest queryRequest) {
         return JdbcTemplateSqlHelper.select(getJdbcTemplate(), queryRequest, dataClass);
+    }
+
+    @Override
+    public List<QueryResult<DATA>> selectAdvance(QueryRequest queryRequest) {
+        return JdbcTemplateSqlHelper.selectAdvance(getJdbcTemplate(),queryRequest,dataClass);
     }
 
     @Override

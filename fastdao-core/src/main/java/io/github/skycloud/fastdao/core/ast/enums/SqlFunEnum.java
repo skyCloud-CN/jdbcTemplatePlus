@@ -9,10 +9,14 @@ package io.github.skycloud.fastdao.core.ast.enums;
 /**
  * @author yuntian
  */
-public enum SqlFunctionEnum {
+public enum SqlFunEnum {
     AVG,
     MIN,
     MAX,
     SUM,
-    COUNT
+    COUNT;
+
+    public String genKey(String field) {
+        return name() + '|' + field;
+    }
 }

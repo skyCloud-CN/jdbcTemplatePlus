@@ -6,7 +6,7 @@
  */
 package io.github.skycloud.fastdao.core.ast.model;
 
-import io.github.skycloud.fastdao.core.ast.enums.SqlFunctionEnum;
+import io.github.skycloud.fastdao.core.ast.enums.SqlFunEnum;
 import io.github.skycloud.fastdao.core.table.Column;
 import lombok.Getter;
 
@@ -14,19 +14,22 @@ import lombok.Getter;
  * @author yuntian
  */
 @Getter
-public class SqlFunction {
+public class SqlFun {
 
-    private SqlFunctionEnum type;
+    private SqlFunEnum type;
 
     private String field;
 
-    public SqlFunction(SqlFunctionEnum function, Column field) {
+    public SqlFun(SqlFunEnum function, Column field) {
         this(function, field.getName());
     }
 
-    public SqlFunction(SqlFunctionEnum function, String field) {
+    public SqlFun(SqlFunEnum function, String field) {
         this.type = function;
         this.field = field;
     }
 
+    public String genKey() {
+        return type.name() + '|' + field;
+    }
 }

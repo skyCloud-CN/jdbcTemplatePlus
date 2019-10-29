@@ -15,8 +15,9 @@ import io.github.skycloud.fastdao.core.ast.SqlAst;
 import io.github.skycloud.fastdao.core.ast.Visitor;
 import io.github.skycloud.fastdao.core.ast.enums.OrderEnum;
 import io.github.skycloud.fastdao.core.ast.model.SortLimitClause;
-import io.github.skycloud.fastdao.core.ast.model.SqlFunction;
+import io.github.skycloud.fastdao.core.ast.model.SqlFun;
 import io.github.skycloud.fastdao.core.exceptions.IllegalConditionException;
+import io.github.skycloud.fastdao.core.exceptions.IllegalRequestException;
 import io.github.skycloud.fastdao.core.table.Column;
 import lombok.Getter;
 
@@ -29,23 +30,53 @@ import java.util.function.Function;
  */
 public interface QueryRequest extends Sortable<QueryRequest>, ConditionalRequest<QueryRequest> {
 
+    /**
+     * SELECT DISTINCT ...
+     */
     QueryRequest distinct();
 
+    /**
+     * add select fields to queryRequest
+     */
     QueryRequest addSelectFields(Column... fields);
 
-    QueryRequest addSelectFields(Collection<Column> fields);
+    QueryRequest addSelectFields(Collection fields);
 
-    QueryRequest addSelectField(SqlFunction function);
+    QueryRequest addSelectFields(SqlFun... fields);
 
+    QueryRequest addSelectFields(String... fields);
+
+    /**
+     * SELECT ... GROUP BY
+     */
+    QueryRequest groupBy(Column... columns);
+
+    /**
+     * SELECT ... HAVING
+     */
+    QueryRequest having(Condition condition);
+
+    /**
+     * override from {@link Sortable}
+     */
     @Override
     QueryRequest limit(int limit);
 
+    /**
+     * override from {@link Sortable}
+     */
     @Override
     QueryRequest offset(int offset);
 
+    /**
+     * override from {@link Sortable}
+     */
     @Override
     QueryRequest addSort(Column column, OrderEnum order);
 
+    /**
+     * override from {@link Sortable}
+     */
     @Override
     QueryRequest addSort(String field, OrderEnum order);
 
@@ -59,9 +90,12 @@ public interface QueryRequest extends Sortable<QueryRequest>, ConditionalRequest
 
         private boolean distinct;
 
-        private List<String> selectFields = Lists.newArrayList();
+        // this field is String or SqlFun.class
+        private List<Object> selectFields = Lists.newArrayList();
 
-        private List<SqlFunction> functionFields=Lists.newArrayList();
+        private List<Object> groupByFields = Lists.newArrayList();
+
+        private Condition havingCondition;
 
         private SortLimitClause sortLimitClause = new SortLimitClause();
 
@@ -76,17 +110,39 @@ public interface QueryRequest extends Sortable<QueryRequest>, ConditionalRequest
         }
 
         @Override
-        public QueryRequest addSelectFields(Collection<Column> fields) {
-            for (Column field : fields) {
-                addSelectField(field.toString());
+        public QueryRequest addSelectFields(SqlFun... functions) {
+            for (SqlFun fun : functions) {
+                addSelectField(fun);
             }
             return this;
         }
 
         @Override
-        public QueryRequest addSelectField(SqlFunction function) {
-            this.functionFields.add(function);
+        public QueryRequest addSelectFields(String... fields) {
+            for (String field : fields) {
+                addSelectField(field);
+            }
             return this;
+        }
+
+        @Override
+        public QueryRequest addSelectFields(Collection fields) {
+            for (Object field : fields) {
+                if (field instanceof Column) {
+                    addSelectField(((Column) field).getName());
+                } else if (field instanceof String) {
+                    addSelectField(field);
+                } else if (field instanceof SqlFun) {
+                    addSelectField(field);
+                } else {
+                    throw new IllegalRequestException("only Column ,SqlFun ,String is allowed as fields type");
+                }
+            }
+            return this;
+        }
+
+        private void addSelectField(Object field) {
+            selectFields.add(field);
         }
 
         @Override
@@ -96,30 +152,20 @@ public interface QueryRequest extends Sortable<QueryRequest>, ConditionalRequest
         }
 
         @Override
-        public void accept(Visitor visitor) {
-            visitor.visit(this);
-        }
-
-        @Override
-        public SqlAst copy() {
-            QueryRequestAst request = new QueryRequestAst();
-            request.selectFields = Lists.newArrayList(selectFields);
-            if (condition != null) {
-                request.condition = (Condition) ((SqlAst) condition).copy();
-            }
-            request.distinct = distinct;
-            request.sortLimitClause = (SortLimitClause) sortLimitClause.copy();
-            request.onSyntaxError = onSyntaxError;
-            return request;
-        }
-
-        private void addSelectField(String field) {
-            selectFields.add(field);
-        }
-
-        @Override
         public QueryRequestAst distinct() {
             distinct = true;
+            return this;
+        }
+
+        @Override
+        public QueryRequest groupBy(Column... columns) {
+            groupByFields = Lists.newArrayList(columns);
+            return this;
+        }
+
+        @Override
+        public QueryRequest having(Condition condition) {
+            havingCondition = condition;
             return this;
         }
 
@@ -162,6 +208,32 @@ public interface QueryRequest extends Sortable<QueryRequest>, ConditionalRequest
         @Override
         public Function<IllegalConditionException, ?> getOnSyntaxError() {
             return onSyntaxError;
+        }
+
+        /**
+         * override from {@link SqlAst}
+         */
+        @Override
+        public SqlAst copy() {
+            QueryRequestAst request = new QueryRequestAst();
+            request.selectFields = Lists.newArrayList(selectFields);
+            if (condition != null) {
+                request.condition = (Condition) ((SqlAst) condition).copy();
+            }
+            request.distinct = distinct;
+            request.sortLimitClause = (SortLimitClause) sortLimitClause.copy();
+            request.onSyntaxError = onSyntaxError;
+            request.havingCondition = havingCondition;
+            request.groupByFields = groupByFields;
+            return request;
+        }
+
+        /**
+         * override from {@link SqlAst}
+         */
+        @Override
+        public void accept(Visitor visitor) {
+            visitor.visit(this);
         }
     }
 }

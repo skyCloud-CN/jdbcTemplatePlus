@@ -16,12 +16,14 @@ import io.github.skycloud.fastdao.core.ast.conditions.RangeCondition.RangeCondit
 import io.github.skycloud.fastdao.core.ast.constants.SQLConstant;
 import io.github.skycloud.fastdao.core.ast.model.Sort;
 import io.github.skycloud.fastdao.core.ast.model.SortLimitClause;
+import io.github.skycloud.fastdao.core.ast.model.SqlFun;
 import io.github.skycloud.fastdao.core.ast.request.CountRequest.CountRequestAst;
 import io.github.skycloud.fastdao.core.ast.request.DeleteRequest.DeleteRequestAst;
 import io.github.skycloud.fastdao.core.ast.request.InsertRequest.InsertRequestAst;
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest.QueryRequestAst;
 import io.github.skycloud.fastdao.core.ast.request.UpdateRequest.UpdateRequestAst;
 import io.github.skycloud.fastdao.core.exceptions.IllegalConditionException;
+import io.github.skycloud.fastdao.core.table.Column;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -49,7 +51,14 @@ public class MysqlVisitor extends SqlVisitor {
         if (CollectionUtils.isEmpty(request.getSelectFields())) {
             sb.append(SQLConstant.ALL_FIELD);
         } else {
-            visitCollection(request.getSelectFields(), this::visitField, SQLConstant.COMMA);
+            visitCollection(request.getSelectFields(), field -> {
+                if (field instanceof String) {
+                    visitField((String) field);
+                } else if (field instanceof SqlFun) {
+                    visitFunction((SqlFun) field);
+                }
+            }, SQLConstant.COMMA);
+
         }
         sb.append(SQLConstant.FROM);
         visitField(tableName);
@@ -153,15 +162,15 @@ public class MysqlVisitor extends SqlVisitor {
             sb.append(SQLConstant.EQUAL);
             visitValue(entry.getKey(), entry.getValue());
         }, SQLConstant.COMMA);
-        if(CollectionUtils.sizeIsEmpty(request.getOnDuplicateKeyUpdateFields())){
+        if (CollectionUtils.sizeIsEmpty(request.getOnDuplicateKeyUpdateFields())) {
             return;
         }
         sb.append(SQLConstant.ON_DUPLICATE_KEY_UPDATE);
-        visitCollection(request.getOnDuplicateKeyUpdateFields().entrySet(),entry -> {
+        visitCollection(request.getOnDuplicateKeyUpdateFields().entrySet(), entry -> {
             visitField(entry.getKey());
             sb.append(SQLConstant.EQUAL);
-            visitValue(entry.getKey(),entry.getValue());
-        },SQLConstant.COMMA);
+            visitValue(entry.getKey(), entry.getValue() == null ? request.getUpdateFields().get(entry.getKey()) : entry.getValue());
+        }, SQLConstant.COMMA);
     }
 
 
@@ -235,12 +244,28 @@ public class MysqlVisitor extends SqlVisitor {
     }
 
     protected void visitValue(String field, Object value) {
-        sb.append(valueParser.parseValue(field, value));
+        if (value instanceof SqlFun) {
+            visitFunction((SqlFun) value);
+        } else if (value instanceof Column) {
+            visitField(((Column) value).getName());
+        } else {
+            sb.append(valueParser.parseValue(field, value));
+        }
+    }
+
+    protected void visitFunction(SqlFun function) {
+        sb.append(function.getType().name());
+        sb.append(SQLConstant.LB);
+        visitField(function.getField());
+        sb.append(SQLConstant.RB);
+        sb.append(SQLConstant.AS);
+        visitField(function.genKey());
     }
 
     protected void visitField(String field) {
         sb.append(valueParser.parseField(field));
     }
+
 
     private <T> void visitCollection(Collection<T> collection, Consumer<T> action, String separator) {
         boolean first = true;

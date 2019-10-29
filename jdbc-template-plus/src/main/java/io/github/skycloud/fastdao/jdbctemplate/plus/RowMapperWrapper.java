@@ -6,15 +6,19 @@
  */
 package io.github.skycloud.fastdao.jdbctemplate.plus;
 
+import com.google.common.collect.Maps;
+import io.github.skycloud.fastdao.core.ast.model.SqlFun;
 import io.github.skycloud.fastdao.core.mapping.ColumnMapping;
 import io.github.skycloud.fastdao.core.mapping.RowMapping;
 import io.github.skycloud.fastdao.core.mapping.TypeHandler;
 import io.github.skycloud.fastdao.core.reflection.MetaClass;
+import io.github.skycloud.fastdao.core.util.QueryResult;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -28,7 +32,7 @@ public class RowMapperWrapper<T> {
         this.clazz = clazz;
     }
 
-    public RowMapper<T> getMapper(Collection<String> columns) {
+    public RowMapper<T> getMapper(Collection<Object> columns) {
         return (rs, rowNum) -> {
             try {
                 T instance = clazz.newInstance();
@@ -37,7 +41,7 @@ public class RowMapperWrapper<T> {
                 if (CollectionUtils.isEmpty(columns)) {
                     columnMappings = rowMapping.getColumnMapping();
                 } else {
-                    columnMappings = columns.stream().map(rowMapping::getColumnMappingByColumnName).collect(Collectors.toList());
+                    columnMappings = columns.stream().filter(x->x instanceof String).map(x->(String)x).map(rowMapping::getColumnMappingByColumnName).collect(Collectors.toList());
                 }
                 MetaClass metaClass = MetaClass.of(clazz);
                 for (ColumnMapping cm : columnMappings) {
@@ -46,6 +50,37 @@ public class RowMapperWrapper<T> {
                     metaClass.getMetaField(cm.getFieldName()).invokeSetter(instance,value);
                 }
                 return instance;
+            } catch (Exception e) {
+                throw new RuntimeException();
+            }
+        };
+    }
+    public RowMapper<QueryResult<T>> getMapperAdvance(Collection<Object> columns){
+        return (rs, rowNum) -> {
+            try {
+                QueryResult<T> result=new QueryResult<>();
+                T instance = clazz.newInstance();
+                Collection<ColumnMapping> columnMappings;
+                RowMapping rowMapping = RowMapping.of(clazz);
+                if (CollectionUtils.isEmpty(columns)) {
+                    columnMappings = rowMapping.getColumnMapping();
+                } else {
+                    columnMappings = columns.stream().filter(x->x instanceof String).map(x->(String)x).map(rowMapping::getColumnMappingByColumnName).collect(Collectors.toList());
+                }
+                MetaClass metaClass = MetaClass.of(clazz);
+                for (ColumnMapping cm : columnMappings) {
+                    TypeHandler handler = cm.getHandler();
+                    Object value = handler.getResult(rs, cm.getColumnName());
+                    metaClass.getMetaField(cm.getFieldName()).invokeSetter(instance,value);
+                }
+                List<SqlFun> functions=(List)columns.stream().filter(x->x instanceof SqlFun).collect(Collectors.toList());
+                Map<String,Object> functionData= Maps.newHashMap();
+                for(SqlFun function:functions){
+                    functionData.put(function.genKey(),rs.getLong(function.genKey()));
+                }
+                result.setData(instance);
+                result.setSqlFunData(functionData);
+                return result;
             } catch (Exception e) {
                 throw new RuntimeException();
             }

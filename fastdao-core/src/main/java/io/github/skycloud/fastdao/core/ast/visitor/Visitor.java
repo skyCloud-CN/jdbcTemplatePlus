@@ -33,8 +33,6 @@ public interface Visitor extends Pluggable {
 
     void visit(InsertRequestAst request);
 
-    void visit(CountRequestAst request);
-
     void visit(SortLimitClause sortLimitClause);
 
     void visit(AndConditionAst condition);

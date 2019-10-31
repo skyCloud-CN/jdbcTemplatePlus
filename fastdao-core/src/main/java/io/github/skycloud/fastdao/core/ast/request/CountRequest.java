@@ -11,6 +11,9 @@ import io.github.skycloud.fastdao.core.ast.ConditionalRequest;
 import io.github.skycloud.fastdao.core.ast.Request;
 import io.github.skycloud.fastdao.core.ast.SqlAst;
 import io.github.skycloud.fastdao.core.ast.Visitor;
+import io.github.skycloud.fastdao.core.ast.enums.SqlFunEnum;
+import io.github.skycloud.fastdao.core.ast.model.SqlFun;
+import io.github.skycloud.fastdao.core.ast.request.QueryRequest.QueryRequestAst;
 import io.github.skycloud.fastdao.core.exceptions.IllegalConditionException;
 import io.github.skycloud.fastdao.core.table.Column;
 import lombok.Getter;
@@ -87,19 +90,42 @@ public interface CountRequest extends ConditionalRequest<CountRequest> {
         }
 
         @Override
-        public void accept(Visitor visitor) {
-            visitor.visit(this);
+        public <T extends Request> T notReuse() {
+            return (T) this;
         }
 
         @Override
+        public boolean isReuse() {
+            return true;
+        }
+
+        /**
+         * count request is kind of QueryRequest and no longer need visitor method due to SQL function support
+         */
+        @Override
+        public void accept(Visitor visitor) {
+            throw new UnsupportedOperationException();
+        }
+
+        /**
+         * count request is translate to QueryRequest by copy
+         */
+        @Override
         public SqlAst copy() {
-            CountRequestAst request = new CountRequestAst();
-            request.distinct = distinct;
-            request.countField = countField;
-            if (condition != null) {
-                request.condition = (Condition) ((SqlAst) condition).copy();
+            QueryRequestAst request = new QueryRequestAst();
+            if (distinct) {
+                request.distinct();
             }
-            request.onSyntaxError = onSyntaxError;
+            if (condition != null) {
+                request.setCondition((Condition) ((SqlAst) condition).copy());
+            }
+            SqlFun fun = new SqlFun(SqlFunEnum.COUNT, countField);
+            if (distinct) {
+                fun.distinct();
+            }
+            request.notReuse();
+            request.addSelectFields(fun);
+            request.onSyntaxError(onSyntaxError);
             return request;
         }
 

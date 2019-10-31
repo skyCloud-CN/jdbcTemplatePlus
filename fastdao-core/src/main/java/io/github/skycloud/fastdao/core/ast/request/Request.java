@@ -33,6 +33,10 @@ public interface Request extends Pluggable {
 
     Function<IllegalConditionException, ?> getOnSyntaxError();
 
+    <T extends Request> T notReuse();
+
+    boolean isReuse();
+
     static UpdateRequest updateRequest() {
         return new UpdateRequestAst();
     }

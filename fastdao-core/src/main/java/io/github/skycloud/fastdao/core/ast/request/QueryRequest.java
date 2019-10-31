@@ -101,6 +101,7 @@ public interface QueryRequest extends Sortable<QueryRequest>, ConditionalRequest
 
         private Function<IllegalConditionException, ?> onSyntaxError;
 
+        private boolean reuse=true;
         @Override
         public QueryRequest addSelectFields(Column... fields) {
             for (Column field : fields) {
@@ -208,6 +209,17 @@ public interface QueryRequest extends Sortable<QueryRequest>, ConditionalRequest
         @Override
         public Function<IllegalConditionException, ?> getOnSyntaxError() {
             return onSyntaxError;
+        }
+
+        @Override
+        public <T extends Request> T notReuse() {
+            reuse=false;
+            return (T)this;
+        }
+
+        @Override
+        public boolean isReuse() {
+            return reuse;
         }
 
         /**

@@ -65,11 +65,6 @@ public class LogicDeleteVisitor implements Visitor {
     }
 
     @Override
-    public void visit(CountRequestAst request) {
-        visit((ConditionalRequest)request);
-    }
-
-    @Override
     public void visit(SortLimitClause sortLimitClause) {
 
     }

@@ -79,6 +79,7 @@ public interface UpdateRequest extends Sortable<UpdateRequest>, ConditionalReque
 
         private Function<IllegalConditionException, ?> onSyntaxError;
 
+        private boolean reuse=true;
         @Override
         public UpdateRequest addUpdateField(String field, Object value) {
             updateFields.put(field, value);
@@ -106,6 +107,17 @@ public interface UpdateRequest extends Sortable<UpdateRequest>, ConditionalReque
         @Override
         public Function<IllegalConditionException, ?> getOnSyntaxError() {
             return onSyntaxError;
+        }
+
+        @Override
+        public <T extends Request> T notReuse() {
+            reuse=false;
+            return (T)this;
+        }
+
+        @Override
+        public boolean isReuse() {
+            return reuse;
         }
 
         @Override

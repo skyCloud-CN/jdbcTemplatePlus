@@ -49,7 +49,7 @@ public class Tuple<K, V> implements Serializable {
      * @param key   The key for this pair
      * @param value The value to use for this pair
      */
-    public Tuple(@NamedArg("key") K key, @NamedArg("value") V value) {
+    public Tuple( K key,V value) {
         this.key = key;
         this.value = value;
     }

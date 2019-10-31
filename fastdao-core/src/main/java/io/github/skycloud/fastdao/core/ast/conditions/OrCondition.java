@@ -23,6 +23,7 @@ public interface OrCondition<T extends OrCondition> extends Condition {
 
     T orOptional(Condition condition);
 
+    T orIf(Condition condition,boolean preCondition);
     /**
      * this method is for dynamic SQL when there is no subCondition.
      * if this method is executed,request will translate to SQL `SELECT * FROM table`
@@ -52,6 +53,14 @@ public interface OrCondition<T extends OrCondition> extends Condition {
                 subConditions.add(condition);
             }
             return (T) this;
+        }
+
+        @Override
+        public T orIf(Condition condition,boolean preCondition) {
+            if(preCondition){
+                subConditions.add(condition);
+            }
+            return (T)this;
         }
 
         @Override

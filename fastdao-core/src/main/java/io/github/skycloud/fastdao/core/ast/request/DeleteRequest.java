@@ -62,6 +62,8 @@ public interface DeleteRequest extends Sortable<DeleteRequest>, ConditionalReque
 
         private Function<IllegalConditionException, ?> onSyntaxError;
 
+        private boolean reuse = true;
+
         @Override
         public DeleteRequestAst limit(int limit) {
             sortLimitClause.setLimit(limit);
@@ -102,6 +104,17 @@ public interface DeleteRequest extends Sortable<DeleteRequest>, ConditionalReque
         @Override
         public Function<IllegalConditionException, ?> getOnSyntaxError() {
             return onSyntaxError;
+        }
+
+        @Override
+        public <T extends Request> T notReuse() {
+            reuse = false;
+            return (T) this;
+        }
+
+        @Override
+        public boolean isReuse() {
+            return reuse;
         }
 
         @Override

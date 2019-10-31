@@ -61,6 +61,8 @@ public interface InsertRequest extends FieldUpdateRequest<InsertRequest> {
 
         private Map<String, Object> onDuplicateKeyUpdateFields = Maps.newLinkedHashMap();
 
+        private boolean reuse=true;
+
         @Override
         public InsertRequest addUpdateField(Column field, Object value) {
             updateFields.put(field.getName(), value);
@@ -133,6 +135,17 @@ public interface InsertRequest extends FieldUpdateRequest<InsertRequest> {
         @Override
         public Function<IllegalConditionException, ?> getOnSyntaxError() {
             return onSyntaxError;
+        }
+
+        @Override
+        public <T extends Request> T notReuse() {
+            reuse=false;
+            return (T)this;
+        }
+
+        @Override
+        public boolean isReuse() {
+            return reuse;
         }
 
         @Override

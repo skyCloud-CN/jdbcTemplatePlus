@@ -55,7 +55,7 @@ public class MysqlVisitor extends SqlVisitor {
                 if (field instanceof String) {
                     visitField((String) field);
                 } else if (field instanceof SqlFun) {
-                    visitFunction((SqlFun) field);
+                    visitFunction((SqlFun) field, false);
                 }
             }, SQLConstant.COMMA);
 
@@ -64,24 +64,6 @@ public class MysqlVisitor extends SqlVisitor {
         visitField(tableName);
         visitWhereClause(request.getCondition());
         visit(request.getSortLimitClause());
-    }
-
-    @Override
-    public void visit(CountRequestAst request) {
-        sb.append(SQLConstant.SELECT);
-        sb.append(SQLConstant.COUNT);
-        sb.append(SQLConstant.LB);
-        if (request.isDistinct()) {
-            sb.append(SQLConstant.DISTINCT);
-        }
-        if (StringUtils.isNotBlank(request.getCountField())) {
-            visitField(request.getCountField());
-        }
-        sb.append(SQLConstant.ALL_FIELD);
-        sb.append(SQLConstant.RB);
-        sb.append(SQLConstant.FROM);
-        visitField(tableName);
-        visitWhereClause(request.getCondition());
     }
 
     private void visitWhereClause(Condition condition) {
@@ -245,7 +227,7 @@ public class MysqlVisitor extends SqlVisitor {
 
     protected void visitValue(String field, Object value) {
         if (value instanceof SqlFun) {
-            visitFunction((SqlFun) value);
+            visitFunction((SqlFun) value, true);
         } else if (value instanceof Column) {
             visitField(((Column) value).getName());
         } else {
@@ -253,13 +235,22 @@ public class MysqlVisitor extends SqlVisitor {
         }
     }
 
-    protected void visitFunction(SqlFun function) {
+    protected void visitFunction(SqlFun function, boolean isValue) {
         sb.append(function.getType().name());
         sb.append(SQLConstant.LB);
-        visitField(function.getField());
+        if(function.isDistinct()){
+            sb.append(SQLConstant.DISTINCT);
+        }
+        if (function.getField() != null) {
+            visitField(function.getField());
+        } else {
+            sb.append(SQLConstant.ALL_FIELD);
+        }
         sb.append(SQLConstant.RB);
-        sb.append(SQLConstant.AS);
-        visitField(function.genKey());
+        if (!isValue) {
+            sb.append(SQLConstant.AS);
+            visitField(function.genKey());
+        }
     }
 
     protected void visitField(String field) {

@@ -186,10 +186,10 @@ public class AutoIncTest {
     @Transactional
     public void test_count() {
         CountRequestAst request = new CountRequestAst();
-        request.setCondition(DELETED.equal(true));
+        request.setCondition(DELETED.eq(true));
         int count = dao.count(request);
         Assert.assertEquals(3, count);
-        request.setCondition(DELETED.equal(false));
+        request.setCondition(DELETED.eq(false));
         count = dao.count(request);
         Assert.assertEquals(3, count);
         request.setCondition(null);
@@ -202,9 +202,9 @@ public class AutoIncTest {
     @Transactional
     public void test_select_equal_multi() {
         QueryRequestAst request = new QueryRequestAst();
-        request.setCondition(ID.equal(Lists.newArrayList(1, 2, 3)));
+        request.setCondition(ID.eq(Lists.newArrayList(1, 2, 3)));
         List<AutoIncModel> models = dao.select(request);
-        request.setCondition(ID.equal(1, 2, 3));
+        request.setCondition(ID.eq(1, 2, 3));
         List<AutoIncModel> models2 = dao.select(request);
         for (int i = 0; i < models.size(); i++) {
             assertEqual(models.get(i), models2.get(i));
@@ -215,7 +215,7 @@ public class AutoIncTest {
     public void test_select_multi_condition() {
         QueryRequestAst request = new QueryRequestAst();
         request.setCondition(Condition.and()
-                .and(ID.equal(1, 2, 3, 4, 5))
+                .and(ID.eq(1, 2, 3, 4, 5))
                 .and(DELETED.gt(0))
                 .and(UPDATED.lt(new Date()))
                 .and(NAME.like("i").matchLeft().matchRight()));
@@ -229,7 +229,7 @@ public class AutoIncTest {
     @Test
     public void test_select_empty_condition() {
         QueryRequestAst request = new QueryRequestAst();
-        request.setCondition(NAME.equal(Lists.newArrayList()))
+        request.setCondition(NAME.eq(Lists.newArrayList()))
                 .onSyntaxError(e -> Lists.newArrayList());
 
         Assert.assertTrue(CollectionUtils.isEmpty(dao.select(request)));
@@ -238,7 +238,7 @@ public class AutoIncTest {
     @Test
     public void test_select_ignore_illegal_condition() {
         QueryRequestAst request = new QueryRequestAst();
-        request.setCondition(Condition.and().andOptional(ID.equal(Lists.newArrayList())).allowEmpty());
+        request.setCondition(Condition.and().andOptional(ID.eq(Lists.newArrayList())).allowEmpty());
         List<AutoIncModel> models = dao.select(request);
         Assert.assertEquals(6, models.size());
     }
@@ -247,9 +247,9 @@ public class AutoIncTest {
     public void test_select_complex_condition() {
         QueryRequestAst request = new QueryRequestAst();
         Condition condition = Condition.and()
-                .andOptional(ID.equal(Lists.newArrayList()))
+                .andOptional(ID.eq(Lists.newArrayList()))
                 .andOptional(Condition.or())
-                .andOptional(Condition.and().and(ID.equal(1, 2, 3, 4, 5, 6)))
+                .andOptional(Condition.and().and(ID.eq(1, 2, 3, 4, 5, 6)))
                 .andOptional(Condition.or()
                         .or(ID.gt(0))
                         .orOptional(Condition.and()));
@@ -264,10 +264,10 @@ public class AutoIncTest {
     @Transactional
     public void test_count_equal_multi() {
         CountRequestAst request = new CountRequestAst();
-        request.setCondition(ID.equal(Lists.newArrayList(1, 2, 3)));
+        request.setCondition(ID.eq(Lists.newArrayList(1, 2, 3)));
         int count = dao.count(request);
         Assert.assertEquals(3, count);
-        request.setCondition(ID.equal(1, 2, 3));
+        request.setCondition(ID.eq(1, 2, 3));
         int count2 = dao.count(request);
         Assert.assertEquals(3, count2);
     }
@@ -276,7 +276,7 @@ public class AutoIncTest {
     public void test_count_multi_condition() {
         CountRequestAst request = new CountRequestAst();
         request.setCondition(Condition.and()
-                .and(ID.equal(1, 2, 3, 4, 5))
+                .and(ID.eq(1, 2, 3, 4, 5))
                 .and(DELETED.gt(0))
                 .and(UPDATED.lt(new Date()))
                 .and(NAME.like("i").matchLeft().matchRight()));
@@ -289,7 +289,7 @@ public class AutoIncTest {
     @Test
     public void test_count_empty_condition() {
         CountRequestAst request = new CountRequestAst();
-        request.setCondition(NAME.equal(Lists.newArrayList()))
+        request.setCondition(NAME.eq(Lists.newArrayList()))
                 .onSyntaxError(e -> 0);
         Assert.assertEquals(0, dao.count(request));
     }
@@ -297,7 +297,7 @@ public class AutoIncTest {
     @Test
     public void test_count_ignore_illegal_condition() {
         CountRequestAst request = new CountRequestAst();
-        request.setCondition(Condition.and().andOptional(ID.equal(Lists.newArrayList())).allowEmpty());
+        request.setCondition(Condition.and().andOptional(ID.eq(Lists.newArrayList())).allowEmpty());
         int count = dao.count(request);
         Assert.assertEquals(6, count);
     }
@@ -310,13 +310,13 @@ public class AutoIncTest {
     public void test_update_equal_multi() {
         UpdateRequestAst request = new UpdateRequestAst();
         request.addUpdateField(NAME, "updated");
-        request.setCondition(ID.equal(Lists.newArrayList(1, 2, 3)));
+        request.setCondition(ID.eq(Lists.newArrayList(1, 2, 3)));
         int update = dao.update(request);
         Assert.assertTrue(dao.selectByPrimaryKeys(1L, 2L, 3L).stream()
                 .map(AutoIncModel::getName)
                 .allMatch(x -> x.equals("updated")));
         Assert.assertEquals(3, update);
-        request.setCondition(ID.equal(1, 2, 3));
+        request.setCondition(ID.eq(1, 2, 3));
         int update2 = dao.update(request);
         Assert.assertEquals(3, update2);
     }
@@ -326,7 +326,7 @@ public class AutoIncTest {
     public void test_update_multi_condition() {
         UpdateRequestAst request = new UpdateRequestAst();
         request.setCondition(Condition.and()
-                .and(ID.equal(1, 2, 3, 4, 5))
+                .and(ID.eq(1, 2, 3, 4, 5))
                 .and(DELETED.gt(0))
                 .and(UPDATED.lt(new Date()))
                 .and(NAME.like("i").matchLeft().matchRight()));
@@ -341,7 +341,7 @@ public class AutoIncTest {
     @Transactional
     public void test_update_empty_condition() {
         UpdateRequestAst request = new UpdateRequestAst();
-        request.setCondition(NAME.equal(Lists.newArrayList()))
+        request.setCondition(NAME.eq(Lists.newArrayList()))
                 .onSyntaxError(e -> 0);
         request.addUpdateField(NAME, "updated");
         Assert.assertEquals(0, dao.update(request));
@@ -353,7 +353,7 @@ public class AutoIncTest {
     @Transactional
     public void test_update_ignore_illegal_condition() {
         UpdateRequestAst request = new UpdateRequestAst();
-        request.setCondition(Condition.and().andOptional(ID.equal(Lists.newArrayList())).allowEmpty());
+        request.setCondition(Condition.and().andOptional(ID.eq(Lists.newArrayList())).allowEmpty());
         request.addUpdateField(NAME, "updated");
         int update = dao.update(request);
         Assert.assertEquals(6, update);
@@ -366,9 +366,9 @@ public class AutoIncTest {
     public void test_update_complex_condition() {
         UpdateRequestAst request = new UpdateRequestAst();
         Condition condition = Condition.and()
-                .andOptional(ID.equal(Lists.newArrayList()))
+                .andOptional(ID.eq(Lists.newArrayList()))
                 .andOptional(Condition.or())
-                .andOptional(Condition.and().and(ID.equal(1, 2, 3, 4, 5, 6)))
+                .andOptional(Condition.and().and(ID.eq(1, 2, 3, 4, 5, 6)))
                 .andOptional(Condition.or()
                         .or(ID.gt(0))
                         .orOptional(Condition.and()));
@@ -409,11 +409,11 @@ public class AutoIncTest {
                 .addSelectFields(ID)
                 .limit(10)
                 .beginAndCondition()
-                .and(ID.equal(3))
+                .and(ID.eq(3))
                 .and(Condition
                         .or()
-                        .or(ID.equal(3))
-                        .or(ID.equal(4)))
+                        .or(ID.eq(3))
+                        .or(ID.eq(4)))
                 .endCondition();
         dao.select(request);
 
@@ -424,7 +424,7 @@ public class AutoIncTest {
         QueryRequest request = Request.queryRequest()
                 .beginAndCondition()
                 .and(NAME.isNull())
-                .and(NAME.equal(3))
+                .and(NAME.eq(3))
                 .allowEmpty()
                 .endCondition();
         System.out.println(dao.select(request));

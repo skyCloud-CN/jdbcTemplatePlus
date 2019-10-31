@@ -16,6 +16,7 @@ import io.github.skycloud.fastdao.core.util.QueryResult;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @author yuntian
@@ -28,13 +29,13 @@ public interface Storage<DATA, PRIM_KEY> {
      */
     int insert(DATA t);
 
-    int insert(InsertRequest insertRequest);
-
     /**
      * insert DATA to db, only non-null field will be insert
      * if you want null field to be default value in db ,you can use this method
      */
     int insertSelective(DATA t);
+
+    int insert(InsertRequest insertRequest, Consumer<Number> doWithGeneratedKeyOnSuccess);
 
     /**
      * update by UpdateRequest
@@ -73,11 +74,24 @@ public interface Storage<DATA, PRIM_KEY> {
      */
     DATA selectByPrimaryKey(PRIM_KEY key);
 
+
     /**
      * select by QueryRequest
      * this method doesn't support extra function
      */
     List<DATA> select(QueryRequest queryRequest);
+
+    /**
+     * select by QueryRequest
+     * if has multiple result, only return first row
+     */
+    DATA selectOne(QueryRequest queryRequest);
+
+    /**
+     * select by
+     */
+    <T> List<T> selectSingleField(QueryRequest queryRequest, Class<T> clazz);
+
     /**
      * support SqlFunction as request field
      */

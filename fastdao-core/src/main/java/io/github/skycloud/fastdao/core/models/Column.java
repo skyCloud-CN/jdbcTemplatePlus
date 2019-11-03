@@ -4,38 +4,33 @@
  * Copyright 2019 fenbi.com. All rights reserved.
  * FENBI.COM PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
-package io.github.skycloud.fastdao.core.table;
+package io.github.skycloud.fastdao.core.models;
 
 import io.github.skycloud.fastdao.core.ast.conditions.EqualCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.EqualCondition.EqualConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.EqualConditionAst;
 import io.github.skycloud.fastdao.core.ast.conditions.IsNullCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.IsNullCondition.IsNullConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.IsNullConditionAst;
 import io.github.skycloud.fastdao.core.ast.conditions.LikeCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.LikeCondition.LikeConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.LikeConditionAst;
 import io.github.skycloud.fastdao.core.ast.conditions.RangeCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.RangeCondition.RangeConditionAst;
-import io.github.skycloud.fastdao.core.ast.model.SqlFun;
-import lombok.Getter;
+import io.github.skycloud.fastdao.core.ast.conditions.RangeConditionAst;
 
 import java.util.Collection;
-
-import static io.github.skycloud.fastdao.core.ast.enums.SqlFunEnum.AVG;
-import static io.github.skycloud.fastdao.core.ast.enums.SqlFunEnum.COUNT;
-import static io.github.skycloud.fastdao.core.ast.enums.SqlFunEnum.MAX;
-import static io.github.skycloud.fastdao.core.ast.enums.SqlFunEnum.MIN;
-import static io.github.skycloud.fastdao.core.ast.enums.SqlFunEnum.SUM;
 
 /**
  * @author yuntian
  */
-@Getter
+
 public class Column {
 
     public Column(String name) {
         this.name = name;
+        this.sqlFunctions = new SqlFunctions(this);
     }
 
     private final String name;
+
+    private SqlFunctions sqlFunctions;
 
     public EqualCondition eq(Object... value) {
         return new EqualConditionAst(this.name, value);
@@ -69,29 +64,12 @@ public class Column {
         return new IsNullConditionAst(name);
     }
 
-
-    public SqlFun MAX() {
-        return new SqlFun(MAX, this);
-    }
-
-    public SqlFun MIN() {
-        return new SqlFun(MIN, this);
-    }
-
-    public SqlFun AVG() {
-        return new SqlFun(AVG, this);
-    }
-
-    public SqlFun SUM() {
-        return new SqlFun(SUM, this);
-    }
-
-    public SqlFun COUNT() {
-        return new SqlFun(COUNT, this);
-    }
-
-    @Override
-    public String toString() {
+    public String getName() {
         return this.name;
     }
+
+    public SqlFunctions fun() {
+        return sqlFunctions;
+    }
+
 }

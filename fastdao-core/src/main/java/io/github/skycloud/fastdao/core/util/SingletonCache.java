@@ -57,7 +57,7 @@ public class SingletonCache<K, V> implements Map<K, V> {
 
     @Override
     public synchronized V put(K key, V value) {
-        delegate.putIfAbsent(key,value);
+        delegate.putIfAbsent(key, value);
         return delegate.get(key);
     }
 

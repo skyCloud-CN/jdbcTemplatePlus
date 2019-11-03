@@ -7,20 +7,14 @@
 package io.github.skycloud.fastdao.core.ast.model;
 
 import io.github.skycloud.fastdao.core.ast.enums.SqlFunEnum;
-import io.github.skycloud.fastdao.core.table.Column;
+import io.github.skycloud.fastdao.core.models.Column;
 import lombok.Getter;
-
-import static io.github.skycloud.fastdao.core.ast.enums.SqlFunEnum.AVG;
-import static io.github.skycloud.fastdao.core.ast.enums.SqlFunEnum.COUNT;
-import static io.github.skycloud.fastdao.core.ast.enums.SqlFunEnum.MAX;
-import static io.github.skycloud.fastdao.core.ast.enums.SqlFunEnum.MIN;
-import static io.github.skycloud.fastdao.core.ast.enums.SqlFunEnum.SUM;
 
 /**
  * @author yuntian
  */
 @Getter
-public class SqlFun {
+public class SqlFunction {
 
     private SqlFunEnum type;
 
@@ -28,22 +22,22 @@ public class SqlFun {
 
     private boolean distinct = false;
 
-    public SqlFun(SqlFunEnum function, Column field) {
+    public SqlFunction(SqlFunEnum function, Column field) {
         this(function, field.getName());
     }
 
-    public SqlFun(SqlFunEnum function, String field) {
+    public SqlFunction(SqlFunEnum function, String field) {
         this.type = function;
         this.field = field;
     }
 
-    public SqlFun distinct() {
+    public SqlFunction distinct() {
         this.distinct = true;
         return this;
     }
 
     public String genKey() {
-        return type.name() + '|' + field;
+        return type.genKey(field);
     }
 
 }

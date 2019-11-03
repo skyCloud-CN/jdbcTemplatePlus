@@ -6,8 +6,8 @@
  */
 package io.github.skycloud.fastdao.core.plugins;
 
+import io.github.skycloud.fastdao.core.models.Tuple;
 import io.github.skycloud.fastdao.core.reflection.MetaField;
-import io.github.skycloud.fastdao.core.util.Tuple;
 import lombok.Getter;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -51,7 +51,8 @@ public class AnnotationInfo<T extends Annotation> {
             biConsumer.accept(tuple.getKey(), tuple.getValue());
         }
     }
-    public int annotatedFieldSize(){
+
+    public int annotatedFieldSize() {
         return CollectionUtils.size(annotatedField);
     }
 }

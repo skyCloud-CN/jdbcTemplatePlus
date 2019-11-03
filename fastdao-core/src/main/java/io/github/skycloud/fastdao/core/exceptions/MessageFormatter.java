@@ -6,11 +6,6 @@
  */
 package io.github.skycloud.fastdao.core.exceptions;
 
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @author yuntian
  */
@@ -20,24 +15,24 @@ public class MessageFormatter {
     }
 
     public static final String arrayFormat(String messagePattern, Object[] argArray) {
-        if(argArray==null){
+        if (argArray == null) {
             return messagePattern;
         }
-        StringBuilder sb=new StringBuilder();
-        int index=0;
-        boolean prepareReplace=false;
-        for(char ch:messagePattern.toCharArray()){
-            switch (ch){
+        StringBuilder sb = new StringBuilder();
+        int index = 0;
+        boolean prepareReplace = false;
+        for (char ch : messagePattern.toCharArray()) {
+            switch (ch) {
                 case '{':
-                    prepareReplace=true;
+                    prepareReplace = true;
                     break;
                 case '}':
-                    if(prepareReplace){
+                    if (prepareReplace) {
                         sb.append(argArray[index++]);
-                    }else{
+                    } else {
                         sb.append(ch);
                     }
-                    prepareReplace=false;
+                    prepareReplace = false;
                     break;
                 default:
                     sb.append(ch);

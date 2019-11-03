@@ -6,6 +6,7 @@
  */
 package io.github.skycloud.fastdao.core.ast;
 
+import io.github.skycloud.fastdao.core.ast.visitor.Visitor;
 import io.github.skycloud.fastdao.core.plugins.Pluggable;
 
 /**

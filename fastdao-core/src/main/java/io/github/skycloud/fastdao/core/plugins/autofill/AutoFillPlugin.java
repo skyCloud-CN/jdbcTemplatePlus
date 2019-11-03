@@ -9,6 +9,7 @@ package io.github.skycloud.fastdao.core.plugins.autofill;
 import com.google.common.collect.Lists;
 import io.github.skycloud.fastdao.core.plugins.PluggableHandler;
 import io.github.skycloud.fastdao.core.plugins.Plugin;
+
 import java.util.List;
 
 /**

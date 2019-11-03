@@ -4,9 +4,7 @@
  * Copyright 2019 fenbi.com. All rights reserved.
  * FENBI.COM PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
-package io.github.skycloud.fastdao.core.util;
-
-import javafx.beans.NamedArg;
+package io.github.skycloud.fastdao.core.models;
 
 import java.io.Serializable;
 
@@ -49,7 +47,7 @@ public class Tuple<K, V> implements Serializable {
      * @param key   The key for this pair
      * @param value The value to use for this pair
      */
-    public Tuple( K key,V value) {
+    public Tuple(K key, V value) {
         this.key = key;
         this.value = value;
     }

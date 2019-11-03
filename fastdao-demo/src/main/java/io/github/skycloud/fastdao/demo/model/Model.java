@@ -19,7 +19,7 @@ import java.util.Date;
 @Data
 @ToString
 @Table(tableName = "auto_inc")
-public class AutoIncModel {
+public class Model {
 
     @PrimaryKey
     private Long id;

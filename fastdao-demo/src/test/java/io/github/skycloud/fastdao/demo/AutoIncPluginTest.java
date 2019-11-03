@@ -8,29 +8,27 @@ package io.github.skycloud.fastdao.demo;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
-import io.github.skycloud.fastdao.core.ast.Condition;
-import io.github.skycloud.fastdao.core.ast.Request;
+import io.github.skycloud.fastdao.core.ast.conditions.Condition;
+import io.github.skycloud.fastdao.core.ast.request.Request;
 import io.github.skycloud.fastdao.core.ast.enums.SqlFunEnum;
-import io.github.skycloud.fastdao.core.ast.model.SqlFun;
-import io.github.skycloud.fastdao.core.ast.request.CountRequest.CountRequestAst;
+import io.github.skycloud.fastdao.core.ast.model.SqlFunction;
+import io.github.skycloud.fastdao.core.ast.request.CountRequestAst;
 import io.github.skycloud.fastdao.core.ast.request.InsertRequest;
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest;
-import io.github.skycloud.fastdao.core.ast.request.QueryRequest.QueryRequestAst;
-import io.github.skycloud.fastdao.core.ast.request.UpdateRequest.UpdateRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.QueryRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.UpdateRequestAst;
 import io.github.skycloud.fastdao.core.reflection.MetaClass;
 import io.github.skycloud.fastdao.core.reflection.MetaField;
-import io.github.skycloud.fastdao.core.util.QueryResult;
+import io.github.skycloud.fastdao.core.models.QueryResult;
 import io.github.skycloud.fastdao.demo.dao.AutoIncColumnMapPluginDAO;
 import io.github.skycloud.fastdao.demo.model.AutoIncPluginTestModel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.h2.expression.function.Function;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -414,7 +412,7 @@ public class AutoIncPluginTest {
     @Test
     public void test_selectAdvance() {
         QueryRequest request = Request.queryRequest();
-        request.addSelectFields(new SqlFun(SqlFunEnum.MAX, ID));
+        request.addSelectFields(ID.fun().MAX());
         List<QueryResult<AutoIncPluginTestModel>> models = dao.selectAdvance(request);
         System.out.println(JSON.toJSONString(models));
     }
@@ -434,7 +432,6 @@ public class AutoIncPluginTest {
         for (MetaField field : metaClass.metaFields()) {
             if (Arrays.asList(exclude).contains(field.getFieldName())) {
                 continue;
-
             }
             Assert.assertEquals(field.invokeGetter(model), field.invokeGetter(model2));
         }

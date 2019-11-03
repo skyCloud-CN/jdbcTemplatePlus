@@ -4,10 +4,10 @@
  * Copyright 2019 fenbi.com. All rights reserved.
  * FENBI.COM PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
-package io.github.skycloud.fastdao.core.ast;
+package io.github.skycloud.fastdao.core.ast.request;
 
 import io.github.skycloud.fastdao.core.ast.enums.OrderEnum;
-import io.github.skycloud.fastdao.core.table.Column;
+import io.github.skycloud.fastdao.core.models.Column;
 
 
 /**

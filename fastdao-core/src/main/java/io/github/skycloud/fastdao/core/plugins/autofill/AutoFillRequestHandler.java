@@ -6,16 +6,13 @@
  */
 package io.github.skycloud.fastdao.core.plugins.autofill;
 
-import com.google.common.collect.Sets;
-import io.github.skycloud.fastdao.core.ast.FieldUpdateRequest;
+import io.github.skycloud.fastdao.core.ast.request.FieldUpdateRequest;
 import io.github.skycloud.fastdao.core.ast.request.InsertRequest;
 import io.github.skycloud.fastdao.core.ast.request.UpdateRequest;
 import io.github.skycloud.fastdao.core.mapping.RowMapping;
 import io.github.skycloud.fastdao.core.plugins.AnnotationInfo;
 import io.github.skycloud.fastdao.core.plugins.AnnotationPluggableHandler;
 import org.apache.commons.lang3.ArrayUtils;
-
-import java.util.Set;
 
 /**
  * @author yuntian

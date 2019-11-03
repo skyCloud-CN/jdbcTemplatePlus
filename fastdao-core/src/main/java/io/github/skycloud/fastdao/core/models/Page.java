@@ -4,7 +4,7 @@
  * Copyright 2019 fenbi.com. All rights reserved.
  * FENBI.COM PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
-package io.github.skycloud.fastdao.core.util;
+package io.github.skycloud.fastdao.core.models;
 
 /**
  * @author yuntian
@@ -26,7 +26,7 @@ public class Page {
         return page;
     }
 
-    public Page byPage(int pageNumber, int pageSize) {
+    public static Page byPage(int pageNumber, int pageSize) {
         Page page = new Page();
         page.limit = pageSize;
         page.offset = (pageNumber - 1) * pageSize;
@@ -44,7 +44,12 @@ public class Page {
     public int getTotal() {
         return total;
     }
-
+    public int getLimit(){
+        return limit;
+    }
+    public int getOffset(){
+        return offset;
+    }
     public boolean hasNext() {
         return hasNext;
     }

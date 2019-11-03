@@ -8,8 +8,8 @@ package io.github.skycloud.fastdao.core.ast.model;
 
 import com.google.common.collect.Lists;
 import io.github.skycloud.fastdao.core.ast.SqlAst;
-import io.github.skycloud.fastdao.core.ast.Visitor;
 import io.github.skycloud.fastdao.core.ast.enums.OrderEnum;
+import io.github.skycloud.fastdao.core.ast.visitor.Visitor;
 
 import java.util.List;
 

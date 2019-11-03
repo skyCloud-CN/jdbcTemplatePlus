@@ -1,7 +1,7 @@
 package io.github.skycloud.fastdao.core.plugins.logicdelete;
 
-import io.github.skycloud.fastdao.core.ast.Request;
 import io.github.skycloud.fastdao.core.ast.SqlAst;
+import io.github.skycloud.fastdao.core.ast.request.Request;
 import io.github.skycloud.fastdao.core.exceptions.FastDAOException;
 import io.github.skycloud.fastdao.core.mapping.ColumnMapping;
 import io.github.skycloud.fastdao.core.mapping.RowMapping;
@@ -46,12 +46,4 @@ public class LogicDeleteHandler extends AnnotationPluggableHandler<Request, Logi
         }
     }
 
-    private static class LogicDeleteConfig {
-
-        public Object defaultUnDeleteValue;
-
-        public String columnName;
-
-        public boolean exist;
-    }
 }

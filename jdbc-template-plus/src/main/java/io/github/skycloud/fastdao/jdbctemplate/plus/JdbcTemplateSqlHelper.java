@@ -6,21 +6,21 @@
  */
 package io.github.skycloud.fastdao.jdbctemplate.plus;
 
-import io.github.skycloud.fastdao.core.SqlVisitor;
-import io.github.skycloud.fastdao.core.ast.MysqlVisitor;
-import io.github.skycloud.fastdao.core.ast.Request;
+import io.github.skycloud.fastdao.core.ast.visitor.SqlVisitor;
+import io.github.skycloud.fastdao.core.ast.visitor.MysqlVisitor;
+import io.github.skycloud.fastdao.core.ast.request.Request;
 import io.github.skycloud.fastdao.core.ast.SqlAst;
 import io.github.skycloud.fastdao.core.ast.ValueParser;
 import io.github.skycloud.fastdao.core.ast.request.CountRequest;
 import io.github.skycloud.fastdao.core.ast.request.DeleteRequest;
 import io.github.skycloud.fastdao.core.ast.request.InsertRequest;
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest;
-import io.github.skycloud.fastdao.core.ast.request.QueryRequest.QueryRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.QueryRequestAst;
 import io.github.skycloud.fastdao.core.ast.request.UpdateRequest;
 import io.github.skycloud.fastdao.core.exceptions.IllegalConditionException;
 import io.github.skycloud.fastdao.core.mapping.RowMapping;
-import io.github.skycloud.fastdao.core.util.QueryResult;
-import io.github.skycloud.fastdao.core.util.Tuple;
+import io.github.skycloud.fastdao.core.models.QueryResult;
+import io.github.skycloud.fastdao.core.models.Tuple;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
@@ -60,9 +60,9 @@ class JdbcTemplateSqlHelper {
         return CollectionUtils.isEmpty(result) ? null : result.get(0);
     }
 
-    static <T> List<T> querySingleField(NamedParameterJdbcOperations db, QueryRequest request, Class<T> clazz) {
+    static <T> List<T> querySingleField(NamedParameterJdbcOperations db, QueryRequest request, Class clazz,Class<T> fieldClazz) {
         return sendRequest(request, clazz, (visitor, source) ->
-                db.queryForList(visitor.getSql(), source, clazz));
+                db.queryForList(visitor.getSql(), source, fieldClazz));
     }
 
     static <T> List<QueryResult<T>> selectAdvance(NamedParameterJdbcOperations db, QueryRequest request, Class<T> clazz) {

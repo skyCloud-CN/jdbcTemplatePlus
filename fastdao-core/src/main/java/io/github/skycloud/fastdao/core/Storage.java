@@ -11,8 +11,8 @@ import io.github.skycloud.fastdao.core.ast.request.DeleteRequest;
 import io.github.skycloud.fastdao.core.ast.request.InsertRequest;
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest;
 import io.github.skycloud.fastdao.core.ast.request.UpdateRequest;
-import io.github.skycloud.fastdao.core.util.Page;
-import io.github.skycloud.fastdao.core.util.QueryResult;
+import io.github.skycloud.fastdao.core.models.Page;
+import io.github.skycloud.fastdao.core.models.QueryResult;
 
 import java.util.Collection;
 import java.util.List;
@@ -27,13 +27,13 @@ public interface Storage<DATA, PRIM_KEY> {
      * insert DATA to db, all field will be set include null
      * if you want to update only when none of field is null you can use this method
      */
-    int insert(DATA t);
+    int insert(DATA model);
 
     /**
      * insert DATA to db, only non-null field will be insert
      * if you want null field to be default value in db ,you can use this method
      */
-    int insertSelective(DATA t);
+    int insertSelective(DATA model);
 
     int insert(InsertRequest insertRequest, Consumer<Number> doWithGeneratedKeyOnSuccess);
 
@@ -47,12 +47,12 @@ public interface Storage<DATA, PRIM_KEY> {
      * update DATA by primaryKey, all field will be set include null
      * make sure primaryKey in DATA is set
      */
-    int updateByPrimaryKey(DATA t);
+    int updateByPrimaryKey(DATA model);
 
     /**
      * update DATA by primaryKey, only non-null field will be updated
      */
-    int updateByPrimaryKeySelective(DATA t);
+    int updateByPrimaryKeySelective(DATA model);
 
     /**
      * delete by condition
@@ -62,7 +62,7 @@ public interface Storage<DATA, PRIM_KEY> {
     /**
      * delete by primaryKey
      */
-    int deleteByPrimaryKey(PRIM_KEY t);
+    int deleteByPrimaryKey(PRIM_KEY primaryKey);
 
     /**
      * count by condition
@@ -72,7 +72,7 @@ public interface Storage<DATA, PRIM_KEY> {
     /**
      * select by primaryKey
      */
-    DATA selectByPrimaryKey(PRIM_KEY key);
+    DATA selectByPrimaryKey(PRIM_KEY primaryKey);
 
 
     /**
@@ -100,12 +100,12 @@ public interface Storage<DATA, PRIM_KEY> {
     /**
      * multiple selection
      */
-    List<DATA> selectByPrimaryKeys(Collection<PRIM_KEY> keys);
+    List<DATA> selectByPrimaryKeys(Collection<PRIM_KEY> primaryKeys);
 
     /**
      * multiple selection
      */
-    List<DATA> selectByPrimaryKeys(PRIM_KEY... keys);
+    List<DATA> selectByPrimaryKeys(PRIM_KEY... primaryKeys);
 
     /**
      * select by a page, and count result will set to page

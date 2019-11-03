@@ -6,7 +6,7 @@
  */
 package io.github.skycloud.fastdao.core.plugins.shard;
 
-import io.github.skycloud.fastdao.core.SqlVisitor;
+import io.github.skycloud.fastdao.core.ast.visitor.SqlVisitor;
 import io.github.skycloud.fastdao.core.plugins.PluggableHandler;
 import org.apache.commons.lang3.StringUtils;
 

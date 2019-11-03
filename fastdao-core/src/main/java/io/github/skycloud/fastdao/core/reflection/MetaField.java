@@ -68,5 +68,6 @@ public class MetaField {
     public Class<?> getFieldType() {
         return fieldType;
     }
+
     ;
 }

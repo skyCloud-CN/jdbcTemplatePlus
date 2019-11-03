@@ -27,11 +27,6 @@ public class ColumnMapValueParser implements ValueParser {
     }
 
     @Override
-    public String parseField(String field) {
-        return delegate.parseField(field);
-    }
-
-    @Override
     public String parseValue(String field, Object value) {
         TypeHandler handler = rowMapping.getColumnMappingByColumnName(field).getHandler();
         try {

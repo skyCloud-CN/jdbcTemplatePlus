@@ -18,7 +18,6 @@ import io.github.skycloud.fastdao.core.reflection.MetaField;
 import io.github.skycloud.fastdao.core.util.NameUtil;
 import io.github.skycloud.fastdao.core.util.SingletonCache;
 
-
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RowMapping implements Pluggable {
 
-    private final static Map<Class, RowMapping> rowMappings = new SingletonCache<>(new ConcurrentHashMap<>(16),RowMapping::newInstance);
+    private final static Map<Class, RowMapping> rowMappings = new SingletonCache<>(new ConcurrentHashMap<>(16), RowMapping::newInstance);
 
     private Class javaClass;
 
@@ -58,7 +57,7 @@ public class RowMapping implements Pluggable {
         this.tableName = getTableName(metaClass);
         for (MetaField metaField : metaClass.metaFields()) {
             // TODO 支持驼峰转换
-            String columnName = FastDaoConfig.isMapUnderscoreToCamelCase() ?
+            String columnName = FastDaoConfig.getConfig().isMapUnderscoreToCamelCase() ?
                     NameUtil.mapUnderscoreToCamelCase(metaField.getFieldName())
                     : metaField.getFieldName();
             ColumnMapping columnMapping = new ColumnMapping()

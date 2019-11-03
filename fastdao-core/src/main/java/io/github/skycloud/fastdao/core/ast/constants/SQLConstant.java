@@ -69,7 +69,14 @@ public class SQLConstant {
 
     public static final String IS_NULL = "IS NULL ";
 
-    public static final String ON_DUPLICATE_KEY_UPDATE="ON DUPLICATE KEY UPDATE ";
+    public static final String ON_DUPLICATE_KEY_UPDATE = "ON DUPLICATE KEY UPDATE ";
 
     public static final String AS = "AS ";
+
+    public static final String VALUES="VALUES ";
+
+    public static final String GROUP_BY="GROUP BY ";
+
+    public static final String HAVING="HAVING ";
+
 }

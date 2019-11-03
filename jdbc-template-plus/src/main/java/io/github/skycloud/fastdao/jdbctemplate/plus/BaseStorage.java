@@ -9,26 +9,27 @@ package io.github.skycloud.fastdao.jdbctemplate.plus;
 import com.google.common.collect.Lists;
 import com.google.common.reflect.TypeToken;
 import io.github.skycloud.fastdao.core.Storage;
-import io.github.skycloud.fastdao.core.ast.FieldUpdateRequest;
-import io.github.skycloud.fastdao.core.ast.conditions.EqualCondition.EqualConditionAst;
+import io.github.skycloud.fastdao.core.ast.SqlAst;
+import io.github.skycloud.fastdao.core.ast.request.FieldUpdateRequest;
+import io.github.skycloud.fastdao.core.ast.conditions.EqualConditionAst;
 import io.github.skycloud.fastdao.core.ast.request.CountRequest;
-import io.github.skycloud.fastdao.core.ast.request.CountRequest.CountRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.CountRequestAst;
 import io.github.skycloud.fastdao.core.ast.request.DeleteRequest;
-import io.github.skycloud.fastdao.core.ast.request.DeleteRequest.DeleteRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.DeleteRequestAst;
 import io.github.skycloud.fastdao.core.ast.request.InsertRequest;
-import io.github.skycloud.fastdao.core.ast.request.InsertRequest.InsertRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.InsertRequestAst;
 import io.github.skycloud.fastdao.core.ast.request.QueryRequest;
-import io.github.skycloud.fastdao.core.ast.request.QueryRequest.QueryRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.QueryRequestAst;
 import io.github.skycloud.fastdao.core.ast.request.UpdateRequest;
-import io.github.skycloud.fastdao.core.ast.request.UpdateRequest.UpdateRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.UpdateRequestAst;
 import io.github.skycloud.fastdao.core.exceptions.IllegalRequestException;
 import io.github.skycloud.fastdao.core.mapping.ColumnMapping;
 import io.github.skycloud.fastdao.core.mapping.RowMapping;
 import io.github.skycloud.fastdao.core.reflection.MetaClass;
 import io.github.skycloud.fastdao.core.reflection.MetaField;
-import io.github.skycloud.fastdao.core.util.Page;
-import io.github.skycloud.fastdao.core.util.QueryResult;
-import io.github.skycloud.fastdao.core.util.Tuple;
+import io.github.skycloud.fastdao.core.models.Page;
+import io.github.skycloud.fastdao.core.models.QueryResult;
+import io.github.skycloud.fastdao.core.models.Tuple;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 
@@ -55,32 +56,33 @@ public abstract class BaseStorage<DATA, PRIM_KEY> implements Storage<DATA, PRIM_
     }
 
     @Override
-    public DATA selectByPrimaryKey(PRIM_KEY key) {
+    public DATA selectByPrimaryKey(PRIM_KEY primaryKey) {
         QueryRequestAst request = new QueryRequestAst().notReuse();
-        request.setCondition(new EqualConditionAst(rowMapping.getPrimaryKeyColumn().getColumnName(), key));
+        request.setCondition(new EqualConditionAst(rowMapping.getPrimaryKeyColumn().getColumnName(), primaryKey));
         return JdbcTemplateSqlHelper.queryOne(getJdbcTemplate(), request, dataClass);
     }
 
     @Override
-    public List<DATA> selectByPrimaryKeys(Collection<PRIM_KEY> keys) {
+    public List<DATA> selectByPrimaryKeys(Collection<PRIM_KEY> primaryKeys) {
         QueryRequestAst request = new QueryRequestAst().notReuse();
-        request.setCondition(new EqualConditionAst(rowMapping.getPrimaryKeyColumn().getColumnName(), keys));
+        request.setCondition(new EqualConditionAst(rowMapping.getPrimaryKeyColumn().getColumnName(), primaryKeys));
         return JdbcTemplateSqlHelper.query(getJdbcTemplate(), request, dataClass);
     }
 
     @SafeVarargs
     @Override
-    public final List<DATA> selectByPrimaryKeys(PRIM_KEY... keys) {
-        return selectByPrimaryKeys(Lists.newArrayList(keys));
+    public final List<DATA> selectByPrimaryKeys(PRIM_KEY... primaryKeys) {
+        return selectByPrimaryKeys(Lists.newArrayList(primaryKeys));
     }
 
     @Override
     public List<DATA> selectPage(QueryRequest request, Page page) {
-        CountRequestAst countRequest = new CountRequestAst();
-        countRequest.setCondition(request.getCondition());
+        QueryRequest requestCopy=(QueryRequest)((SqlAst)request).copy();
+        requestCopy.limit(page.getLimit()).offset(page.getOffset()).notReuse();
+        CountRequest countRequest = new CountRequestAst().setCondition(request.getCondition());
         int count = JdbcTemplateSqlHelper.count(getJdbcTemplate(), countRequest, dataClass);
         page.setTotal(count);
-        return JdbcTemplateSqlHelper.query(getJdbcTemplate(), request, dataClass);
+        return JdbcTemplateSqlHelper.query(getJdbcTemplate(), requestCopy, dataClass);
     }
 
     @Override
@@ -94,7 +96,7 @@ public abstract class BaseStorage<DATA, PRIM_KEY> implements Storage<DATA, PRIM_
         if (((QueryRequestAst) queryRequest).getSelectFields().size() != 1) {
             throw new IllegalRequestException("select field not defined");
         }
-        return JdbcTemplateSqlHelper.querySingleField(getJdbcTemplate(), queryRequest, clazz);
+        return JdbcTemplateSqlHelper.querySingleField(getJdbcTemplate(), queryRequest, dataClass,clazz);
     }
 
     @Override
@@ -103,13 +105,13 @@ public abstract class BaseStorage<DATA, PRIM_KEY> implements Storage<DATA, PRIM_
     }
 
     @Override
-    public int insert(DATA t) {
-        return insert(t, false);
+    public int insert(DATA model) {
+        return insert(model, false);
     }
 
     @Override
-    public int insertSelective(DATA t) {
-        return insert(t, true);
+    public int insertSelective(DATA model) {
+        return insert(model, true);
     }
 
 
@@ -123,20 +125,20 @@ public abstract class BaseStorage<DATA, PRIM_KEY> implements Storage<DATA, PRIM_
     }
 
     @Override
-    public int updateByPrimaryKey(DATA t) {
-        return updateByPrimaryKey(t, false);
+    public int updateByPrimaryKey(DATA model) {
+        return updateByPrimaryKey(model, false);
     }
 
     @Override
-    public int updateByPrimaryKeySelective(DATA t) {
-        return updateByPrimaryKey(t, true);
+    public int updateByPrimaryKeySelective(DATA model) {
+        return updateByPrimaryKey(model, true);
     }
 
     @Override
-    public int deleteByPrimaryKey(PRIM_KEY t) {
+    public int deleteByPrimaryKey(PRIM_KEY primaryKey) {
         ColumnMapping primaryKeyColumn = rowMapping.getPrimaryKeyColumn();
         DeleteRequestAst request = new DeleteRequestAst().notReuse();
-        request.setCondition(new EqualConditionAst(primaryKeyColumn.getColumnName(), t));
+        request.setCondition(new EqualConditionAst(primaryKeyColumn.getColumnName(), primaryKey));
         request.limit(1);
         return JdbcTemplateSqlHelper.delete(getJdbcTemplate(), request, dataClass);
     }

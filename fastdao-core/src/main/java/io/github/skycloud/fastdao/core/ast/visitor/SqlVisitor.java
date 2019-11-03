@@ -4,10 +4,9 @@
  * Copyright 2019 fenbi.com. All rights reserved.
  * FENBI.COM PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
-package io.github.skycloud.fastdao.core;
+package io.github.skycloud.fastdao.core.ast.visitor;
 
 import io.github.skycloud.fastdao.core.ast.ValueParser;
-import io.github.skycloud.fastdao.core.ast.Visitor;
 
 /**
  * @author yuntian

@@ -17,6 +17,6 @@ import org.springframework.context.annotation.Configuration;
 public class FastDAOConfiguration {
     @Bean
     public void config(){
-        FastDaoConfig.setMapUnderscoreToCamelCase(true);
+        FastDaoConfig.getConfig().setMapUnderscoreToCamelCase(true);
     }
 }

@@ -4,28 +4,15 @@
  * Copyright 2019 fenbi.com. All rights reserved.
  * FENBI.COM PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
-package io.github.skycloud.fastdao.core.ast;
-
-import io.github.skycloud.fastdao.core.ast.conditions.AndCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.AndCondition.AndConditionAst;
-import io.github.skycloud.fastdao.core.ast.conditions.EqualCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.EqualCondition.EqualConditionAst;
-import io.github.skycloud.fastdao.core.ast.conditions.IsNullCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.IsNullCondition.IsNullConditionAst;
-import io.github.skycloud.fastdao.core.ast.conditions.LikeCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.LikeCondition.LikeConditionAst;
-import io.github.skycloud.fastdao.core.ast.conditions.OrCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.OrCondition.OrConditionAst;
-import io.github.skycloud.fastdao.core.ast.conditions.RangeCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.RangeCondition.RangeConditionAst;
+package io.github.skycloud.fastdao.core.ast.conditions;
 
 import java.util.Collection;
 
 /**
  * @author yuntian
  * all Condition can be get from this class, but only or/and method is recommaned
- * other condition is recommend to create by define a static {@link io.github.skycloud.fastdao.core.table.Column}
- *
+ * other condition is recommend to create by define a static {@link io.github.skycloud.fastdao.core.models.Column}
+ * <p>
  * all Condition class is provided to user by an interface, this is just to hide some unsafe method
  */
 public interface Condition {
@@ -38,8 +25,16 @@ public interface Condition {
         return new AndConditionAst();
     }
 
+    static AndCondition and(Condition condition) {
+        return new AndConditionAst().and(condition);
+    }
+
     static OrCondition or() {
         return new OrConditionAst();
+    }
+
+    static OrCondition or(Condition condition) {
+        return new OrConditionAst().or(condition);
     }
 
     static EqualCondition equal(String column, Object... value) {

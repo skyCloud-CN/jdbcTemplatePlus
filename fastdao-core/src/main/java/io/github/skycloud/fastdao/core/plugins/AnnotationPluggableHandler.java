@@ -9,10 +9,10 @@ package io.github.skycloud.fastdao.core.plugins;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.reflect.TypeToken;
+import io.github.skycloud.fastdao.core.models.Tuple;
 import io.github.skycloud.fastdao.core.reflection.MetaClass;
 import io.github.skycloud.fastdao.core.reflection.MetaField;
 import io.github.skycloud.fastdao.core.util.SingletonCache;
-import io.github.skycloud.fastdao.core.util.Tuple;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
@@ -36,23 +36,23 @@ public abstract class AnnotationPluggableHandler<T extends Pluggable, A extends 
         if (!annotationInfo.isAnnotated()) {
             return pluggable;
         }
-        return (T) doHandle(pluggable, annotationInfo,clazz);
+        return (T) doHandle(pluggable, annotationInfo, clazz);
     }
 
-    protected abstract T doHandle(T pluggable, AnnotationInfo<A> annotationInfo,Class clazz);
+    protected abstract T doHandle(T pluggable, AnnotationInfo<A> annotationInfo, Class clazz);
 
     private AnnotationInfo checkAnnotation(Class clazz) {
         AnnotationInfo<A> info = new AnnotationInfo<>();
         MetaClass metaClass = MetaClass.of(clazz);
         A classAnnotation = metaClass.getAnnotation(annotationClass);
         info.setClassAnnotation(classAnnotation);
-        List<Tuple<A,MetaField>> fieldAnnotations = Lists.newArrayList();
+        List<Tuple<A, MetaField>> fieldAnnotations = Lists.newArrayList();
         for (MetaField metaField : metaClass.metaFields()) {
             A annotation = metaField.getAnnotation(annotationClass);
             if (annotation == null) {
                 continue;
             }
-            Tuple<A,MetaField> tuple=new Tuple<>(annotation,metaField);
+            Tuple<A, MetaField> tuple = new Tuple<>(annotation, metaField);
             fieldAnnotations.add(tuple);
         }
         info.setAnnotatedField(fieldAnnotations);

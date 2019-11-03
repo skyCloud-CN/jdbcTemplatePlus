@@ -32,7 +32,4 @@ public class NameUtil {
         return sb.toString();
     }
 
-    public static void main(String[] args) {
-        System.out.println(mapUnderscoreToCamelCase("hello_world_man"));
-    }
 }

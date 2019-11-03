@@ -6,7 +6,7 @@
  */
 package io.github.skycloud.fastdao.demo.model;
 
-import io.github.skycloud.fastdao.core.table.Column;
+import io.github.skycloud.fastdao.core.models.Column;
 
 /**
  * @author yuntian

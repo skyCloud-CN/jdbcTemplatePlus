@@ -12,13 +12,19 @@ package io.github.skycloud.fastdao.core;
  */
 public class FastDaoConfig {
 
-    private static boolean mapUnderscoreToCamelCase = false;
+    private static FastDaoConfig config = new FastDaoConfig();
 
-    public static boolean isMapUnderscoreToCamelCase() {
+    public static FastDaoConfig getConfig() {
+        return config;
+    }
+
+    private boolean mapUnderscoreToCamelCase = false;
+
+    public boolean isMapUnderscoreToCamelCase() {
         return mapUnderscoreToCamelCase;
     }
 
-    public static void setMapUnderscoreToCamelCase(boolean mapUnderscoreToCamelCase) {
-        FastDaoConfig.mapUnderscoreToCamelCase = mapUnderscoreToCamelCase;
+    public void setMapUnderscoreToCamelCase(boolean mapUnderscoreToCamelCase) {
+        this.mapUnderscoreToCamelCase = mapUnderscoreToCamelCase;
     }
 }

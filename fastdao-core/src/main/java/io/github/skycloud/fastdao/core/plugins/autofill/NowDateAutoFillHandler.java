@@ -6,7 +6,7 @@
  */
 package io.github.skycloud.fastdao.core.plugins.autofill;
 
-import io.github.skycloud.fastdao.core.ast.Request;
+import io.github.skycloud.fastdao.core.ast.request.Request;
 
 import java.util.Date;
 

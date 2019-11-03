@@ -7,12 +7,12 @@
 package io.github.skycloud.fastdao.jdbctemplate.plus;
 
 import com.google.common.collect.Maps;
-import io.github.skycloud.fastdao.core.ast.model.SqlFun;
+import io.github.skycloud.fastdao.core.ast.model.SqlFunction;
 import io.github.skycloud.fastdao.core.mapping.ColumnMapping;
 import io.github.skycloud.fastdao.core.mapping.RowMapping;
 import io.github.skycloud.fastdao.core.mapping.TypeHandler;
+import io.github.skycloud.fastdao.core.models.QueryResult;
 import io.github.skycloud.fastdao.core.reflection.MetaClass;
-import io.github.skycloud.fastdao.core.util.QueryResult;
 import io.github.skycloud.fastdao.core.util.SingletonCache;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.jdbc.core.RowMapper;
@@ -67,10 +67,14 @@ public class RowMapperWrapper<T> {
             try {
                 QueryResult result = new QueryResult<>();
                 Object data = buildData(rs, columns);
-                List<SqlFun> functions = (List) columns.stream().filter(x -> x instanceof SqlFun).collect(Collectors.toList());
                 Map<String, Object> functionData = Maps.newHashMap();
-                for (SqlFun function : functions) {
-                    functionData.put(function.genKey(), rs.getLong(function.genKey()));
+                List<SqlFunction> functions = (List) columns.stream().filter(x -> x instanceof SqlFunction).collect(Collectors.toList());
+                if (columns.size() == 1&&functions.size()==1) {
+                    functionData.put(functions.get(0).genKey(), rs.getLong(1));
+                } else {
+                    for (SqlFunction function : functions) {
+                        functionData.put(function.genKey(), rs.getLong(function.genKey()));
+                    }
                 }
                 result.setData(data);
                 result.setSqlFunData(functionData);

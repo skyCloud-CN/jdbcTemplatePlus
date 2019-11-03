@@ -4,13 +4,14 @@
  * Copyright 2019 fenbi.com. All rights reserved.
  * FENBI.COM PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
-package io.github.skycloud.fastdao.core.ast;
+package io.github.skycloud.fastdao.core.ast.request;
 
 
-import io.github.skycloud.fastdao.core.ast.conditions.AndCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.AndCondition.AndConditionAst;
-import io.github.skycloud.fastdao.core.ast.conditions.OrCondition;
-import io.github.skycloud.fastdao.core.ast.conditions.OrCondition.OrConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.Condition;
+import io.github.skycloud.fastdao.core.ast.conditions.bind.BindAndCondition;
+import io.github.skycloud.fastdao.core.ast.conditions.bind.BindAndConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.bind.BindOrCondition;
+import io.github.skycloud.fastdao.core.ast.conditions.bind.BindOrConditionAst;
 
 /**
  * @author yuntian
@@ -43,77 +44,4 @@ public interface ConditionalRequest<T extends ConditionalRequest<T>> extends Req
         return condition;
     }
 
-    interface BindAndCondition<P extends ConditionalRequest<P>> extends AndCondition<BindAndCondition<P>> {
-
-        @Override
-        BindAndCondition<P> and(Condition condition);
-
-        @Override
-        BindAndCondition<P> andOptional(Condition condition);
-
-        @Override
-        BindAndCondition<P> andIf(Condition condition, boolean preCondition);
-
-        @Override
-        BindAndCondition<P> allowEmpty();
-
-        /**
-         * return to Bind ConditionalRequest
-         *
-         * @return
-         */
-        P endCondition();
-
-    }
-
-    interface BindOrCondition<P extends ConditionalRequest<P>> extends OrCondition<BindOrCondition<P>> {
-
-        @Override
-        BindOrCondition<P> or(Condition condition);
-
-        @Override
-        BindOrCondition<P> orOptional(Condition condition);
-
-        @Override
-        BindOrCondition<P> orIf(Condition condition, boolean preCondition);
-
-        @Override
-        BindOrCondition<P> allowEmpty();
-
-        /**
-         * return to Bind ConditionalRequest
-         *
-         * @return
-         */
-        P endCondition();
-
-    }
-
-    class BindAndConditionAst<P extends ConditionalRequest<P>> extends AndConditionAst<BindAndCondition<P>> implements BindAndCondition<P> {
-
-        private P parent;
-
-        private BindAndConditionAst(P parent) {
-            this.parent = parent;
-        }
-
-        @Override
-        public P endCondition() {
-            return parent;
-        }
-    }
-
-    class BindOrConditionAst<P extends ConditionalRequest<P>> extends OrConditionAst<BindOrCondition<P>> implements BindOrCondition<P> {
-
-        private P parent;
-
-        private BindOrConditionAst(P parent) {
-            this.parent = parent;
-        }
-
-        @Override
-        public P endCondition() {
-            return parent;
-        }
-    }
 }

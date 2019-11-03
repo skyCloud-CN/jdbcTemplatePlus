@@ -15,9 +15,7 @@ import java.util.Map;
  */
 public interface ValueParser extends Pluggable {
 
-    public String parseField(String field);
-
-    public String parseValue(String field, Object value);
+    String parseValue(String field, Object value);
 
     Map<String, Object> getParamMap();
 }

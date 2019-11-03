@@ -10,11 +10,9 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.reflect.TypeToken;
-
 import io.github.skycloud.fastdao.core.plugins.autofill.AutoFillPlugin;
 import io.github.skycloud.fastdao.core.plugins.columnmap.ColumnMapAnnotationPlugin;
 import io.github.skycloud.fastdao.core.plugins.exclude.ExcludeAnnotationPlugin;
-import io.github.skycloud.fastdao.core.plugins.logicdelete.LogicDeleteHandler;
 import io.github.skycloud.fastdao.core.plugins.logicdelete.LogicDeletePlugin;
 import io.github.skycloud.fastdao.core.plugins.shard.ShardPlugin;
 import io.github.skycloud.fastdao.core.util.SingletonCache;

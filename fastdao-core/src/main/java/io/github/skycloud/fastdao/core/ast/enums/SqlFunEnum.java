@@ -17,6 +17,6 @@ public enum SqlFunEnum {
     COUNT;
 
     public String genKey(String field) {
-        return name() + '|' + field;
+        return name() + '|' + (field == null ? "ALL" : field);
     }
 }

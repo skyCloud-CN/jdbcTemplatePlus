@@ -12,7 +12,6 @@ import io.github.skycloud.fastdao.core.ast.ValueParser;
 import java.util.Map;
 
 import static io.github.skycloud.fastdao.core.ast.constants.SQLConstant.SPACE;
-import static io.github.skycloud.fastdao.core.ast.constants.SQLConstant.UNQUOTE;
 
 /**
  * @author yuntian
@@ -26,11 +25,6 @@ public class JdbcTemplateParser implements ValueParser {
     @Override
     public Map<String, Object> getParamMap() {
         return paramMap;
-    }
-
-    @Override
-    public String parseField(String field) {
-        return UNQUOTE + field + UNQUOTE + SPACE;
     }
 
     @Override

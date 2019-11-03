@@ -28,16 +28,19 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class TypeHandlerResolver {
 
-    public static final Map<Class, TypeHandler> defaultHandlerMap = Maps.newConcurrentMap();
+    private static final Map<Class, TypeHandler> defaultHandlerMap = Maps.newConcurrentMap();
 
-    public static final Map<Class, Map<JDBCType, TypeHandler>> typeHanlderMap = Maps.newConcurrentMap();
+    private static final Map<Class, Map<JDBCType, TypeHandler>> typeHanlderMap = Maps.newConcurrentMap();
 
     static {
         register(String.class, new StringTypeHandler());
         register(Integer.class, new IntegerTypeHandler());
+        register(int.class,new IntegerTypeHandler());
         register(Long.class, new LongTypeHandler());
+        register(long.class,new LongTypeHandler());
         register(Date.class, new DateTypeHandler());
         register(Boolean.class, new BooleanTypeHandler());
+        register(boolean.class, new BooleanTypeHandler());
         register(JSONObject.class, new FastJsonTypeHandler());
         register(Long.class, JDBCType.TIMESTAMP, new Timestamp2LongTypeHandler());
         register(Long.class, JDBCType.TIME, new Timestamp2LongTypeHandler());

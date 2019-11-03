@@ -1,22 +1,21 @@
-package io.github.skycloud.fastdao.core.ast; /**
+package io.github.skycloud.fastdao.core.ast.visitor; /**
  * @(#)Visitor.java, 9月 10, 2019.
  * <p>
  * Copyright 2019 fenbi.com. All rights reserved.
  * FENBI.COM PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
 
-import io.github.skycloud.fastdao.core.ast.conditions.AndCondition.AndConditionAst;
-import io.github.skycloud.fastdao.core.ast.conditions.EqualCondition.EqualConditionAst;
-import io.github.skycloud.fastdao.core.ast.conditions.LikeCondition.LikeConditionAst;
-import io.github.skycloud.fastdao.core.ast.conditions.OrCondition.OrConditionAst;
-import io.github.skycloud.fastdao.core.ast.conditions.RangeCondition.RangeConditionAst;
-import io.github.skycloud.fastdao.core.ast.conditions.IsNullCondition.IsNullConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.AndConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.EqualConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.IsNullConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.LikeConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.OrConditionAst;
+import io.github.skycloud.fastdao.core.ast.conditions.RangeConditionAst;
 import io.github.skycloud.fastdao.core.ast.model.SortLimitClause;
-import io.github.skycloud.fastdao.core.ast.request.CountRequest.CountRequestAst;
-import io.github.skycloud.fastdao.core.ast.request.DeleteRequest.DeleteRequestAst;
-import io.github.skycloud.fastdao.core.ast.request.QueryRequest.QueryRequestAst;
-import io.github.skycloud.fastdao.core.ast.request.UpdateRequest.UpdateRequestAst;
-import io.github.skycloud.fastdao.core.ast.request.InsertRequest.InsertRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.DeleteRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.InsertRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.QueryRequestAst;
+import io.github.skycloud.fastdao.core.ast.request.UpdateRequestAst;
 import io.github.skycloud.fastdao.core.plugins.Pluggable;
 
 

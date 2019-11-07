@@ -1,8 +1,7 @@
 /**
  * @(#)LogicDeleteVisitor.java, 10月 24, 2019.
  * <p>
- * Copyright 2019 fenbi.com. All rights reserved.
- * FENBI.COM PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ *
  */
 package io.github.skycloud.fastdao.core.plugins.logicdelete;
 
@@ -27,6 +26,9 @@ import java.util.List;
 
 /**
  * @author yuntian
+ * this visitor is to find whether request has a condition related with LogicDelete field
+ * if condition related with LogicDelete field is detected, then do nothing
+ * or else add a condition LogicDelele=DefaultUnDeletedValue
  */
 public class LogicDeleteVisitor implements Visitor {
 
@@ -34,9 +36,9 @@ public class LogicDeleteVisitor implements Visitor {
 
     private Object logicDeleteDefaultValue;
 
-    boolean hasLogicDeleteField = false;
+    private boolean hasLogicDeleteField = false;
 
-    public LogicDeleteVisitor(String logicDeleteColumn, Object logicDeleteDefaultValue) {
+    LogicDeleteVisitor(String logicDeleteColumn, Object logicDeleteDefaultValue) {
         this.logicDeleteColumn = logicDeleteColumn;
         this.logicDeleteDefaultValue = logicDeleteDefaultValue;
     }
@@ -53,9 +55,9 @@ public class LogicDeleteVisitor implements Visitor {
 
     @Override
     public void visit(DeleteRequestAst request) {
-
+        // do nothing
     }
-
+    // if a insertRequest d
     @Override
     public void visit(InsertRequestAst request) {
         if (request.getUpdateFields().containsKey(logicDeleteColumn)) {

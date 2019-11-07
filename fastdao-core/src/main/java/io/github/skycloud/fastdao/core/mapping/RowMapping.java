@@ -1,8 +1,7 @@
 /**
  * @(#)ClassMapper.java, 9月 28, 2019.
  * <p>
- * Copyright 2019 fenbi.com. All rights reserved.
- * FENBI.COM PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ *
  */
 package io.github.skycloud.fastdao.core.mapping;
 
@@ -56,7 +55,6 @@ public class RowMapping implements Pluggable {
         this.javaClass = clazz;
         this.tableName = getTableName(metaClass);
         for (MetaField metaField : metaClass.metaFields()) {
-            // TODO 支持驼峰转换
             String columnName = FastDaoConfig.getConfig().isMapUnderscoreToCamelCase() ?
                     NameUtil.mapUnderscoreToCamelCase(metaField.getFieldName())
                     : metaField.getFieldName();
@@ -68,6 +66,9 @@ public class RowMapping implements Pluggable {
                     .setPrimary(false)
                     .setRowMapping(this)
                     .invokePlugin(clazz);
+            if (columnMapping == null) {
+                continue;
+            }
             this.fieldNameMap.put(columnMapping.getFieldName(), columnMapping);
             this.columnNameMap.put(columnMapping.getColumnName(), columnMapping);
             if (isPrimaryField(metaField)) {
@@ -98,6 +99,14 @@ public class RowMapping implements Pluggable {
 
     public ColumnMapping getColumnMappingByColumnName(String columnName) {
         return columnNameMap.get(columnName);
+    }
+
+    public String columnName2FieldName(String columnName) {
+        return columnNameMap.get(columnName).getFieldName();
+    }
+
+    public String fieldName2ColumnName(String fieldName) {
+        return fieldNameMap.get(fieldName).getColumnName();
     }
 
     private boolean isPrimaryField(MetaField metaField) {

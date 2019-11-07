@@ -1,8 +1,7 @@
 /**
  * @(#)AnnotationPluggableHandler.java, 10月 26, 2019.
  * <p>
- * Copyright 2019 fenbi.com. All rights reserved.
- * FENBI.COM PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ *
  */
 package io.github.skycloud.fastdao.core.plugins;
 
@@ -31,15 +30,15 @@ public abstract class AnnotationPluggableHandler<T extends Pluggable, A extends 
             .getRawType();
 
     @Override
-    public T handle(T pluggable, Class clazz) {
-        AnnotationInfo annotationInfo = annotationInfoCache.get(clazz);
+    public T handle(T pluggable, Class modelClass) {
+        AnnotationInfo annotationInfo = annotationInfoCache.get(modelClass);
         if (!annotationInfo.isAnnotated()) {
             return pluggable;
         }
-        return (T) doHandle(pluggable, annotationInfo, clazz);
+        return (T) doHandle(pluggable, annotationInfo, modelClass);
     }
 
-    protected abstract T doHandle(T pluggable, AnnotationInfo<A> annotationInfo, Class clazz);
+    protected abstract T doHandle(T pluggable, AnnotationInfo<A> annotationInfo, Class modelClass);
 
     private AnnotationInfo checkAnnotation(Class clazz) {
         AnnotationInfo<A> info = new AnnotationInfo<>();
@@ -58,4 +57,5 @@ public abstract class AnnotationPluggableHandler<T extends Pluggable, A extends 
         info.setAnnotatedField(fieldAnnotations);
         return info;
     }
+
 }

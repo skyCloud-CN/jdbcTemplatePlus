@@ -1,8 +1,7 @@
 /**
  * @(#)FieldMapper.java, 9月 28, 2019.
  * <p>
- * Copyright 2019 fenbi.com. All rights reserved.
- * FENBI.COM PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ *
  */
 package io.github.skycloud.fastdao.core.mapping;
 
@@ -21,7 +20,7 @@ public class ColumnMapping implements Pluggable {
 
     private Class javaType;
 
-    private JDBCType jdbcType;
+    private JdbcType jdbcType;
 
     private TypeHandler handler;
 
@@ -56,11 +55,11 @@ public class ColumnMapping implements Pluggable {
         return this;
     }
 
-    public JDBCType getJdbcType() {
+    public JdbcType getJdbcType() {
         return jdbcType;
     }
 
-    public ColumnMapping setJdbcType(JDBCType jdbcType) {
+    public ColumnMapping setJdbcType(JdbcType jdbcType) {
         this.jdbcType = jdbcType;
         return this;
     }

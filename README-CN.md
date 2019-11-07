@@ -1,7 +1,7 @@
 #   Jdbc-Template-Plus
 
-[![codebeat badge](https://codebeat.co/badges/b060749d-601c-4035-8f7e-ed17a3f39c39)](https://codebeat.co/projects/github-com-skycloud-cn-jdbctemplateplus-master)
-[![Build Status](https://travis-ci.org/skyCloud-CN/jdbcTemplatePlus.svg?branch=master)](https://travis-ci.org/skyCloud-CN/jdbcTemplatePlus)
+[![codebeat badge](https://codebeat.co/badges/2bb6c4b8-0c08-4cb7-a51e-5f041402357e)](https://codebeat.co/projects/github-com-skycloud-cn-jdbctemplateplus-master)
+[![Build Status](https://travis-ci.org/skyCloud-CN/jdbcTemplate-Plus.svg?branch=master)](https://travis-ci.org/skyCloud-CN/jdbcTemplate-Plus)
 
 面向Java web开发者的基于SpringJdbcTemplate的 ORM 框架, 使用 Jdbc-Template-Plus 你可以
 

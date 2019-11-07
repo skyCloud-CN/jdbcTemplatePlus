@@ -1,16 +1,17 @@
 /**
  * @(#)ColumnMapColumnMappingHandler.java, 10月 13, 2019.
  * <p>
- * Copyright 2019 fenbi.com. All rights reserved.
- * FENBI.COM PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ *
  */
 package io.github.skycloud.fastdao.core.plugins.columnmap;
 
 import io.github.skycloud.fastdao.core.mapping.ColumnMapping;
+import io.github.skycloud.fastdao.core.mapping.JdbcType;
 import io.github.skycloud.fastdao.core.mapping.TypeHandler;
 import io.github.skycloud.fastdao.core.mapping.TypeHandlerResolver;
 import io.github.skycloud.fastdao.core.plugins.PluggableHandler;
 import io.github.skycloud.fastdao.core.reflection.MetaClass;
+import io.github.skycloud.fastdao.core.reflection.MetaClassUtil;
 import io.github.skycloud.fastdao.core.reflection.MetaField;
 import org.apache.commons.lang3.StringUtils;
 
@@ -23,29 +24,28 @@ import java.util.Optional;
 public class ColumnMapColumnMappingHandler implements PluggableHandler<ColumnMapping> {
 
     @Override
-    public ColumnMapping handle(ColumnMapping pluggable, Class clazz) {
-        MetaClass metaClass = MetaClass.of(clazz);
-        MetaField field = metaClass.getMetaField(pluggable.getFieldName());
+    public ColumnMapping handle(ColumnMapping columnMapping, Class clazz) {
+        MetaField field = MetaClass.of(clazz).getMetaField(columnMapping.getFieldName());
         ColumnMap annotation = field.getAnnotation(ColumnMap.class);
         if (annotation == null) {
-            return pluggable;
+            return columnMapping;
         }
         if (StringUtils.isNotBlank(annotation.column())) {
-            pluggable.setColumnName(annotation.column());
+            columnMapping.setColumnName(annotation.column());
         }
 
-        if (annotation.jdbcType() != JDBCType.NULL) {
-            pluggable.setJdbcType(annotation.jdbcType());
-            Optional.ofNullable(TypeHandlerResolver.getTypeHandler(pluggable.getJavaType(), pluggable.getJdbcType()))
-                    .ifPresent(pluggable::setHandler);
+        if (annotation.jdbcType() != JdbcType.UNDEFINED) {
+            columnMapping.setJdbcType(annotation.jdbcType());
+            Optional.ofNullable(TypeHandlerResolver.getTypeHandler(columnMapping.getJavaType(), columnMapping.getJdbcType()))
+                    .ifPresent(columnMapping::setHandler);
         }
         if (annotation.handler() != TypeHandler.class) {
             try {
-                pluggable.setHandler(annotation.handler().newInstance());
+                columnMapping.setHandler(annotation.handler().newInstance());
             } catch (Exception e) {
                 throw new RuntimeException("create Handler fail");
             }
         }
-        return pluggable;
+        return columnMapping;
     }
 }

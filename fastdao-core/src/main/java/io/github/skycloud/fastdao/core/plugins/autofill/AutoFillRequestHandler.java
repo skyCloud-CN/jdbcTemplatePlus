@@ -1,8 +1,7 @@
 /**
  * @(#)AutoFillRequstHandler.java, 10月 12, 2019.
  * <p>
- * Copyright 2019 fenbi.com. All rights reserved.
- * FENBI.COM PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ *
  */
 package io.github.skycloud.fastdao.core.plugins.autofill;
 
@@ -19,16 +18,14 @@ import org.apache.commons.lang3.ArrayUtils;
  */
 public class AutoFillRequestHandler<T extends FieldUpdateRequest> extends AnnotationPluggableHandler<T, AutoFill> {
 
-
     @Override
-    protected T doHandle(T pluggable, AnnotationInfo<AutoFill> annotationInfo, Class clazz) {
-        RowMapping rowMapping = RowMapping.of(clazz);
+    protected T doHandle(T pluggable, AnnotationInfo<AutoFill> annotationInfo, Class modelClass) {
+        RowMapping rowMapping = RowMapping.of(modelClass);
         annotationInfo.forEachAnnotatedField((autoFill, metaField) -> {
             if (match(pluggable, autoFill)) {
                 String columnName = rowMapping.getColumnMappingByFieldName(metaField.getFieldName()).getColumnName();
                 AutoFillHandler handler = createHandler(autoFill);
                 pluggable.addUpdateField(columnName, handler.handle(pluggable));
-
             }
         });
         return pluggable;
@@ -36,9 +33,9 @@ public class AutoFillRequestHandler<T extends FieldUpdateRequest> extends Annota
 
     private boolean match(T request, AutoFill autoFill) {
         if (request instanceof UpdateRequest) {
-            return ArrayUtils.contains(autoFill.onOperation(), AutoFillOperation.UPDATE);
+            return ArrayUtils.contains(autoFill.onOperation(), RequestType.UPDATE);
         } else if (request instanceof InsertRequest) {
-            return ArrayUtils.contains(autoFill.onOperation(), AutoFillOperation.INSERT);
+            return ArrayUtils.contains(autoFill.onOperation(), RequestType.INSERT);
         } else {
             return false;
         }

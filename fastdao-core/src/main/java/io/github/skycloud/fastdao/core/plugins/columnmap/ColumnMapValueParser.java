@@ -1,8 +1,7 @@
 /**
  * @(#)ColumnMapValueParser.java, 10月 13, 2019.
  * <p>
- * Copyright 2019 fenbi.com. All rights reserved.
- * FENBI.COM PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ *
  */
 package io.github.skycloud.fastdao.core.plugins.columnmap;
 
@@ -25,15 +24,13 @@ public class ColumnMapValueParser implements ValueParser {
         this.delegate = delegate;
         this.rowMapping = rowMapping;
     }
-
+    /**
+     * convert java type to jdbcType
+     */
     @Override
     public String parseValue(String field, Object value) {
         TypeHandler handler = rowMapping.getColumnMappingByColumnName(field).getHandler();
-        try {
-            value = handler.parseParam(value);
-        } catch (Exception e) {
-
-        }
+        value = handler.parseParam(value);
         return delegate.parseValue(field, value);
     }
 

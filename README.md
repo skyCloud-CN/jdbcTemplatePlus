@@ -1,7 +1,7 @@
 #   Jdbc-Template-Plus
 
 [![codebeat badge](https://codebeat.co/badges/2bb6c4b8-0c08-4cb7-a51e-5f041402357e)](https://codebeat.co/projects/github-com-skycloud-cn-jdbctemplateplus-master)
-[![Build Status](https://travis-ci.org/skyCloud-CN/jdbcTemplate-Plus.svg?branch=master)](https://travis-ci.org/skyCloud-CN/jdbcTemplate-Plus)
+[![Build Status](https://travis-ci.org/skyCloud-CN/jdbcTemplatePlus.svg?branch=master)](https://travis-ci.org/skyCloud-CN/jdbcTemplatePlus)
 
 [中文版文档](./README-CN.md)
 

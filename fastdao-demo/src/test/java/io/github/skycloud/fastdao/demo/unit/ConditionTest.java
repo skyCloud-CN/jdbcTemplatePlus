@@ -76,7 +76,6 @@ public class ConditionTest extends BaseTest{
         assertSqlEqual(Condition.and(Condition.and(ID.eq(1))).and(ID.eq(2)), "`id` = 1 AND `id` = 2");
         assertSqlEqual(Condition.and(Condition.or()).and(ID.eq(2)), "`id` = 2");
         assertSqlEqual(Condition.and(Condition.and(ID.eq(2)).and(Condition.or())), "`id` = 2");
-
     }
 
     @Test

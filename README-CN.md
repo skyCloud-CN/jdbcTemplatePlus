@@ -1,7 +1,7 @@
 #   Jdbc-Template-Plus
 
 [![codebeat badge](https://codebeat.co/badges/2bb6c4b8-0c08-4cb7-a51e-5f041402357e)](https://codebeat.co/projects/github-com-skycloud-cn-jdbctemplateplus-master)
-[![Build Status](https://travis-ci.org/skyCloud-CN/jdbcTemplate-Plus.svg?branch=master)](https://travis-ci.org/skyCloud-CN/jdbcTemplate-Plus)
+[![Build Status](https://travis-ci.org/skyCloud-CN/jdbcTemplatePlus.svg?branch=master)](https://travis-ci.org/skyCloud-CN/jdbcTemplatePlus)
 
 面向Java web开发者的基于SpringJdbcTemplate的 ORM 框架, 使用 Jdbc-Template-Plus 你可以
 
@@ -42,11 +42,6 @@ JdbcTemplatePlus就是为了解决以上问题, 专为简化开发而生
 
 **当然, 目前框架才刚完成开发不久, 希望大家多多提 Issue, 当然更希望各位客官能给个STAR啦**
 
-**当然, 目前框架才刚完成开发不久, 希望大家多多提 Issue, 当然更希望各位客官能给个STAR啦**
-
-**当然, 目前框架才刚完成开发不久, 希望大家多多提 Issue, 当然更希望各位客官能给个STAR啦**
-
-嗯,重要的话要说三遍!!!
 
 
 
@@ -166,29 +161,94 @@ public class User {
 
 ```java
 
-    DATA selectByPrimaryKey(PRIM_KEY key);
+    /**
+     * insert DATA to db, all field will be set include null
+     * if you want to update only when none of field is null you can use this method
+     */
+    int insert(DATA model);
 
-    List<DATA> selectByPrimaryKeys(Collection<PRIM_KEY> keys);
+    /**
+     * insert DATA to db, only non-null field will be insert
+     * if you want null field to be default value in db ,you can use this method
+     */
+    int insertSelective(DATA model);
 
-    List<DATA> selectByPrimaryKeys(PRIM_KEY... keys);
+    int insert(InsertRequest insertRequest, Consumer<Number> doWithGeneratedKeyOnSuccess);
 
-    int insert(DATA t);
-
-    int insertSelective(DATA t);
-
-    int updateByPrimaryKey(DATA t);
-   
-    int updateByPrimaryKeySelective(DATA t);
-
-    int deleteByPrimaryKey(PRIM_KEY t);
-
-    List<DATA> select(QueryRequest queryRequest);
-
-    int count(CountRequest countRequest);
-
+    /**
+     * update by UpdateRequest
+     * if you want to update only a few field, or want to update by condition, you can use this method
+     */
     int update(UpdateRequest updateRequest);
 
+    /**
+     * update DATA by primaryKey, all field will be set include null
+     * make sure primaryKey in DATA is set
+     */
+    int updateByPrimaryKey(DATA model);
+
+    /**
+     * update DATA by primaryKey, only non-null field will be updated
+     */
+    int updateByPrimaryKeySelective(DATA model);
+
+    /**
+     * delete by condition
+     */
     int delete(DeleteRequest deleteRequest);
+
+    /**
+     * delete by primaryKey
+     */
+    int deleteByPrimaryKey(PRIM_KEY primaryKey);
+
+    /**
+     * count by condition
+     */
+    int count(CountRequest countRequest);
+
+    /**
+     * select by primaryKey
+     */
+    DATA selectByPrimaryKey(PRIM_KEY primaryKey);
+
+    /**
+     * select by QueryRequest
+     * this method doesn't support extra function
+     */
+    List<DATA> select(QueryRequest queryRequest);
+
+    /**
+     * select by QueryRequest
+     * if has multiple result, only return first row
+     */
+    DATA selectOne(QueryRequest queryRequest);
+
+    /**
+     * select by
+     */
+    <T> List<T> selectSingleField(QueryRequest queryRequest, Class<T> clazz);
+
+    /**
+     * support SqlFunction as request field
+     */
+    List<QueryResult<DATA>> selectAdvance(QueryRequest queryRequest);
+
+    /**
+     * multiple selection
+     */
+    List<DATA> selectByPrimaryKeys(Collection<PRIM_KEY> primaryKeys);
+
+    /**
+     * multiple selection
+     */
+    List<DATA> selectByPrimaryKeys(PRIM_KEY... primaryKeys);
+
+    /**
+     * select by a page, and count result will set to page
+     */
+    List<DATA> selectPage(QueryRequest request, Page page);
+
 
 ```
 
@@ -257,9 +317,13 @@ private Boolean deleted;
 
 如果有什么额外功能觉得比较好或者比较常用, 可以通过issue提给我~我会考虑添加的
 
+#### do to list
 
-**都看到这里了,在git clone之前,记得给个STAR哦,亲~**
-
+- 支持乐观锁注解,提供一键乐观锁功能
+- shard插件支持多数据源分库配置
+- 支持批量插入功能
+- 强化基于spring的配置功能
+- 支持更多的jdbcType
 ## 版权
 
 JdbcTemplatePlus is under the Apache 2.0 license. See the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0) file for details.

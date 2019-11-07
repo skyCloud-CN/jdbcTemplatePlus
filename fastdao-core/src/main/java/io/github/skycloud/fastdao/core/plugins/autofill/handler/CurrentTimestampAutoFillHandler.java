@@ -1,14 +1,17 @@
-/**
- * @(#)CurrentTimestampAutoFillHandler.java, 11月 07, 2019.
- * <p>
- * Copyright 2019 fenbi.com. All rights reserved.
- * FENBI.COM PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- */
+
 package io.github.skycloud.fastdao.core.plugins.autofill.handler;
+
+import io.github.skycloud.fastdao.core.ast.request.Request;
+import io.github.skycloud.fastdao.core.plugins.autofill.AutoFillHandler;
+
+import java.util.Date;
 
 /**
  * @author yuntian
  */
-public class CurrentTimestampAutoFillHandler {
-
+public class CurrentTimestampAutoFillHandler implements AutoFillHandler<Long> {
+    @Override
+    public Long handle(Request request) {
+        return System.currentTimeMillis();
+    }
 }

@@ -9,6 +9,8 @@ import io.github.skycloud.fastdao.core.annotation.PrimaryKey;
 import io.github.skycloud.fastdao.core.annotation.Table;
 import io.github.skycloud.fastdao.core.mapping.JdbcType;
 import io.github.skycloud.fastdao.core.plugins.autofill.AutoFill;
+import io.github.skycloud.fastdao.core.plugins.autofill.AutoFillOnInsert;
+import io.github.skycloud.fastdao.core.plugins.autofill.AutoFillOnUpdate;
 import io.github.skycloud.fastdao.core.plugins.autofill.AutoFillValueEnum;
 import io.github.skycloud.fastdao.core.plugins.autofill.RequestType;
 import io.github.skycloud.fastdao.core.plugins.columnmap.ColumnMap;
@@ -40,10 +42,11 @@ public class AutoIncPluginTestModel {
     private Date time;
 
     @ColumnMap(jdbcType = JdbcType.TIMESTAMP)
-    @AutoFill(fillValue = AutoFillValueEnum.NOW, onOperation = {RequestType.INSERT, RequestType.UPDATE})
+    @AutoFillOnInsert("now")
+    @AutoFillOnUpdate("now")
     private Long updated;
 
-    @AutoFill(fillValue = AutoFillValueEnum.NOW, onOperation = RequestType.INSERT)
+    @AutoFillOnInsert("now")
     private Date created;
 
     @LogicDelete

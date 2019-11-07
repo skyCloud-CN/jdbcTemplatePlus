@@ -233,7 +233,7 @@ public class AutoIncPluginTest {
         request.setCondition(Condition.and()
                 .and(ID.eq(1, 2, 3, 4, 5))
                 .and(DELETED.gt(0))
-                .and(UPDATED.lt(new Date()))
+                .and(UPDATED.lt(new Date().getTime()))
                 .and(NAME.like("i").matchLeft().matchRight()));
 
         List<AutoIncPluginTestModel> models = dao.select(request);
@@ -293,7 +293,7 @@ public class AutoIncPluginTest {
         request.setCondition(Condition.and()
                 .and(ID.eq(1, 2, 3, 4, 5))
                 .and(DELETED.gt(0))
-                .and(UPDATED.lt(new Date()))
+                .and(UPDATED.lt(new Date().getTime()))
                 .and(NAME.like("i").matchLeft().matchRight()));
 
         int count = dao.count(request);
@@ -345,7 +345,7 @@ public class AutoIncPluginTest {
         request.setCondition(Condition.and()
                 .and(ID.eq(1, 2, 3, 4, 5))
                 .and(DELETED.gt(0))
-                .and(UPDATED.lt(new Date()))
+                .and(UPDATED.lt(new Date().getTime()))
                 .and(NAME.like("i").matchLeft().matchRight()));
         Date date = new Date();
         request.addUpdateField(CREATED, date);
@@ -398,6 +398,7 @@ public class AutoIncPluginTest {
     }
 
     @Test
+    @Transactional
     public void test_onDuplicateKey() {
         InsertRequest request = Request.insertRequest();
         request.addUpdateField(ID, 6);

@@ -1,19 +1,15 @@
-/**
- * @(#)NowAutoFillHandler.java, 10月 07, 2019.
- * <p>
- *
- */
-package io.github.skycloud.fastdao.core.plugins.autofill;
+
+package io.github.skycloud.fastdao.core.plugins.autofill.handler;
 
 import io.github.skycloud.fastdao.core.ast.request.Request;
+import io.github.skycloud.fastdao.core.plugins.autofill.AutoFillHandler;
 
 import java.util.Date;
 
 /**
  * @author yuntian
  */
-public class NowDateAutoFillHandler implements AutoFillHandler<Date> {
-
+public class CurrentDateAutoFillHandler implements AutoFillHandler<Date> {
     @Override
     public Date handle(Request request) {
         return new Date();

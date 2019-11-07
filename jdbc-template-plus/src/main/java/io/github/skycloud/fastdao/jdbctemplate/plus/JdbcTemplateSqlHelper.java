@@ -43,7 +43,8 @@ class JdbcTemplateSqlHelper {
     static Tuple<Integer, Number> insert(NamedParameterJdbcOperations db, InsertRequest request, Class clazz) {
         return sendRequest(request, clazz, (visitor, source) -> {
             KeyHolder keyHolder = new GeneratedKeyHolder();
-            int count = db.update(visitor.getSql(), source, keyHolder);
+            //String primaryKeyColumn=RowMapping.of(clazz).getPrimaryKeyColumn().getColumnName();
+            int count = db.update(visitor.getSql(), source, keyHolder);//new String[]{primaryKeyColumn});
             return new Tuple<>(count, keyHolder.getKey());
         });
     }

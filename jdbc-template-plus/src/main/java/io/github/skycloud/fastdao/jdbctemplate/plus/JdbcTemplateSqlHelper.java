@@ -1,7 +1,6 @@
 /**
  * @(#)SqlHelper.java, 9月 30, 2019.
  * <p>
- *
  */
 package io.github.skycloud.fastdao.jdbctemplate.plus;
 
@@ -43,8 +42,9 @@ class JdbcTemplateSqlHelper {
     static Tuple<Integer, Number> insert(NamedParameterJdbcOperations db, InsertRequest request, Class clazz) {
         return sendRequest(request, clazz, (visitor, source) -> {
             KeyHolder keyHolder = new GeneratedKeyHolder();
-            //String primaryKeyColumn=RowMapping.of(clazz).getPrimaryKeyColumn().getColumnName();
-            int count = db.update(visitor.getSql(), source, keyHolder);//new String[]{primaryKeyColumn});
+            String primaryKeyColumn = RowMapping.of(clazz).getPrimaryKeyColumn().getColumnName();
+            // when contains column with CURRENT_TIMESTAMP as default value, keyHolder will contains CURRENT_TIMESTAMP value, so define primaryKey is needed
+            int count = db.update(visitor.getSql(), source, keyHolder, new String[]{primaryKeyColumn});
             return new Tuple<>(count, keyHolder.getKey());
         });
     }
@@ -60,7 +60,7 @@ class JdbcTemplateSqlHelper {
         return CollectionUtils.isEmpty(result) ? null : result.get(0);
     }
 
-    static <T> List<T> querySingleField(NamedParameterJdbcOperations db, QueryRequest request, Class clazz,Class<T> fieldClazz) {
+    static <T> List<T> querySingleField(NamedParameterJdbcOperations db, QueryRequest request, Class clazz, Class<T> fieldClazz) {
         return sendRequest(request, clazz, (visitor, source) ->
                 db.queryForList(visitor.getSql(), source, fieldClazz));
     }
@@ -85,7 +85,7 @@ class JdbcTemplateSqlHelper {
         if (request.isReuse()) {
             request = (Request) ((SqlAst) request).copy();
         }
-        request=request.invokePlugin(clazz);
+        request = request.invokePlugin(clazz);
         ValueParser parser = new JdbcTemplateParser().invokePlugin(clazz);
         SqlVisitor visitor = new MysqlVisitor(getTableName(clazz), parser).invokePlugin(clazz);
         try {

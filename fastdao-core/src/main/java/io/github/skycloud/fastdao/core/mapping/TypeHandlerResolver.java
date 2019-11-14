@@ -1,21 +1,13 @@
 /**
  * @(#)HandlerResolver.java, 10月 03, 2019.
  * <p>
- *
  */
 package io.github.skycloud.fastdao.core.mapping;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
 import io.github.skycloud.fastdao.core.exceptions.FastDAOException;
-import io.github.skycloud.fastdao.core.mapping.handlers.Bigint2DateTypeHandler;
-import io.github.skycloud.fastdao.core.mapping.handlers.BooleanTypeHandler;
-import io.github.skycloud.fastdao.core.mapping.handlers.DateTypeHandler;
-import io.github.skycloud.fastdao.core.mapping.handlers.FastJsonTypeHandler;
-import io.github.skycloud.fastdao.core.mapping.handlers.IntegerTypeHandler;
-import io.github.skycloud.fastdao.core.mapping.handlers.LongTypeHandler;
-import io.github.skycloud.fastdao.core.mapping.handlers.StringTypeHandler;
-import io.github.skycloud.fastdao.core.mapping.handlers.Timestamp2LongTypeHandler;
+import io.github.skycloud.fastdao.core.mapping.handlers.*;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -40,11 +32,14 @@ public class TypeHandlerResolver {
         register(Date.class, new DateTypeHandler());
         register(Boolean.class, new BooleanTypeHandler());
         register(boolean.class, new BooleanTypeHandler());
+        register(Double.class, new DoubleTypeHandler());
+        register(double.class, new DoubleTypeHandler());
         register(JSONObject.class, new FastJsonTypeHandler());
         register(Long.class, JdbcType.TIMESTAMP, new Timestamp2LongTypeHandler());
         register(Long.class, JdbcType.TIME, new Timestamp2LongTypeHandler());
         register(Long.class, JdbcType.DATE, new Timestamp2LongTypeHandler());
         register(Date.class, JdbcType.BIGINT, new Bigint2DateTypeHandler());
+
     }
 
     public synchronized static void register(Class clazz, TypeHandler handler) {

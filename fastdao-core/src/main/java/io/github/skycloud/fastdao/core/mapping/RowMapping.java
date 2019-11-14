@@ -1,7 +1,6 @@
 /**
  * @(#)ClassMapper.java, 9月 28, 2019.
  * <p>
- *
  */
 package io.github.skycloud.fastdao.core.mapping;
 
@@ -41,7 +40,7 @@ public class RowMapping implements Pluggable {
     private String tableName;
 
     public static RowMapping of(Class clazz) {
-        return newInstance(clazz);
+        return rowMappings.get(clazz);
     }
 
     private static RowMapping newInstance(Class clazz) {
